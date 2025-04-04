@@ -1,0 +1,33 @@
+# Ignorar archivos de Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+ipch/
+*.aps
+*.ncb
+*.sdf
+*.cache
+*.ilk
+*.log
+*.pdb
+*.obj
+*.tlb
+*.tli
+*.tlh
+*.idb
+*.dir
+.DS_Store
+
+# Ignorar archivos de build
+bin/
+obj/
+out/
+*.exe
+*.dll
+
+# Ignorar archivos de configuración locales
+appsettings.json
+appsettings.Development.json
+secrets.json
