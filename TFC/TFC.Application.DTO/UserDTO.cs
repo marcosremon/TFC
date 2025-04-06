@@ -1,8 +1,8 @@
 ﻿using TFC.Service.Web.API.DTOs;
 
-namespace TFC.Domain.Entity
+namespace TFC.Application.DTO
 {
-    public class UseDTO
+    public class UserDTO
     {
         public long UserId { get; set; }
         public string? Username { get; set; }

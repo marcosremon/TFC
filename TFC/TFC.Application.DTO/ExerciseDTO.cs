@@ -1,4 +1,4 @@
-﻿namespace TFC.Service.Web.API.DTOs
+﻿namespace TFC.Application.DTO
 {
     public class ExerciseDTO
     {

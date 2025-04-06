@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\TFC.DDBB.DatabaseConnection\TFC.DDBB.DatabaseConnection.csproj" />
+    <ProjectReference Include="..\TFC.Infraestructure.Interface\TFC.Infraestructure.Interface.csproj" />
+  </ItemGroup>
+
 </Project>
