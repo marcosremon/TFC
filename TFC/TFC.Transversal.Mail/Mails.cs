@@ -7,6 +7,8 @@ namespace TFC.Transversal.Mail
     {
         // To_do: Cambiar el host, port, userName y password por los de producción.
 
+
+        // To_do: mover al properties
         public static string host = "mail.kintech-engineering.com";
         public static int port = 25;
         public static string userName = "web@kintech-engineering.com";
