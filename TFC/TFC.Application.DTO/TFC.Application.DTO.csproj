@@ -7,8 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Request\" />
-    <Folder Include="Response\" />
+    <ProjectReference Include="..\TFC.Transversal.Common\TFC.Transversal.Common.csproj" />
   </ItemGroup>
 
 </Project>
