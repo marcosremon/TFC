@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TFC.DDBB.DatabaseConnection\TFC.DDBB.DatabaseConnection.csproj" />
-    <ProjectReference Include="..\TFC.Infraestructure.Interface\TFC.Infraestructure.Interface.csproj" />
+    <ProjectReference Include="..\TFC.Application.Interface\TFC.Application.Interface.csproj" />
+    <ProjectReference Include="..\TFC.Infraestructure.Contexts\TFC.Infraestructure.Contexts.csproj" />
   </ItemGroup>
 
 </Project>

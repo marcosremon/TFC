@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TFC.Application.Interface\TFC.Application.Interface.csproj" />
-    <ProjectReference Include="..\TFC.Domain.Interface\TFC.Domain.Interface.csproj" />
   </ItemGroup>
 
 </Project>
