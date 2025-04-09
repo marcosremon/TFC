@@ -1,12 +1,9 @@
-﻿using Kintech.RestCA.Transversal.Common;
-using Kintech.WebServices.Applicacion.DTO.CreateLicense;
+﻿using Kintech.WebServices.Applicacion.DTO.CreateLicense;
 using Microsoft.AspNetCore.Mvc;
 using TFC.Application.DTO.EntityDTO;
 using TFC.Application.DTO.Request;
 using TFC.Application.DTO.Response;
 using TFC.Application.Interface;
-using TFC.Domain.Model.Entity;
-using TFC.Transversal.Mail;
 
 namespace TFC.Service.WebApi.Controllers
 {
@@ -19,7 +16,7 @@ namespace TFC.Service.WebApi.Controllers
             _userApplication = userApplication;
         }
 
-        [HttpGet]
+        [HttpGet("{email}")]
         public async Task<ActionResult<GetUserByEmailResponse>> GetUserByEmail(string email)
         {
             if (string.IsNullOrEmpty(email))
@@ -35,7 +32,7 @@ namespace TFC.Service.WebApi.Controllers
             return BadRequest(getUserResponse.Message);
         }
 
-        [HttpGet]
+        [HttpGet("GetUsers")]
         public async Task<ActionResult<GetUsersResponse>> GetUsers()
         {
             GetUsersResponse getUsersResponse = await _userApplication.GetUsers();
@@ -47,7 +44,7 @@ namespace TFC.Service.WebApi.Controllers
             return BadRequest(getUsersResponse.Message);
         }
 
-        [HttpPost]
+        [HttpPost("CreateUser")]
         public async Task<ActionResult<CreateUserResponse>> CreateUser([FromBody] UserDTO importUser)
         {
             CreateUserRequst createUserRequst = new CreateUserRequst()
@@ -68,7 +65,7 @@ namespace TFC.Service.WebApi.Controllers
             return BadRequest(createUserResponse.Message);
         }
 
-        [HttpPut]
+        [HttpPut("UpdateUser")]
         public async Task<ActionResult<UpdateUserResponse>> UpdateUser([FromBody] UpdateUserRequst request)
         {
             UpdateUserResponse updateUserResponse = await _userApplication.UpdateUser(request);
