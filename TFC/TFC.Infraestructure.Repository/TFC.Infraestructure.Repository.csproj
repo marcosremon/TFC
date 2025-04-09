@@ -8,7 +8,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TFC.Application.Interface\TFC.Application.Interface.csproj" />
+    <ProjectReference Include="..\TFC.Domain.Model\TFC.Domain.Model.csproj" />
     <ProjectReference Include="..\TFC.Infraestructure.Contexts\TFC.Infraestructure.Contexts.csproj" />
+    <ProjectReference Include="..\TFC.Transversal.Mail\TFC.Transversal.Mail.csproj" />
+    <ProjectReference Include="..\TFC.Transversal.Security\TFC.Transversal.Security.csproj" />
   </ItemGroup>
 
 </Project>

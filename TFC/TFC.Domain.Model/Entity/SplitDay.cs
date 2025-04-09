@@ -1,4 +1,6 @@
-﻿namespace TFC.Domain.Model.Entity
+﻿using TFC.Domain.Model.Enum;
+
+namespace TFC.Domain.Model.Entity
 {
     public class SplitDay
     {

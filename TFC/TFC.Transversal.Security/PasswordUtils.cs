@@ -11,7 +11,7 @@ namespace TFC.Transversal.Security
         public static byte[] publickeybyte = Encoding.UTF8.GetBytes(publickey);
         public static byte[] result;
 
-        public static string PasswordEncoder(string password)
+        public static byte[] PasswordEncoder(string password)
         {
             try
             {
@@ -32,7 +32,7 @@ namespace TFC.Transversal.Security
                         }
                     }
                 }
-                return Convert.ToBase64String(result);
+                return result;
             }
             catch (Exception ex)
             {
@@ -69,6 +69,7 @@ namespace TFC.Transversal.Security
                 throw new Exception(ex.Message, ex.InnerException);
             }
         }
+
         public static bool IsPasswordEncrypted(string password)
         {
             try
