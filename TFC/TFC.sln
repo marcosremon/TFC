@@ -35,6 +35,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TFC.Transversal.Security", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TFC.Transversal.Mail", "TFC.Transversal.Mail\TFC.Transversal.Mail.csproj", "{187859CE-57B3-4A1F-B8F4-BA7F046F833A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TFC.Transversal.Common", "TFC.Transversal.Common\TFC.Transversal.Common.csproj", "{BB45D2DB-30E4-4436-AE96-52D2189A3636}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -81,6 +83,10 @@ Global
 		{187859CE-57B3-4A1F-B8F4-BA7F046F833A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{187859CE-57B3-4A1F-B8F4-BA7F046F833A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{187859CE-57B3-4A1F-B8F4-BA7F046F833A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB45D2DB-30E4-4436-AE96-52D2189A3636}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB45D2DB-30E4-4436-AE96-52D2189A3636}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB45D2DB-30E4-4436-AE96-52D2189A3636}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB45D2DB-30E4-4436-AE96-52D2189A3636}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -96,6 +102,7 @@ Global
 		{8EA76240-4E8E-4891-9E5B-7B44E6406E47} = {6E43DE94-6E50-4A12-B8F4-0A56D08196DB}
 		{FE547171-DCA3-4900-BDC4-73591E7BD3C9} = {68FF348A-E794-461D-9D2C-C1FA1A6C597B}
 		{187859CE-57B3-4A1F-B8F4-BA7F046F833A} = {68FF348A-E794-461D-9D2C-C1FA1A6C597B}
+		{BB45D2DB-30E4-4436-AE96-52D2189A3636} = {68FF348A-E794-461D-9D2C-C1FA1A6C597B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A94BBF80-4824-4D32-A700-5561EBF45590}
