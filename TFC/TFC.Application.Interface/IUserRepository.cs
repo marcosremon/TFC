@@ -4,10 +4,11 @@ namespace TFC.Infraestructure.Interface
 {
     public interface IUserRepository
     {
-        public Task<UserDTO> GetUserById(long id);
+        public Task<UserDTO> GetUserByEmail(string email);
         public Task<List<UserDTO>> GetUsers();
         public Task<UserDTO> CreateUser(UserDTO userDTO);
         public Task<UserDTO> UpdateUser(UserDTO userDTO);
         public Task<bool> DeleteUser(long userId);
+        public Task<bool> CreateNewPassword(string email);
     }
 }

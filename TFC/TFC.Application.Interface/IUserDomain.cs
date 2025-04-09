@@ -9,6 +9,6 @@ namespace TFC.Application.Interface
         public Task<UserDTO> CreateUser(UserDTO userDTO);
         public Task<UserDTO> UpdateUser(UserDTO userDTO);
         public Task<bool> DeleteUser(long userId);
-        public Task<string> CreateNewPassword(string email);
+        public Task<bool> CreateNewPassword(string email);
     }
 }

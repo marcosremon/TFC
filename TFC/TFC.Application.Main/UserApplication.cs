@@ -29,9 +29,9 @@ namespace TFC.Application.Main
                     return createNewPasswordResponse;
                 }
 
-                string newPassword = await _userDomain.CreateNewPassword(createNewPasswordRequest.UserEmail);
+                bool newPassword = await _userDomain.CreateNewPassword(createNewPasswordRequest.UserEmail);
 
-                if (string.IsNullOrEmpty(newPassword))
+                if (!newPassword)
                 {
                     createNewPasswordResponse.IsSuccess = false;
                     createNewPasswordResponse.Message = "la nueva contraseña es nula";
