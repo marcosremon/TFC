@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using TFC.Application.DTO;
+using TFC.Application.DTO.EntityDTO;
 using TFC.Application.Interface;
 
 namespace TFC.Service.Web.API.Controllers

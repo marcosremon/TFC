@@ -15,7 +15,6 @@
     <ProjectReference Include="..\TFC.Application.Interface\TFC.Application.Interface.csproj" />
     <ProjectReference Include="..\TFC.Application.Main\TFC.Application.Main.csproj" />
     <ProjectReference Include="..\TFC.Domain.Core\TFC.Domain.Core.csproj" />
-    <ProjectReference Include="..\TFC.Domain.Entity\TFC.Domain.Entity.csproj" />
     <ProjectReference Include="..\TFC.Infraestructure.Repository\TFC.Infraestructure.Repository.csproj" />
   </ItemGroup>
 

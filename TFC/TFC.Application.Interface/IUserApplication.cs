@@ -1,4 +1,4 @@
-﻿using TFC.Application.DTO;
+﻿using TFC.Application.DTO.EntityDTO;
 
 namespace TFC.Application.Interface
 {
