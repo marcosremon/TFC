@@ -13,7 +13,7 @@ namespace TFC.Transversal.Mail
         public static string password = "nlzedssaJrHo";
         public static string from = "web@kintech-engineering.com";
 
-        public static void SendEmail(string userEmail, string newPassword)
+        public static void SendEmail(string username, string userEmail, string newPassword)
         {
             // No se emplea try/catch ya que esta previsto usar el try/catch de la clase donde se usa.
             MailMessage _mailMessage = new MailMessage();

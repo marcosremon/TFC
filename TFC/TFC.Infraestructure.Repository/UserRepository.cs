@@ -37,7 +37,7 @@ namespace TFC.Infraestructure.Repository
                 _context.Users.Update(user);
                 await _context.SaveChangesAsync();
 
-                Mails.SendEmail(email, PasswordUtils.PasswordDecoder(user.Password));
+                Mails.SendEmail(user.Username, email, PasswordUtils.PasswordDecoder(user.Password));
                 return true;
             }
             catch (Exception ex)
