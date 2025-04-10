@@ -1,9 +1,12 @@
-﻿using Kintech.WebServices.Applicacion.DTO.CreateLicense;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using TFC.Application.DTO.CreateNewPassword;
 using TFC.Application.DTO.EntityDTO;
-using TFC.Application.DTO.Request;
-using TFC.Application.DTO.Response;
-using TFC.Application.Interface;
+using TFC.Application.DTO.User.CreateUser;
+using TFC.Application.DTO.User.DeleteUser;
+using TFC.Application.DTO.User.GetUserByEmail;
+using TFC.Application.DTO.User.GetUsers;
+using TFC.Application.DTO.User.UpdateUser;
+using TFC.Application.Interface.Application;
 
 namespace TFC.Service.WebApi.Controllers
 {

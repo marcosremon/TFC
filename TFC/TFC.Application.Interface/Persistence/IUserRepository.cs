@@ -1,6 +1,6 @@
 ﻿using TFC.Application.DTO.EntityDTO;
 
-namespace TFC.Infraestructure.Interface
+namespace TFC.Application.Interface.Persistence
 {
     public interface IUserRepository
     {

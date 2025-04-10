@@ -1,6 +1,6 @@
 ﻿using TFC.Application.DTO.EntityDTO;
-using TFC.Application.Interface;
-using TFC.Infraestructure.Interface;
+using TFC.Application.Interface.Domain;
+using TFC.Application.Interface.Persistence;
 
 namespace TFC.Domain.Core
 {

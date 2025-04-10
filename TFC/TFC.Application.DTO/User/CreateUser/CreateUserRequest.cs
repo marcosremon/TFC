@@ -1,8 +1,8 @@
-﻿namespace TFC.Application.DTO.Request
+﻿namespace TFC.Application.DTO.User.CreateUser
 {
-    public class UpdateUserRequst
+    public class CreateUserRequst
     {
-        public string? DniToBeFound { get; set; }
+        public string? Dni { get; set; }
         public string? Username { get; set; }
         public string? Surname { get; set; }
         public string? Email { get; set; }

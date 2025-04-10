@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TFC.Application.DTO\TFC.Application.DTO.csproj" />
+    <ProjectReference Include="..\TFC.Application.Interface\TFC.Application.Interface.csproj" />
+    <ProjectReference Include="..\TFC.Application.Main\TFC.Application.Main.csproj" />
+    <ProjectReference Include="..\TFC.Domain.Model\TFC.Domain.Model.csproj" />
+    <ProjectReference Include="..\TFC.Infraestructure.Contexts\TFC.Infraestructure.Contexts.csproj" />
+    <ProjectReference Include="..\TFC.Infraestructure.Repository\TFC.Infraestructure.Repository.csproj" />
+    <ProjectReference Include="..\TFC.Transversal.Common\TFC.Transversal.Common.csproj" />
+    <ProjectReference Include="..\TFC.Transversal.Mail\TFC.Transversal.Mail.csproj" />
+    <ProjectReference Include="..\TFC.Transversal.Security\TFC.Transversal.Security.csproj" />
+  </ItemGroup>
+
+</Project>
