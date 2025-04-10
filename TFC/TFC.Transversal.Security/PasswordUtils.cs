@@ -9,7 +9,7 @@ namespace TFC.Transversal.Security
         public static string secretkey = "8765432187654321"; // 16 bytes para AES-128
         public static byte[] secretkeyByte = Encoding.UTF8.GetBytes(secretkey);
         public static byte[] publickeybyte = Encoding.UTF8.GetBytes(publickey);
-        public static byte[] result;
+        public static byte[]? result;
 
         public static byte[] PasswordEncoder(string password)
         {

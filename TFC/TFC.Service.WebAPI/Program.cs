@@ -1,23 +1,30 @@
+using TFC.Infraestructure.Persistence.Context;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
+// Configuración mínima
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Registro directo del contexto MongoDB (sin MongoDBSettings)
+builder.Services.AddSingleton<ApplicationDbContext>(provider =>
+{
+    var config = provider.GetRequiredService<IConfiguration>();
+    return new ApplicationDbContext(config);
+});
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Pipeline HTTP
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
+app.UseHttpsRedirection();
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();

@@ -1,11 +1,11 @@
 ﻿using TFC.Application.DTO.EntityDTO;
 using TFC.Application.Interface.Persistence;
-using TFC.DDBB.DatabaseConnection;
 using TFC.Domain.Model.Entity;
+using TFC.Infraestructure.Persistence.Context;
 using TFC.Transversal.Mail;
 using TFC.Transversal.Security;
 
-namespace TFC.Infraestructure.Repository
+namespace TFC.Infraestructure.Persistence.Repository
 {
     public class UserRepository : IUserRepository
     {
