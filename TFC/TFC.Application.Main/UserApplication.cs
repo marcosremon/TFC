@@ -6,17 +6,17 @@ using TFC.Application.DTO.User.GetUserByEmail;
 using TFC.Application.DTO.User.GetUsers;
 using TFC.Application.DTO.User.UpdateUser;
 using TFC.Application.Interface.Application;
-using TFC.Application.Interface.Domain;
+using TFC.Application.Interface.Persistence;
 
 namespace TFC.Application.Main
 {
     public class UserApplication : IUserApplication
     {
-        private readonly IUserDomain _userDomain;
+        private readonly IUserRepository _userRepository;
 
-        public UserApplication(IUserDomain userDomain)
+        public UserApplication(IUserRepository userRepository)
         {
-            _userDomain = userDomain;
+            _userRepository = userRepository;
         }
 
         public async Task<CreateNewPasswordResponse> CreateNewPassword(CreateNewPasswordRequest createNewPasswordRequest)
@@ -34,7 +34,7 @@ namespace TFC.Application.Main
                     return createNewPasswordResponse;
                 }
 
-                bool newPassword = await _userDomain.CreateNewPassword(createNewPasswordRequest.UserEmail);
+                bool newPassword = await _userRepository.CreateNewPassword(createNewPasswordRequest.UserEmail);
 
                 if (!newPassword)
                 {
@@ -100,7 +100,7 @@ namespace TFC.Application.Main
                     return createUserResponse;
                 }
 
-                UserDTO? createdUser = await _userDomain.CreateUser(userDTO);
+                UserDTO? createdUser = await _userRepository.CreateUser(userDTO);
 
                 createUserResponse.UserName = createdUser.Username;
                 createUserResponse.Email = createdUser.Email;
@@ -122,7 +122,7 @@ namespace TFC.Application.Main
 
             try
             {
-                bool isDeleted = await _userDomain.DeleteUser(userId);
+                bool isDeleted = await _userRepository.DeleteUser(userId);
                 if (isDeleted)
                 {
                     deleteUserResponse.IsSuccess = true;
@@ -148,7 +148,7 @@ namespace TFC.Application.Main
 
             try
             {
-                UserDTO? user = await _userDomain.GetUserByEmail(email);
+                UserDTO? user = await _userRepository.GetUserByEmail(email);
                 if (user == null) 
                 {
                     getUserByEmail.IsSuccess = false;
@@ -174,7 +174,7 @@ namespace TFC.Application.Main
 
             try
             {
-                List<UserDTO> users = await _userDomain.GetUsers();
+                List<UserDTO> users = await _userRepository.GetUsers();
                 if (users == null || users.Count == 0)
                 {
                     getUsers.IsSuccess = false;
@@ -237,7 +237,7 @@ namespace TFC.Application.Main
                     return updateUserResponse;
                 }
 
-                UserDTO? updatedUser = await _userDomain.UpdateUser(userDTO);
+                UserDTO? updatedUser = await _userRepository.UpdateUser(userDTO);
 
                 updateUserResponse.UserName = updatedUser.Username;
                 updateUserResponse.Email = updatedUser.Email;

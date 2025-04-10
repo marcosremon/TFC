@@ -7,9 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\TFC.Application.DTO\TFC.Application.DTO.csproj" />
     <ProjectReference Include="..\TFC.Application.Interface\TFC.Application.Interface.csproj" />
+    <ProjectReference Include="..\TFC.Application.Main\TFC.Application.Main.csproj" />
     <ProjectReference Include="..\TFC.Domain.Model\TFC.Domain.Model.csproj" />
-    <ProjectReference Include="..\TFC.Infraestructure.Contexts\TFC.Infraestructure.Contexts.csproj" />
+    <ProjectReference Include="..\TFC.Service.WebApi\TFC.Service.WebApi.csproj" />
+    <ProjectReference Include="..\TFC.Transversal.Common\TFC.Transversal.Common.csproj" />
     <ProjectReference Include="..\TFC.Transversal.Mail\TFC.Transversal.Mail.csproj" />
     <ProjectReference Include="..\TFC.Transversal.Security\TFC.Transversal.Security.csproj" />
   </ItemGroup>
