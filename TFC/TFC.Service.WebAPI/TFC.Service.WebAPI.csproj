@@ -14,7 +14,6 @@
     <ProjectReference Include="..\TFC.Application.DTO\TFC.Application.DTO.csproj" />
     <ProjectReference Include="..\TFC.Application.Interface\TFC.Application.Interface.csproj" />
     <ProjectReference Include="..\TFC.Application.Main\TFC.Application.Main.csproj" />
-    <ProjectReference Include="..\TFC.Domain.Core\TFC.Domain.Core.csproj" />
     <ProjectReference Include="..\TFC.Domain.Model\TFC.Domain.Model.csproj" />
     <ProjectReference Include="..\TFC.Infraestructure.Contexts\TFC.Infraestructure.Contexts.csproj" />
     <ProjectReference Include="..\TFC.Infraestructure.Repository\TFC.Infraestructure.Repository.csproj" />
