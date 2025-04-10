@@ -1,6 +1,6 @@
 ﻿namespace TFC.Application.DTO.EntityDTO
 {
-    public class Exercise
+    public class ExerciseDTO
     {
         public string? ExerceiseId { get; set; }
         public string? ExerciseName { get; set; }
