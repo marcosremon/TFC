@@ -1,4 +1,5 @@
 ﻿using TFC.Application.DTO.EntityDTO;
+using TFC.Application.DTO.User.ChangePasswordWithPasswordAndEmail;
 using TFC.Application.DTO.User.CreateNewPassword;
 using TFC.Application.DTO.User.CreateUser;
 using TFC.Application.DTO.User.DeleteUser;
@@ -17,6 +18,40 @@ namespace TFC.Application.Main
         public UserApplication(IUserRepository userRepository)
         {
             _userRepository = userRepository;
+        }
+
+        public async Task<ChangePasswordWithPasswordAndEmailResponse> ChangePasswordWithPasswordAndEmail(ChangePasswordWithPasswordAndEmailRequest changePasswordWithPasswordAndEmailRequest)
+        {
+            ChangePasswordWithPasswordAndEmailResponse changePasswordWithPasswordAndEmailResponse = new ChangePasswordWithPasswordAndEmailResponse();
+
+            try
+            {
+                if (changePasswordWithPasswordAndEmailRequest.NewPassword != changePasswordWithPasswordAndEmailRequest.ConfirmNewPassword)
+                {
+                    changePasswordWithPasswordAndEmailResponse.IsSuccess = false;
+                    changePasswordWithPasswordAndEmailResponse.Message = "las contraseñas no coinciden";
+                    return changePasswordWithPasswordAndEmailResponse;
+                }
+
+                bool newPassword = await _userRepository.ChangePasswordWithPasswordAndEmail(changePasswordWithPasswordAndEmailRequest);
+                if (!newPassword)
+                {
+                    changePasswordWithPasswordAndEmailResponse.IsSuccess = false;
+                    changePasswordWithPasswordAndEmailResponse.Message = "la nueva contraseña es nula";
+                    return changePasswordWithPasswordAndEmailResponse;
+                }
+
+                changePasswordWithPasswordAndEmailResponse.UserEmail = changePasswordWithPasswordAndEmailRequest.UserEmail;
+                changePasswordWithPasswordAndEmailResponse.IsSuccess = true;
+                changePasswordWithPasswordAndEmailResponse.Message = "contraseña guardada correctamente";
+            }
+            catch (Exception ex)
+            {
+                changePasswordWithPasswordAndEmailResponse.IsSuccess = false;
+                changePasswordWithPasswordAndEmailResponse.Message = ex.Message;
+            }
+
+            return changePasswordWithPasswordAndEmailResponse;
         }
 
         public async Task<CreateNewPasswordResponse> CreateNewPassword(CreateNewPasswordRequest createNewPasswordRequest)

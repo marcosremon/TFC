@@ -1,4 +1,5 @@
 ﻿using TFC.Application.DTO.EntityDTO;
+using TFC.Application.DTO.User.ChangePasswordWithPasswordAndEmail;
 using TFC.Application.DTO.User.CreateNewPassword;
 using TFC.Application.DTO.User.CreateUser;
 using TFC.Application.DTO.User.DeleteUser;
@@ -15,5 +16,6 @@ namespace TFC.Application.Interface.Persistence
         public Task<UserDTO?> UpdateUser(UpdateUserRequst updateUserRequest);
         public Task<bool> DeleteUser(DeleteUserRequest deleteUserRequest);
         public Task<bool> CreateNewPassword(CreateNewPasswordRequest createNewPasswordRequest);
+        public Task<bool> ChangePasswordWithPasswordAndEmail(ChangePasswordWithPasswordAndEmailRequest changePasswordWithPasswordAndEmailRequest);
     }
 }

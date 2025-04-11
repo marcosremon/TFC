@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using TFC.Application.DTO.EntityDTO;
+using TFC.Application.DTO.User.ChangePasswordWithPasswordAndEmail;
 using TFC.Application.DTO.User.CreateNewPassword;
 using TFC.Application.DTO.User.CreateUser;
 using TFC.Application.DTO.User.DeleteUser;
@@ -115,5 +116,28 @@ namespace TFC.Service.WebApi.Controllers
 
             return Ok(response);
         }
+
+
+        [HttpPost("ChangePasswordWithPasswordAndEmail")]
+        public async Task<ActionResult<ChangePasswordWithPasswordAndEmailResponse>> ChangePasswordWithPasswordAndEmail([FromBody] ChangePasswordWithPasswordAndEmailRequest changePasswordWithPasswordAndEmailRequest)
+        {
+            if (changePasswordWithPasswordAndEmailRequest == null 
+                || string.IsNullOrEmpty(changePasswordWithPasswordAndEmailRequest.UserEmail)
+                || string.IsNullOrEmpty(changePasswordWithPasswordAndEmailRequest.NewPassword)
+                || string.IsNullOrEmpty(changePasswordWithPasswordAndEmailRequest.OldPassword)
+                || string.IsNullOrEmpty(changePasswordWithPasswordAndEmailRequest.ConfirmNewPassword))
+            {
+                return BadRequest();
+            }
+
+            ChangePasswordWithPasswordAndEmailResponse response = await _userApplication.ChangePasswordWithPasswordAndEmail(changePasswordWithPasswordAndEmailRequest);
+            if (!response.IsSuccess)
+            {
+                return BadRequest(response.Message);
+            }
+
+            return Ok(response);
+        }
+
     }
 }

@@ -1,5 +1,6 @@
 ﻿using MongoDB.Driver;
 using TFC.Application.DTO.EntityDTO;
+using TFC.Application.DTO.User.ChangePasswordWithPasswordAndEmail;
 using TFC.Application.DTO.User.CreateNewPassword;
 using TFC.Application.DTO.User.CreateUser;
 using TFC.Application.DTO.User.DeleteUser;
@@ -20,6 +21,39 @@ namespace TFC.Infraestructure.Persistence.Repository
             _context = context;
         }
 
+        public async Task<bool> ChangePasswordWithPasswordAndEmail(ChangePasswordWithPasswordAndEmailRequest chagePasswordRequest)
+        {
+            try
+            {
+                User? user = await _context.Users
+               .Find(u => u.Email == chagePasswordRequest.UserEmail && chagePasswordRequest.OldPassword == PasswordUtils.PasswordDecoder(u.Password))
+               .FirstOrDefaultAsync();
+                if (user == null)
+                {
+                    return false;
+                }
+
+                byte[] passwordHash = PasswordUtils.PasswordEncoder(chagePasswordRequest.NewPassword);
+                var filter = Builders<User>.Filter.Eq(u => u.Email, chagePasswordRequest.UserEmail);
+                var update = Builders<User>.Update
+                    .Set(u => u.Password, passwordHash);
+
+                var updateResult = await _context.Users.UpdateOneAsync(filter, update);
+
+                if (updateResult.ModifiedCount == 0)
+                {
+                    return false;
+                }
+
+                Mails.SendEmail(user.Username, user.Email, chagePasswordRequest.NewPassword);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al cambiar la contraseña: " + ex.Message);
+            }
+        }
+
         public async Task<bool> CreateNewPassword(CreateNewPasswordRequest createNewPasswordRequest)
         {
             try
@@ -33,7 +67,6 @@ namespace TFC.Infraestructure.Persistence.Repository
                 string newPassword = PasswordUtils.CreatePassword(8);
                 byte[] passwordHash = PasswordUtils.PasswordEncoder(newPassword);
 
-                // Actualizar solo la contraseña en MongoDB
                 var filter = Builders<User>.Filter.Eq(u => u.Email, createNewPasswordRequest.UserEmail);
                 var update = Builders<User>.Update
                     .Set(u => u.Password, passwordHash);
