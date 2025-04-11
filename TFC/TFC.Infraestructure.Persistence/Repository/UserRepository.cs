@@ -7,7 +7,6 @@ using TFC.Application.DTO.User.GetUserByEmail;
 using TFC.Application.DTO.User.UpdateUser;
 using TFC.Application.Interface.Persistence;
 using TFC.Domain.Model.Entity;
-using TFC.Transversal.Mail;
 using TFC.Transversal.Security;
 
 namespace TFC.Infraestructure.Persistence.Repository
@@ -222,25 +221,25 @@ namespace TFC.Infraestructure.Persistence.Repository
                 user.Surname = updateUserRequest.Surname;
                 user.Password = PasswordUtils.PasswordEncoder(updateUserRequest.Password);
                 user.Email = updateUserRequest.Email;
-                if (updateUserRequest.Routines != null)
-                {
-                    user.Routines = updateUserRequest.Routines.Select(routine => new Routine()
-                    {
-                        RoutineName = routine.RoutineName,
-                        RoutineDescription = routine.RoutineDescription,
-                        SplitDays = routine.SplitDays?.Select(splitDay => new SplitDay()
-                        {
-                            DayName = splitDay.DayName,
-                            Exercises = splitDay.Exercises?.Select(exercise => new Exercise()
-                            {
-                                ExerciseName = exercise.ExerciseName,
-                                Sets = exercise.Sets,
-                                Reps = exercise.Reps,
-                                Weight = exercise.Weight
-                            }).ToList() ?? new List<Exercise>()
-                        }).ToList() ?? new List<SplitDay>()
-                    }).ToList();
-                }
+                //if (updateUserRequest.Routines != null)
+                //{
+                //    user.Routines = updateUserRequest.Routines.Select(routine => new Routine()
+                //    {
+                //        RoutineName = routine.RoutineName,
+                //        RoutineDescription = routine.RoutineDescription,
+                //        SplitDays = routine.SplitDays?.Select(splitDay => new SplitDay()
+                //        {
+                //            DayName = splitDay.DayName,
+                //            Exercises = splitDay.Exercises?.Select(exercise => new Exercise()
+                //            {
+                //                ExerciseName = exercise.ExerciseName,
+                //                Sets = exercise.Sets,
+                //                Reps = exercise.Reps,
+                //                Weight = exercise.Weight
+                //            }).ToList() ?? new List<Exercise>()
+                //        }).ToList() ?? new List<SplitDay>()
+                //    }).ToList();
+                //}
 
                 var filter = Builders<User>.Filter.Eq(u => u.Dni, updateUserRequest.DniToBeFound);
                 var result = await _context.Users.ReplaceOneAsync(filter, user);

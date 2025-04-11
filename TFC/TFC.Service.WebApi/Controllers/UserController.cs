@@ -20,7 +20,7 @@ namespace TFC.Service.WebApi.Controllers
             _userApplication = userApplication;
         }
 
-        [HttpGet("GetUserByEmail")]
+        [HttpPost("GetUserByEmail")]
         public async Task<ActionResult<GetUserByEmailResponse>> GetUserByEmail([FromBody] GetUserByEmailRequest getUserByEmailRequest)
         {
             if (getUserByEmailRequest == null || string.IsNullOrEmpty(getUserByEmailRequest.Email))

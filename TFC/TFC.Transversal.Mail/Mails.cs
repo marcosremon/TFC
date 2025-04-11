@@ -1,38 +1,32 @@
-﻿using System.Net.Mail;
-using System.Net;
+﻿using MailKit.Net.Smtp;
+using MimeKit;
 
-namespace TFC.Transversal.Mail
+public class Mails
 {
-    public class Mails
+    private const string SmtpHost = "smtp.gmail.com";
+    private const int SmtpPort = 587;
+    private const string Email = "marcosremon2@gmail.com"; 
+    private const string AppPassword = "lpqa srml fzsb bijh"; 
+
+    public static void SendEmail(string recipientName, string recipientEmail, string newPassword)
     {
-        // To_do: Cambiar el host, port, userName y password por los de producción.
+        var message = new MimeMessage();
+        message.From.Add(new MailboxAddress("Sistema de Recuperación De Contraseñas", Email));
+        message.To.Add(new MailboxAddress(recipientName, recipientEmail));
+        message.Subject = "Tu nueva contraseña";
 
-
-        // To_do: mover al properties
-        public static string host = "mail.kintech-engineering.com";
-        public static int port = 25;
-        public static string userName = "web@kintech-engineering.com";
-        public static string password = "nlzedssaJrHo";
-        public static string from = "web@kintech-engineering.com";
-
-        public static void SendEmail(string username, string userEmail, string newPassword)
+        message.Body = new TextPart("plain")
         {
-            // No se emplea try/catch ya que esta previsto usar el try/catch de la clase donde se usa.
-            MailMessage _mailMessage = new MailMessage();
-            _mailMessage.From = new MailAddress(from);
-            _mailMessage.To.Add(userEmail);
-            _mailMessage.Subject = "Kintech Atlas new password";
-            _mailMessage.Body = "Dear Atlas User,\n" +
-                                "Here is your new password: " + newPassword + "\n" +
-                                "If you need any further help, please contact our technical support.\n" +
-                                "Kind regards\n" +
-                                "Kintech Engineering";
+            Text = "Hola " + recipientName + "\n\nTu nueva contraseña es: " + newPassword
+        };
 
-
-            SmtpClient smtpClient = new SmtpClient(host, port);
-            smtpClient.Credentials = new NetworkCredential(userName, password);
-            smtpClient.EnableSsl = false;
-            smtpClient.Send(_mailMessage);
+        using (var client = new SmtpClient())
+        {
+            client.Timeout = 10000; 
+            client.Connect(SmtpHost, SmtpPort, MailKit.Security.SecureSocketOptions.StartTls);
+            client.Authenticate(Email, AppPassword);
+            client.Send(message);
+            client.Disconnect(true);
         }
     }
 }
