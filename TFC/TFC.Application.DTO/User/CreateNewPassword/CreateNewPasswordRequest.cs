@@ -1,4 +1,4 @@
-﻿namespace TFC.Application.DTO.CreateNewPassword
+﻿namespace TFC.Application.DTO.User.CreateNewPassword
 {
     public class CreateNewPasswordRequest
     {

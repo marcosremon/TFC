@@ -1,4 +1,6 @@
-﻿namespace TFC.Application.DTO.User.UpdateUser
+﻿using TFC.Application.DTO.EntityDTO;
+
+namespace TFC.Application.DTO.User.UpdateUser
 {
     public class UpdateUserRequst
     {
@@ -7,5 +9,6 @@
         public string? Surname { get; set; }
         public string? Email { get; set; }
         public string? Password { get; set; }
+        public List<RoutineDTO>? Routines { get; set; } = new List<RoutineDTO>();
     }
 }

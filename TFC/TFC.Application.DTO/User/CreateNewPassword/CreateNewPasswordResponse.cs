@@ -1,6 +1,6 @@
 ﻿using Kintech.RestCA.Transversal.Common;
 
-namespace TFC.Application.DTO.CreateNewPassword
+namespace TFC.Application.DTO.User.CreateNewPassword
 {
     public class CreateNewPasswordResponse : BaseResponse
     {

@@ -1,5 +1,5 @@
-﻿using TFC.Application.DTO.CreateNewPassword;
-using TFC.Application.DTO.EntityDTO;
+﻿using TFC.Application.DTO.EntityDTO;
+using TFC.Application.DTO.User.CreateNewPassword;
 using TFC.Application.DTO.User.CreateUser;
 using TFC.Application.DTO.User.DeleteUser;
 using TFC.Application.DTO.User.GetUserByEmail;
@@ -25,17 +25,7 @@ namespace TFC.Application.Main
 
             try
             {
-                // Pongo esas dos comprobaciones aunque solo hay un atributo 'email'
-                // por si en un futuro se añaden mas parametros para comprobar
-                if (createNewPasswordRequest == null || string.IsNullOrEmpty(createNewPasswordRequest.UserEmail))
-                {
-                    createNewPasswordResponse.IsSuccess = false;
-                    createNewPasswordResponse.Message = "La llamada es nula o el email introducido es falso";
-                    return createNewPasswordResponse;
-                }
-
-                bool newPassword = await _userRepository.CreateNewPassword(createNewPasswordRequest.UserEmail);
-
+                bool newPassword = await _userRepository.CreateNewPassword(createNewPasswordRequest);
                 if (!newPassword)
                 {
                     createNewPasswordResponse.IsSuccess = false;
@@ -46,7 +36,6 @@ namespace TFC.Application.Main
                 createNewPasswordResponse.UserEmail = createNewPasswordRequest.UserEmail;
                 createNewPasswordResponse.IsSuccess = true;
                 createNewPasswordResponse.Message = "contraseña guardada correctamente";
-                return createNewPasswordResponse;
             }
             catch (Exception ex)
             {
@@ -63,44 +52,28 @@ namespace TFC.Application.Main
 
             try
             {
-                UserDTO userDTO = new UserDTO()
-                {
-                    Dni = createUserRequst.Dni,
-                    Username = createUserRequst.Username,
-                    Surname = createUserRequst.Surname,
-                    Email = createUserRequst.Email,
-                    Password = createUserRequst.Password
-                };
-
-                if (userDTO == null)
-                {
-                    createUserResponse.IsSuccess = false;
-                    createUserResponse.Message = "El usuario es nulo";
-                    return createUserResponse;
-                }
-
-                if (string.IsNullOrEmpty(userDTO.Username) || string.IsNullOrEmpty(userDTO.Password))
+                if (string.IsNullOrEmpty(createUserRequst.Username) || string.IsNullOrEmpty(createUserRequst.Password))
                 {
                     createUserResponse.IsSuccess = false;
                     createUserResponse.Message = "El nombre de usuario y la contraseña son obligatorios";
                     return createUserResponse;
                 }
 
-                if (string.IsNullOrEmpty(userDTO.Dni) || string.IsNullOrEmpty(userDTO.Surname))
+                if (string.IsNullOrEmpty(createUserRequst.Dni) || string.IsNullOrEmpty(createUserRequst.Surname))
                 {
                     createUserResponse.IsSuccess = false;
                     createUserResponse.Message = "El DNI y el apellido son obligatorios";
                     return createUserResponse;
                 }
 
-                if (string.IsNullOrEmpty(userDTO.Email))
+                if (string.IsNullOrEmpty(createUserRequst.Email))
                 {
                     createUserResponse.IsSuccess = false;
                     createUserResponse.Message = "El email es obligatorio";
                     return createUserResponse;
                 }
 
-                UserDTO? createdUser = await _userRepository.CreateUser(userDTO);
+                UserDTO? createdUser = await _userRepository.CreateUser(createUserRequst);
 
                 createUserResponse.UserName = createdUser.Username;
                 createUserResponse.Email = createdUser.Email;
@@ -116,13 +89,13 @@ namespace TFC.Application.Main
             return createUserResponse;
         }
 
-        public async Task<DeleteUserResponse> DeleteUser(long userId)
+        public async Task<DeleteUserResponse> DeleteUser(DeleteUserRequest deleteUserRequest)
         {
             DeleteUserResponse deleteUserResponse = new DeleteUserResponse();
 
             try
             {
-                bool isDeleted = await _userRepository.DeleteUser(userId);
+                bool isDeleted = await _userRepository.DeleteUser(deleteUserRequest);
                 if (isDeleted)
                 {
                     deleteUserResponse.IsSuccess = true;
@@ -142,13 +115,13 @@ namespace TFC.Application.Main
             return deleteUserResponse;
         }
 
-        public async Task<GetUserByEmailResponse> GetUserByEmail(string email)
+        public async Task<GetUserByEmailResponse> GetUserByEmail(GetUserByEmailRequest getUserByEmailRequest)
         {
             GetUserByEmailResponse getUserByEmail = new GetUserByEmailResponse();
 
             try
             {
-                UserDTO? user = await _userRepository.GetUserByEmail(email);
+                UserDTO? user = await _userRepository.GetUserByEmail(getUserByEmailRequest);
                 if (user == null) 
                 {
                     getUserByEmail.IsSuccess = false;
@@ -165,6 +138,7 @@ namespace TFC.Application.Main
                 getUserByEmail.IsSuccess = false;
                 getUserByEmail.Message = ex.Message;
             }
+
             return getUserByEmail;
         }
 
@@ -174,8 +148,8 @@ namespace TFC.Application.Main
 
             try
             {
-                List<UserDTO> users = await _userRepository.GetUsers();
-                if (users == null || users.Count == 0)
+                List<UserDTO>? users = await _userRepository.GetUsers();
+                if (users == null)
                 {
                     getUsers.IsSuccess = false;
                     getUsers.Message = "No se encontraron usuarios";
@@ -200,44 +174,27 @@ namespace TFC.Application.Main
 
             try
             {
-                UserDTO userDTO = new UserDTO()
-                {
-                    Dni = updateUserRequest.DniToBeFound,
-                    Username = updateUserRequest.Username,
-                    Surname = updateUserRequest.Surname,
-                    Email = updateUserRequest.Email,
-                    Password = updateUserRequest.Password
-                };
-
-                if (userDTO == null)
-                {
-                    updateUserResponse.IsSuccess = false;
-                    updateUserResponse.Message = "El usuario es nulo";
-                    return updateUserResponse;
-                }
-
-                if (string.IsNullOrEmpty(userDTO.Username) || string.IsNullOrEmpty(userDTO.Password))
+                if (string.IsNullOrEmpty(updateUserRequest.Username) || string.IsNullOrEmpty(updateUserRequest.Password))
                 {
                     updateUserResponse.IsSuccess = false;
                     updateUserResponse.Message = "El nombre de usuario y la contraseña son obligatorios";
                     return updateUserResponse;
                 }
 
-                if (string.IsNullOrEmpty(userDTO.Dni) || string.IsNullOrEmpty(userDTO.Surname))
+                if (string.IsNullOrEmpty(updateUserRequest.Surname))
                 {
                     updateUserResponse.IsSuccess = false;
-                    updateUserResponse.Message = "El DNI y el apellido son obligatorios";
+                    updateUserResponse.Message = "el apellido son obligatorios";
                     return updateUserResponse;
                 }
 
-                if (string.IsNullOrEmpty(userDTO.Email))
+                UserDTO? updatedUser = await _userRepository.UpdateUser(updateUserRequest);
+                if (updatedUser == null)
                 {
                     updateUserResponse.IsSuccess = false;
-                    updateUserResponse.Message = "El email es obligatorio";
+                    updateUserResponse.Message = "No se pudo actualizar el usuario";
                     return updateUserResponse;
                 }
-
-                UserDTO? updatedUser = await _userRepository.UpdateUser(userDTO);
 
                 updateUserResponse.UserName = updatedUser.Username;
                 updateUserResponse.Email = updatedUser.Email;

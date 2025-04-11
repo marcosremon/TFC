@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using TFC.Application.DTO.CreateNewPassword;
+using Microsoft.IdentityModel.Tokens;
 using TFC.Application.DTO.EntityDTO;
+using TFC.Application.DTO.User.CreateNewPassword;
 using TFC.Application.DTO.User.CreateUser;
 using TFC.Application.DTO.User.DeleteUser;
 using TFC.Application.DTO.User.GetUserByEmail;
@@ -19,15 +20,15 @@ namespace TFC.Service.WebApi.Controllers
             _userApplication = userApplication;
         }
 
-        [HttpGet("{email}")]
-        public async Task<ActionResult<GetUserByEmailResponse>> GetUserByEmail(string email)
+        [HttpGet("GetUserByEmail")]
+        public async Task<ActionResult<GetUserByEmailResponse>> GetUserByEmail([FromBody] GetUserByEmailRequest getUserByEmailRequest)
         {
-            if (string.IsNullOrEmpty(email))
+            if (getUserByEmailRequest == null || string.IsNullOrEmpty(getUserByEmailRequest.Email))
             {
                 return BadRequest();
             }
 
-            GetUserByEmailResponse getUserResponse = await _userApplication.GetUserByEmail(email);
+            GetUserByEmailResponse getUserResponse = await _userApplication.GetUserByEmail(getUserByEmailRequest);
             if (getUserResponse.IsSuccess)
             {
                 return Ok(getUserResponse);
@@ -48,16 +49,12 @@ namespace TFC.Service.WebApi.Controllers
         }
 
         [HttpPost("CreateUser")]
-        public async Task<ActionResult<CreateUserResponse>> CreateUser([FromBody] UserDTO importUser)
+        public async Task<ActionResult<CreateUserResponse>> CreateUser([FromBody] CreateUserRequst createUserRequst)
         {
-            CreateUserRequst createUserRequst = new CreateUserRequst()
+            if (createUserRequst == null || string.IsNullOrEmpty(createUserRequst.Email))
             {
-                Dni = importUser.Dni,
-                Username = importUser.Username,
-                Surname = importUser.Surname,
-                Email = importUser.Email,
-                Password = importUser.Password
-            };
+                return BadRequest();
+            }
 
             CreateUserResponse createUserResponse = await _userApplication.CreateUser(createUserRequst);
             if (createUserResponse.IsSuccess)
@@ -69,9 +66,14 @@ namespace TFC.Service.WebApi.Controllers
         }
 
         [HttpPut("UpdateUser")]
-        public async Task<ActionResult<UpdateUserResponse>> UpdateUser([FromBody] UpdateUserRequst request)
+        public async Task<ActionResult<UpdateUserResponse>> UpdateUser([FromBody] UpdateUserRequst updateUserRequest)
         {
-            UpdateUserResponse updateUserResponse = await _userApplication.UpdateUser(request);
+            if (updateUserRequest == null || string.IsNullOrEmpty(updateUserRequest.DniToBeFound) || string.IsNullOrEmpty(updateUserRequest.Email))
+            {
+                return BadRequest();
+            }
+
+            UpdateUserResponse updateUserResponse = await _userApplication.UpdateUser(updateUserRequest);
             if (updateUserResponse.IsSuccess)
             {
                 return Ok(updateUserResponse);
@@ -80,10 +82,15 @@ namespace TFC.Service.WebApi.Controllers
             return BadRequest(updateUserResponse.Message);
         }
 
-        [HttpDelete("{UserId}")]
-        public async Task<ActionResult<DeleteUserResponse>> DeleteUser(long UserId)
+        [HttpDelete("DeleteUser")]
+        public async Task<ActionResult<DeleteUserResponse>> DeleteUser([FromBody] DeleteUserRequest deleteUserRequest)
         {
-            DeleteUserResponse deleteUsersResponse = await _userApplication.DeleteUser(UserId);
+            if (deleteUserRequest == null || string.IsNullOrEmpty(deleteUserRequest.Dni))
+            {
+                return BadRequest();
+            }
+
+            DeleteUserResponse deleteUsersResponse = await _userApplication.DeleteUser(deleteUserRequest);
             if (deleteUsersResponse.IsSuccess)
             {
                 return Ok(deleteUsersResponse);
@@ -95,7 +102,7 @@ namespace TFC.Service.WebApi.Controllers
         [HttpPost("CreateNewPassword")]
         public async Task<ActionResult<CreateNewPasswordResponse>> CreateNewPassword([FromBody] CreateNewPasswordRequest createNewPasswordRequest)
         {
-            if (createNewPasswordRequest == null)
+            if (createNewPasswordRequest == null || string.IsNullOrEmpty(createNewPasswordRequest.UserEmail))
             {
                 return BadRequest();
             }

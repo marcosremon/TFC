@@ -1,4 +1,4 @@
-﻿using TFC.Application.DTO.CreateNewPassword;
+﻿using TFC.Application.DTO.User.CreateNewPassword;
 using TFC.Application.DTO.User.CreateUser;
 using TFC.Application.DTO.User.DeleteUser;
 using TFC.Application.DTO.User.GetUserByEmail;
@@ -9,11 +9,11 @@ namespace TFC.Application.Interface.Application
 {
     public interface IUserApplication
     {
-        public Task<GetUserByEmailResponse> GetUserByEmail(string email);
+        public Task<GetUserByEmailResponse> GetUserByEmail(GetUserByEmailRequest getUserByEmailRequest);
         public Task<GetUsersResponse> GetUsers();
         public Task<CreateUserResponse> CreateUser(CreateUserRequst createUserRequst);
         public Task<UpdateUserResponse> UpdateUser(UpdateUserRequst updateUserRequest);
-        public Task<DeleteUserResponse> DeleteUser(long userId);
+        public Task<DeleteUserResponse> DeleteUser(DeleteUserRequest deleteUserRequest);
         public Task<CreateNewPasswordResponse> CreateNewPassword(CreateNewPasswordRequest createNewPasswordRequest);
     }
 }

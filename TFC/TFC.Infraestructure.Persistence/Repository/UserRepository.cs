@@ -1,4 +1,10 @@
-﻿using TFC.Application.DTO.EntityDTO;
+﻿using MongoDB.Driver;
+using TFC.Application.DTO.EntityDTO;
+using TFC.Application.DTO.User.CreateNewPassword;
+using TFC.Application.DTO.User.CreateUser;
+using TFC.Application.DTO.User.DeleteUser;
+using TFC.Application.DTO.User.GetUserByEmail;
+using TFC.Application.DTO.User.UpdateUser;
 using TFC.Application.Interface.Persistence;
 using TFC.Domain.Model.Entity;
 using TFC.Transversal.Mail;
@@ -15,28 +21,32 @@ namespace TFC.Infraestructure.Persistence.Repository
             _context = context;
         }
 
-        public async Task<bool> CreateNewPassword(string email)
+        public async Task<bool> CreateNewPassword(CreateNewPasswordRequest createNewPasswordRequest)
         {
             try
             {
-                if (string.IsNullOrEmpty(email))
-                {
-                    return false;
-                }
-
-                User? user = await _context.Users.FirstOrDefaultAsync(u => u.UserEmail == email);
+                User? user = await _context.Users.Find(u => u.Email == createNewPasswordRequest.UserEmail).FirstOrDefaultAsync();
                 if (user == null)
                 {
                     return false;
                 }
 
                 string newPassword = PasswordUtils.CreatePassword(8);
-                user.Password = PasswordUtils.PasswordEncoder(newPassword);
+                byte[] passwordHash = PasswordUtils.PasswordEncoder(newPassword);
 
-                _context.Users.Update(user);
-                await _context.SaveChangesAsync();
+                // Actualizar solo la contraseña en MongoDB
+                var filter = Builders<User>.Filter.Eq(u => u.Email, createNewPasswordRequest.UserEmail);
+                var update = Builders<User>.Update
+                    .Set(u => u.Password, passwordHash);
 
-                Mails.SendEmail(user.Username, email, PasswordUtils.PasswordDecoder(user.Password));
+                var updateResult = await _context.Users.UpdateOneAsync(filter, update);
+
+                if (updateResult.ModifiedCount == 0)
+                {
+                    return false;
+                }
+
+                Mails.SendEmail(user.Username, user.Email, newPassword);
                 return true;
             }
             catch (Exception ex)
@@ -45,26 +55,26 @@ namespace TFC.Infraestructure.Persistence.Repository
             }
         }
 
-        public async Task<UserDTO> CreateUser(UserDTO userDTO)
+        public async Task<UserDTO> CreateUser(CreateUserRequst createUserRequst)
         {
             try
             {
-                if (await _context.Users.AnyAsync(u => u.UserEmail == user.UserEmail))
+                User existingUser = await _context.Users.Find(u => u.Email == createUserRequst.Email).FirstOrDefaultAsync();
+                if (existingUser != null)
                 {
                     throw new Exception("Ya existe un usuario con ese email");
                 }
 
                 User user = new User()
                 {
-                    Dni = userDTO.Dni,
-                    Username = userDTO.Username,
-                    Surname = userDTO.Surname,
-                    Password = PasswordUtils.PasswordEncoder(userDTO.Password),
-                    Email = userDTO.Email,
+                    Dni = createUserRequst.Dni,
+                    Username = createUserRequst.Username,
+                    Surname = createUserRequst.Surname,
+                    Password = PasswordUtils.PasswordEncoder(createUserRequst.Password),
+                    Email = createUserRequst.Email,
                 };
 
-                _context.Users.Add(user);
-                await _context.SaveChangesAsync();
+                await _context.Users.InsertOneAsync(user);
 
                 UserDTO createdUserDTO = new UserDTO()
                 {
@@ -73,8 +83,22 @@ namespace TFC.Infraestructure.Persistence.Repository
                     Surname = user.Surname,
                     Password = "********",
                     Email = user.Email,
-
-                    //To_do: añadir las listas a la clase userDTO
+                    Routines = user.Routines.Select(routine => new RoutineDTO()
+                    {
+                        RoutineName = routine.RoutineName,
+                        RoutineDescription = routine.RoutineDescription,
+                        SplitDays =  routine.SplitDays.Select(splitDay => new SplitDayDTO()
+                        {
+                            DayName = splitDay.DayName,
+                            Exercises = splitDay.Exercises.Select(exercise => new ExerciseDTO()
+                            {
+                                ExerciseName = exercise.ExerciseName,
+                                Sets = exercise.Sets,
+                                Reps = exercise.Reps,
+                                Weight = exercise.Weight
+                            }).ToList() ?? new List<ExerciseDTO>()
+                        }).ToList() ?? new List<SplitDayDTO>()
+                    }).ToList() ?? new List<RoutineDTO>()
                 };
 
                 return createdUserDTO;
@@ -85,18 +109,12 @@ namespace TFC.Infraestructure.Persistence.Repository
             }
         }
 
-        public async Task<bool> DeleteUser(long userId)
+        public async Task<bool> DeleteUser(DeleteUserRequest deleteUserRequest)
         {
             try
             {
-                User? user = await _context.Users.FindAsync(userId);
-                if (user == null)
-                {
-                    return false;
-                }
-
-                _context.Users.Remove(user);
-                return true;
+                var deleteResult = await _context.Users.DeleteOneAsync(u => u.Dni == deleteUserRequest.Dni);
+                return deleteResult.DeletedCount > 0;
             }
             catch (Exception ex)
             {
@@ -104,11 +122,11 @@ namespace TFC.Infraestructure.Persistence.Repository
             }
         }
 
-        public async Task<UserDTO?> GetUserByEmail(string email)
+        public async Task<UserDTO?> GetUserByEmail(GetUserByEmailRequest getUserByEmailRequest)
         {
             try
             {
-                User? user = await _context.Users.FirstOrDefaultAsync(u => u.UserEmail == email);
+                User user = await _context.Users.Find(u => u.Email == getUserByEmailRequest.Email).FirstOrDefaultAsync();
                 if (user == null)
                 {
                     return null;
@@ -121,8 +139,22 @@ namespace TFC.Infraestructure.Persistence.Repository
                     Surname = user.Surname,
                     Password = "********",
                     Email = user.Email,
-
-                    //To_do: añadir las listas a la clase userDTO
+                    Routines = user.Routines.Select(routine => new RoutineDTO()
+                    {
+                        RoutineName = routine.RoutineName,
+                        RoutineDescription = routine.RoutineDescription,
+                        SplitDays = routine.SplitDays.Select(splitDay => new SplitDayDTO()
+                        {
+                            DayName = splitDay.DayName,
+                            Exercises = splitDay.Exercises.Select(exercise => new ExerciseDTO()
+                            {
+                                ExerciseName = exercise.ExerciseName,
+                                Sets = exercise.Sets,
+                                Reps = exercise.Reps,
+                                Weight = exercise.Weight
+                            }).ToList()
+                        }).ToList()
+                    }).ToList()
                 };
 
                 return userDTO;
@@ -137,7 +169,7 @@ namespace TFC.Infraestructure.Persistence.Repository
         {
             try
             {
-                List<User> users = await _context.Users.ToListAsync();
+                List<User> users = await _context.Users.Find(_ => true).ToListAsync();
                 if (users == null || users.Count == 0)
                 {
                     return null;
@@ -150,7 +182,22 @@ namespace TFC.Infraestructure.Persistence.Repository
                     Surname = user.Surname,
                     Password = "********",
                     Email = user.Email,
-                    //To_do: añadir las listas a la clase userDTO
+                    Routines = user.Routines.Select(routine => new RoutineDTO()
+                    {
+                        RoutineName = routine.RoutineName,
+                        RoutineDescription = routine.RoutineDescription,
+                        SplitDays = routine.SplitDays.Select(splitDay => new SplitDayDTO()
+                        {
+                            DayName = splitDay.DayName,
+                            Exercises = splitDay.Exercises.Select(exercise => new ExerciseDTO()
+                            {
+                                ExerciseName = exercise.ExerciseName,
+                                Sets = exercise.Sets,
+                                Reps = exercise.Reps,
+                                Weight = exercise.Weight
+                            }).ToList()
+                        }).ToList()
+                    }).ToList()
                 }).ToList();
 
                 return userDTOs;
@@ -161,37 +208,52 @@ namespace TFC.Infraestructure.Persistence.Repository
             }
         }
 
-        public async Task<UserDTO?> UpdateUser(UserDTO userDTO)
+        public async Task<UserDTO?> UpdateUser(UpdateUserRequst updateUserRequest)
         {
             try
             {
-                User? user = await _context.Users.FindAsync(userDTO.UserId);
+                User? user = await _context.Users.Find(u => u.Dni == updateUserRequest.DniToBeFound).FirstOrDefaultAsync();
                 if (user == null)
                 {
                     return null;
                 }
 
-                user.Dni = userDTO.Dni;
-                user.Username = userDTO.Username;
-                user.Surname = userDTO.Surname;
-                user.Password = PasswordUtils.PasswordEncoder(userDTO.Password);
-                user.Email = userDTO.Email;
-                //To_do: añadir las listas a la clase userDTO
-
-                _context.Users.Update(user);
-                await _context.SaveChangesAsync();
-
-                UserDTO updatedUserDTO = new UserDTO()
+                user.Username = updateUserRequest.Username;
+                user.Surname = updateUserRequest.Surname;
+                user.Password = PasswordUtils.PasswordEncoder(updateUserRequest.Password);
+                user.Email = updateUserRequest.Email;
+                if (updateUserRequest.Routines != null)
                 {
-                    Dni = user.Dni,
-                    Username = user.Username,
-                    Surname = user.Surname,
-                    Password = "********",
-                    Email = user.Email,
-                    //To_do: añadir las listas a la clase userDTO
-                };
+                    user.Routines = updateUserRequest.Routines.Select(routine => new Routine()
+                    {
+                        RoutineName = routine.RoutineName,
+                        RoutineDescription = routine.RoutineDescription,
+                        SplitDays = routine.SplitDays?.Select(splitDay => new SplitDay()
+                        {
+                            DayName = splitDay.DayName,
+                            Exercises = splitDay.Exercises?.Select(exercise => new Exercise()
+                            {
+                                ExerciseName = exercise.ExerciseName,
+                                Sets = exercise.Sets,
+                                Reps = exercise.Reps,
+                                Weight = exercise.Weight
+                            }).ToList() ?? new List<Exercise>()
+                        }).ToList() ?? new List<SplitDay>()
+                    }).ToList();
+                }
 
-                return updatedUserDTO;
+                var filter = Builders<User>.Filter.Eq(u => u.Dni, updateUserRequest.DniToBeFound);
+                var result = await _context.Users.ReplaceOneAsync(filter, user);
+
+                if (result.ModifiedCount == 0)
+                {
+                    return null;
+                }
+
+                return await GetUserByEmail(new GetUserByEmailRequest()
+                {
+                    Email = user.Email
+                });
             }
             catch (Exception ex)
             {
