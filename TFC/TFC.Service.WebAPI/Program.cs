@@ -1,5 +1,3 @@
-using TFC.Infraestructure.Persistence.Context;
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Configuración mínima

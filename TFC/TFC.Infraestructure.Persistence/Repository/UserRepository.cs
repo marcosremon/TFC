@@ -1,7 +1,6 @@
 ﻿using TFC.Application.DTO.EntityDTO;
 using TFC.Application.Interface.Persistence;
 using TFC.Domain.Model.Entity;
-using TFC.Infraestructure.Persistence.Context;
 using TFC.Transversal.Mail;
 using TFC.Transversal.Security;
 
