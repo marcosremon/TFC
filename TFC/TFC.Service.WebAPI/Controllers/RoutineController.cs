@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using TFC.Application.DTO.Routine.CreateRoutine;
+using TFC.Application.DTO.Routine.GetRoutines;
 using TFC.Application.Interface.Application;
 
 namespace TFC.Service.WebApi.Controllers
@@ -30,22 +32,22 @@ namespace TFC.Service.WebApi.Controllers
             return BadRequest(createRoutineResponse.Message);
         }
 
-        //[HttpPut("UpdateUser")]
-        //public async Task<ActionResult<UpdateUserResponse>> UpdateUser([FromBody] UpdateUserRequst updateUserRequest)
-        //{
-        //    if (updateUserRequest == null || string.IsNullOrEmpty(updateUserRequest.DniToBeFound) || string.IsNullOrEmpty(updateUserRequest.Email))
-        //    {
-        //        return BadRequest();
-        //    }
+        [HttpPut("UpdateRoutine")]
+        public async Task<ActionResult<UpdateRoutineResponse>> UpdateUser([FromBody] UpdateRoutineRequest updateRoutineRequest)
+        {
+            if (updateRoutineRequest == null || string.IsNullOrEmpty(updateRoutineRequest.UserDni))
+            {
+                return BadRequest();
+            }
 
-        //    UpdateUserResponse updateUserResponse = await _userApplication.UpdateUser(updateUserRequest);
-        //    if (updateUserResponse.IsSuccess)
-        //    {
-        //        return Ok(updateUserResponse);
-        //    }
+            UpdateRoutineResponse updateRoutineResponse = await _routineApplication.UpdateUser(updateRoutineRequest);
+            if (updateRoutineResponse.IsSuccess)
+            {
+                return Ok(updateRoutineResponse);
+            }
 
-        //    return BadRequest(updateUserResponse.Message);
-        //}
+            return BadRequest(updateRoutineResponse.Message);
+        }
 
         //[HttpDelete("DeleteUser")]
         //public async Task<ActionResult<DeleteUserResponse>> DeleteUser([FromBody] DeleteUserRequest deleteUserRequest)

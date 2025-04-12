@@ -16,6 +16,6 @@ namespace TFC.Domain.Model.Entity
         public byte[]? Password { get; set; }
         public Role Role { get; set; } = Role.User;
         public DateTime InscriptionDate { get; set; } = DateTime.UtcNow;
-        public List<Routine> Routines { get; set; } = new List<Routine>();
+        public List<string> RoutinesIds { get; set; } = new List<string>();
     }
 }

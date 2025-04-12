@@ -1,5 +1,6 @@
 ﻿using TFC.Application.DTO.EntityDTO;
 using TFC.Application.DTO.Routine.CreateRoutine;
+using TFC.Application.DTO.Routine.GetRoutines;
 using TFC.Application.Interface.Application;
 using TFC.Application.Interface.Persistence;
 
@@ -51,6 +52,32 @@ namespace TFC.Application.Main
             }
             
             return createRoutineResponse;
+        }
+
+        public async Task<UpdateRoutineResponse> UpdateUser(UpdateRoutineRequest updateRoutineRequest)
+        {
+            UpdateRoutineResponse updateRoutineResponse = new UpdateRoutineResponse();
+
+            try
+            {
+                RoutineDTO? routineDTO = await _routineRepository.UpdateRoutine(updateRoutineRequest);
+                if (routineDTO == null)
+                {
+                    updateRoutineResponse.IsSuccess = false;
+                    updateRoutineResponse.Message = "Routine could not be updated";
+                }
+
+                updateRoutineResponse.IsSuccess = true;
+                updateRoutineResponse.Routine = routineDTO;
+                updateRoutineResponse.Message = "Routine updated successfully";
+            }
+            catch (Exception ex)
+            {
+                updateRoutineResponse.IsSuccess = false;
+                updateRoutineResponse.Message = ex.Message;
+            }
+
+            return updateRoutineResponse;
         }
     }
 }

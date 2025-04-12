@@ -114,23 +114,7 @@ namespace TFC.Infraestructure.Persistence.Repository
                     Username = user.Username,
                     Surname = user.Surname,
                     Password = "********",
-                    Email = user.Email,
-                    Routines = user.Routines.Select(routine => new RoutineDTO()
-                    {
-                        RoutineName = routine.RoutineName,
-                        RoutineDescription = routine.RoutineDescription,
-                        SplitDays =  routine.SplitDays.Select(splitDay => new SplitDayDTO()
-                        {
-                            DayName = splitDay.DayName,
-                            Exercises = splitDay.Exercises.Select(exercise => new ExerciseDTO()
-                            {
-                                ExerciseName = exercise.ExerciseName,
-                                Sets = exercise.Sets,
-                                Reps = exercise.Reps,
-                                Weight = exercise.Weight
-                            }).ToList() ?? new List<ExerciseDTO>()
-                        }).ToList() ?? new List<SplitDayDTO>()
-                    }).ToList() ?? new List<RoutineDTO>()
+                    Email = user.Email
                 };
 
                 return createdUserDTO;
@@ -171,22 +155,7 @@ namespace TFC.Infraestructure.Persistence.Repository
                     Surname = user.Surname,
                     Password = "********",
                     Email = user.Email,
-                    Routines = user.Routines.Select(routine => new RoutineDTO()
-                    {
-                        RoutineName = routine.RoutineName,
-                        RoutineDescription = routine.RoutineDescription,
-                        SplitDays = routine.SplitDays.Select(splitDay => new SplitDayDTO()
-                        {
-                            DayName = splitDay.DayName,
-                            Exercises = splitDay.Exercises.Select(exercise => new ExerciseDTO()
-                            {
-                                ExerciseName = exercise.ExerciseName,
-                                Sets = exercise.Sets,
-                                Reps = exercise.Reps,
-                                Weight = exercise.Weight
-                            }).ToList()
-                        }).ToList()
-                    }).ToList()
+                    RoutinesIds = user.RoutinesIds
                 };
 
                 return userDTO;
@@ -214,22 +183,7 @@ namespace TFC.Infraestructure.Persistence.Repository
                     Surname = user.Surname,
                     Password = "********",
                     Email = user.Email,
-                    Routines = user.Routines.Select(routine => new RoutineDTO()
-                    {
-                        RoutineName = routine.RoutineName,
-                        RoutineDescription = routine.RoutineDescription,
-                        SplitDays = routine.SplitDays.Select(splitDay => new SplitDayDTO()
-                        {
-                            DayName = splitDay.DayName,
-                            Exercises = splitDay.Exercises.Select(exercise => new ExerciseDTO()
-                            {
-                                ExerciseName = exercise.ExerciseName,
-                                Sets = exercise.Sets,
-                                Reps = exercise.Reps,
-                                Weight = exercise.Weight
-                            }).ToList()
-                        }).ToList()
-                    }).ToList()
+                    RoutinesIds = user.RoutinesIds
                 }).ToList();
 
                 return userDTOs;
