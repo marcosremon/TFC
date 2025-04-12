@@ -21,8 +21,8 @@ namespace TFC.Infraestructure.Persistence.Repository
         {
             try
             {
-                User userr = await _context.Users.Find(u => u.Dni == createRoutineRequest.UserDni).FirstOrDefaultAsync();
-                if (userr == null)
+                User user = await _context.Users.Find(u => u.Dni == createRoutineRequest.UserDni).FirstOrDefaultAsync();
+                if (user == null)
                 {
                     throw new Exception();
                 }
@@ -49,10 +49,9 @@ namespace TFC.Infraestructure.Persistence.Repository
 
                 await _context.Routines.InsertOneAsync(routine);
 
-                string routineId = routine.Id;
-                userr.RoutinesIds.Add(routineId);
+                user.RoutinesIds.Add(routine.Id);
 
-                await _context.Users.ReplaceOneAsync(u => u.Id == userr.Id, userr);
+                await _context.Users.ReplaceOneAsync(u => u.Id == user.Id, user);
 
                 RoutineDTO routineDTO = new RoutineDTO
                 {
@@ -83,8 +82,47 @@ namespace TFC.Infraestructure.Persistence.Repository
         {
             try
             {
-                RoutineDTO routine = new RoutineDTO();
-                return routine;
+                Routine routine = await _context.Routines.Find(r => r.Id == updateRoutineRequest.RoutineId).FirstOrDefaultAsync();
+
+                if (routine == null)
+                {
+                    return null;
+                }
+
+                routine.RoutineName = updateRoutineRequest.RoutineName ?? routine.RoutineName;
+                routine.RoutineDescription = updateRoutineRequest.RoutineDescription ?? routine.RoutineDescription;
+                routine.SplitDays = updateRoutineRequest.SplitDays.Select(sd => new SplitDay
+                {
+                    Id = ObjectId.GenerateNewId().ToString(),
+                    DayName = sd.DayName,
+                    Exercises = sd.Exercises.Select(e => new Exercise
+                    {
+                        Id = ObjectId.GenerateNewId().ToString(),
+                        ExerciseName = e.ExerciseName,
+                        Sets = e.Sets,
+                        Reps = e.Reps,
+                        Weight = e.Weight
+                    }).ToList()
+                }).ToList() ?? routine.SplitDays;
+               
+                await _context.Routines.ReplaceOneAsync(r => r.Id == routine.Id, routine);
+
+                return new RoutineDTO
+                {
+                    RoutineName = routine.RoutineName,
+                    RoutineDescription = routine.RoutineDescription,
+                    SplitDays = routine.SplitDays.Select(sd => new SplitDayDTO
+                    {
+                        DayName = sd.DayName,
+                        Exercises = sd.Exercises.Select(e => new ExerciseDTO
+                        {
+                            ExerciseName = e.ExerciseName,
+                            Sets = e.Sets,
+                            Reps = e.Reps,
+                            Weight = e.Weight
+                        }).ToList()
+                    }).ToList()
+                };
             }
             catch (Exception ex)
             {
