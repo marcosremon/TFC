@@ -17,6 +17,7 @@ public class ApplicationDbContext
 
     // Ejemplo de propiedad tipo DbSet (opcional)
     public IMongoCollection<User> Users => _database.GetCollection<User>("user");
+    public IMongoCollection<Routine> Routines => _database.GetCollection<Routine>("routine");
 
     // Método genérico para otras colecciones
     public IMongoCollection<T> GetCollection<T>(string name) => _database.GetCollection<T>(name);
