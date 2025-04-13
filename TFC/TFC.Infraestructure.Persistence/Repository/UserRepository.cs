@@ -8,6 +8,7 @@ using TFC.Application.DTO.User.GetUserByEmail;
 using TFC.Application.DTO.User.UpdateUser;
 using TFC.Application.Interface.Persistence;
 using TFC.Domain.Model.Entity;
+using TFC.Infraestructure.Persistence.Context;
 using TFC.Transversal.Security;
 
 namespace TFC.Infraestructure.Persistence.Repository
