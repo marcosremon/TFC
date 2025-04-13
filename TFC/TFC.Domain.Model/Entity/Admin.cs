@@ -1,14 +1,13 @@
-﻿using TFC.Domain.Model.Enum;
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
+﻿using System.ComponentModel.DataAnnotations;
+using TFC.Domain.Model.Enum;
 
 namespace TFC.Domain.Model.Entity
 {
     public class Admin
     {
-        [BsonId]
-        [BsonRepresentation(BsonType.ObjectId)]
-        public string? Id { get; set; }
+        [Key]
+        public long AdminId { get; set; }
+        [Required]
         public string? Dni { get; set; }
         public string? Username { get; set; }
         public string? Surname { get; set; }

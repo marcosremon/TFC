@@ -1,24 +1,36 @@
-﻿using Microsoft.Extensions.Configuration;
-using MongoDB.Driver;
+﻿using System.Reflection;
+using Microsoft.EntityFrameworkCore;
 using TFC.Domain.Model.Entity;
 
-public class ApplicationDbContext
+namespace TFC.Infraestructure.Persistence.Context
 {
-    private readonly IMongoDatabase _database;
-
-    public ApplicationDbContext(IConfiguration config)
+    public class ApplicationDbContext : DbContext
     {
-        // Acceso directo a appsettings.json
-        var connectionString = config["MongoDBSettings:ConnectionString"]!;
-        var dbName = config["MongoDBSettings:DatabaseName"]!;
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
-        _database = new MongoClient(connectionString).GetDatabase(dbName);
+        public DbSet<User> Users { get; set; }
+        public DbSet<Routine> Routines { get; set; }
+        public DbSet<Exercise> Exercises { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            builder.Entity<User>();
+            builder.Entity<Routine>();
+            builder.Entity<Exercise>();
+
+            builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+
+            base.OnModelCreating(builder);
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.EnableSensitiveDataLogging();
+        }
+
+        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            return await base.SaveChangesAsync(cancellationToken);
+        }
     }
-
-    // Ejemplo de propiedad tipo DbSet (opcional)
-    public IMongoCollection<User> Users => _database.GetCollection<User>("user");
-    public IMongoCollection<Routine> Routines => _database.GetCollection<Routine>("routine");
-
-    // Método genérico para otras colecciones
-    public IMongoCollection<T> GetCollection<T>(string name) => _database.GetCollection<T>(name);
 }

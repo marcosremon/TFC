@@ -1,12 +1,12 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
-using MongoDB.Bson;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace TFC.Domain.Model.Entity
 {
     public class Routine
     {
-        [BsonId]
-        public string? Id { get; set; }
+        [Key]
+        public long RoutineId { get; set; }
+        [Required]
         public string? RoutineName { get; set; }
         public string? RoutineDescription { get; set; }
         public List<SplitDay> SplitDays { get; set; } = new List<SplitDay>();

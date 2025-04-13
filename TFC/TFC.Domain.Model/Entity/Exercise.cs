@@ -1,13 +1,11 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
-using MongoDB.Bson;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace TFC.Domain.Model.Entity
 {
     public class Exercise
     {
-        [BsonId]
-        [BsonRepresentation(BsonType.ObjectId)]
-        public string? Id { get; set; }
+        [Key]
+        public long ExercisId { get; set; }
         public string? ExerciseName { get; set; }
         public int? Sets { get; set; }
         public int? Reps { get; set; }
