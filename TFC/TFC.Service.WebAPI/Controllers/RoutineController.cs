@@ -35,7 +35,7 @@ namespace TFC.Service.WebApi.Controllers
         [HttpPut("UpdateRoutine")]
         public async Task<ActionResult<UpdateRoutineResponse>> UpdateUser([FromBody] UpdateRoutineRequest updateRoutineRequest)
         {
-            if (updateRoutineRequest == null || string.IsNullOrEmpty(updateRoutineRequest.RoutineId))
+            if (updateRoutineRequest == null || updateRoutineRequest.RoutineId == null)
             {
                 return BadRequest();
             }

@@ -1,9 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using MongoDB.Bson;
 using MongoDB.Driver;
 using TFC.Application.DTO.EntityDTO;
 using TFC.Application.DTO.Routine.CreateRoutine;
-using TFC.Application.DTO.User.GetUserByEmail;
 using TFC.Application.Interface.Persistence;
 using TFC.Domain.Model.Entity;
 using TFC.Infraestructure.Persistence.Context;
@@ -31,22 +29,19 @@ namespace TFC.Infraestructure.Persistence.Repository
 
                 Routine routine = new Routine
                 {
-                    Id = ObjectId.GenerateNewId().ToString(), 
                     RoutineName = createRoutineRequest.RoutineName,
                     RoutineDescription = createRoutineRequest.RoutineDescription,
                     SplitDays = createRoutineRequest.SplitDays.Select(sd => new SplitDay
                     {
-                        Id = ObjectId.GenerateNewId().ToString(), 
                         DayName = sd.DayName,
                         Exercises = sd.Exercises.Select(e => new Exercise
                         {
-                            Id = ObjectId.GenerateNewId().ToString(),
                             ExerciseName = e.ExerciseName,
                             Sets = e.Sets,
                             Reps = e.Reps,
                             Weight = e.Weight
-                        }).ToList() ?? new List<Exercise>(),
-                    }).ToList() ?? new List<SplitDay>(),
+                        }).ToList()
+                    }).ToList()
                 };
 
                 await _context.Routines.AddAsync(routine);
@@ -89,7 +84,7 @@ namespace TFC.Infraestructure.Persistence.Repository
         {
             try
             {
-                Routine? routine = await _context.Routines.FirstOrDefaultAsync(r => r.Id == updateRoutineRequest.RoutineId);
+                Routine? routine = await _context.Routines.FirstOrDefaultAsync(r => r.RoutineId == updateRoutineRequest.RoutineId);
 
                 if (routine == null)
                 {
@@ -100,11 +95,9 @@ namespace TFC.Infraestructure.Persistence.Repository
                 routine.RoutineDescription = updateRoutineRequest.RoutineDescription ?? routine.RoutineDescription;
                 routine.SplitDays = updateRoutineRequest.SplitDays.Select(sd => new SplitDay
                 {
-                    Id = ObjectId.GenerateNewId().ToString(),
                     DayName = sd.DayName,
                     Exercises = sd.Exercises.Select(e => new Exercise
                     {
-                        Id = ObjectId.GenerateNewId().ToString(),
                         ExerciseName = e.ExerciseName,
                         Sets = e.Sets,
                         Reps = e.Reps,

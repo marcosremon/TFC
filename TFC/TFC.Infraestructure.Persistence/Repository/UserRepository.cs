@@ -153,7 +153,22 @@ namespace TFC.Infraestructure.Persistence.Repository
                     Surname = user.Surname,
                     Password = "********",
                     Email = user.Email,
-                    RoutinesIds = user.RoutinesIds
+                    Routines = user.Routines.Select(r => new RoutineDTO
+                    {
+                        RoutineName = r.RoutineName,
+                        RoutineDescription = r.RoutineDescription,
+                        SplitDays = r.SplitDays.Select(sd => new SplitDayDTO
+                        {
+                            DayName = sd.DayName,
+                            Exercises = sd.Exercises.Select(e => new ExerciseDTO
+                            {
+                                ExerciseName = e.ExerciseName,
+                                Sets = e.Sets,
+                                Reps = e.Reps,
+                                Weight = e.Weight
+                            }).ToList() ?? new List<ExerciseDTO>()
+                        }).ToList() ?? new List<SplitDayDTO>()
+                    }).ToList() ?? new List<RoutineDTO>()
                 };
 
                 return userDTO;
@@ -181,7 +196,22 @@ namespace TFC.Infraestructure.Persistence.Repository
                     Surname = user.Surname,
                     Password = "********",
                     Email = user.Email,
-                    RoutinesIds = user.RoutinesIds
+                    Routines = user.Routines.Select(r => new RoutineDTO
+                    {
+                        RoutineName = r.RoutineName,
+                        RoutineDescription = r.RoutineDescription,
+                        SplitDays = r.SplitDays.Select(sd => new SplitDayDTO
+                        {
+                            DayName = sd.DayName,
+                            Exercises = sd.Exercises.Select(e => new ExerciseDTO
+                            {
+                                ExerciseName = e.ExerciseName,
+                                Sets = e.Sets,
+                                Reps = e.Reps,
+                                Weight = e.Weight
+                            }).ToList() ?? new List<ExerciseDTO>()
+                        }).ToList() ?? new List<SplitDayDTO>()
+                    }).ToList() ?? new List<RoutineDTO>()
                 }).ToList();
 
                 return userDTOs;
