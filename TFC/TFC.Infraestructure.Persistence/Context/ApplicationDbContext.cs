@@ -6,7 +6,10 @@ namespace TFC.Infraestructure.Persistence.Context
 {
     public class ApplicationDbContext : DbContext
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+            : base(options)
+        {
+        }
 
         public DbSet<User> Users { get; set; }
         public DbSet<Routine> Routines { get; set; }
@@ -25,6 +28,7 @@ namespace TFC.Infraestructure.Persistence.Context
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+            //optionsBuilder.AddInterceptors(_auditableEntitySaveChangesInterceptor);
             optionsBuilder.EnableSensitiveDataLogging();
         }
 

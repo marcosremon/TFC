@@ -27,8 +27,15 @@ namespace TFC.Infraestructure.Persistence.Repository
         {
             try
             {
-                User? user = await _context.Users.FirstOrDefaultAsync(u => u.Email == changePasswordRequest.UserEmail && changePasswordRequest.OldPassword == PasswordUtils.PasswordDecoder(u.Password));
+                User? user = await _context.Users.FirstOrDefaultAsync(u => u.Email == changePasswordRequest.UserEmail);
+
                 if (user == null)
+                {
+                    return false;
+                }
+
+                string decodePassword = PasswordUtils.PasswordDecoder(user.Password);
+                if (decodePassword != changePasswordRequest.OldPassword)
                 {
                     return false;
                 }
