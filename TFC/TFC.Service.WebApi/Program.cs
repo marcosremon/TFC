@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using TFC.Infraestructure.Persistence.Context;
 using TFC.Infrastructure.Persistence.Dependencies;
 using TFC.Service.WebApi;
 
@@ -13,12 +15,11 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Registro directo del contexto MongoDB (sin MongoDBSettings)
-builder.Services.AddSingleton<ApplicationDbContext>(provider =>
-{
-    var config = provider.GetRequiredService<IConfiguration>();
-    return new ApplicationDbContext(config);
-});
+// Configuración de SQL Server con Entity Framework Core
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("DefaultConnection"),
+        sqlOptions => sqlOptions.EnableRetryOnFailure()));
 
 // Inicializa JwtUtils con la configuración
 JwtUtils.Initialize(builder.Configuration);
