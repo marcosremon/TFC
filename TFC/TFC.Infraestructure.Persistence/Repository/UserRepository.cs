@@ -91,8 +91,12 @@ namespace TFC.Infraestructure.Persistence.Repository
         {
             try
             {
-                User? existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == createUserRequst.Email);
-                if (existingUser != null)
+                if (await _context.Users.FirstOrDefaultAsync(u => u.Dni == createUserRequst.Dni) != null)
+                {
+                    throw new Exception("Ya existe un usuario con ese dni");
+                }
+
+                if (await _context.Users.FirstOrDefaultAsync(u => u.Email == createUserRequst.Email) != null)
                 {
                     throw new Exception("Ya existe un usuario con ese email");
                 }
@@ -131,6 +135,10 @@ namespace TFC.Infraestructure.Persistence.Repository
             try
             {
                 User? user = await _context.Users.FirstOrDefaultAsync(u => u.Dni == deleteUserRequest.Dni);
+                if (user == null)
+                {
+                    throw new Exception("no existe el usuario con ese dni");
+                }
 
                 _context.Users.Remove(user);
                 int affectedRows = await _context.SaveChangesAsync();
