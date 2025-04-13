@@ -1,4 +1,5 @@
-﻿using MongoDB.Driver;
+﻿using Microsoft.EntityFrameworkCore;
+using MongoDB.Driver;
 using TFC.Application.DTO.EntityDTO;
 using TFC.Application.DTO.User.ChangePasswordWithPasswordAndEmail;
 using TFC.Application.DTO.User.CreateNewPassword;
@@ -22,31 +23,25 @@ namespace TFC.Infraestructure.Persistence.Repository
             _context = context;
         }
 
-        public async Task<bool> ChangePasswordWithPasswordAndEmail(ChangePasswordWithPasswordAndEmailRequest chagePasswordRequest)
+        public async Task<bool> ChangePasswordWithPasswordAndEmail(ChangePasswordWithPasswordAndEmailRequest changePasswordRequest)
         {
             try
             {
-                User? user = await _context.Users
-               .Find(u => u.Email == chagePasswordRequest.UserEmail && chagePasswordRequest.OldPassword == PasswordUtils.PasswordDecoder(u.Password))
-               .FirstOrDefaultAsync();
+                User? user = await _context.Users.FirstOrDefaultAsync(u => u.Email == changePasswordRequest.UserEmail && changePasswordRequest.OldPassword == PasswordUtils.PasswordDecoder(u.Password));
                 if (user == null)
                 {
                     return false;
                 }
 
-                byte[] passwordHash = PasswordUtils.PasswordEncoder(chagePasswordRequest.NewPassword);
-                var filter = Builders<User>.Filter.Eq(u => u.Email, chagePasswordRequest.UserEmail);
-                var update = Builders<User>.Update
-                    .Set(u => u.Password, passwordHash);
+                user.Password = PasswordUtils.PasswordEncoder(changePasswordRequest.NewPassword);
+                var affectedRows = await _context.SaveChangesAsync();
 
-                var updateResult = await _context.Users.UpdateOneAsync(filter, update);
-
-                if (updateResult.ModifiedCount == 0)
+                if (affectedRows == 0)
                 {
                     return false;
                 }
 
-                Mails.SendEmail(user.Username, user.Email, chagePasswordRequest.NewPassword);
+                Mails.SendEmail(user.Username, user.Email, changePasswordRequest.NewPassword);
                 return true;
             }
             catch (Exception ex)
@@ -59,7 +54,7 @@ namespace TFC.Infraestructure.Persistence.Repository
         {
             try
             {
-                User? user = await _context.Users.Find(u => u.Email == createNewPasswordRequest.UserEmail).FirstOrDefaultAsync();
+                User? user = await _context.Users.FirstOrDefaultAsync(u => u.Email == createNewPasswordRequest.UserEmail);
                 if (user == null)
                 {
                     return false;
@@ -68,13 +63,10 @@ namespace TFC.Infraestructure.Persistence.Repository
                 string newPassword = PasswordUtils.CreatePassword(8);
                 byte[] passwordHash = PasswordUtils.PasswordEncoder(newPassword);
 
-                var filter = Builders<User>.Filter.Eq(u => u.Email, createNewPasswordRequest.UserEmail);
-                var update = Builders<User>.Update
-                    .Set(u => u.Password, passwordHash);
+                user.Password = passwordHash;
+                int affectedRows = await _context.SaveChangesAsync();
 
-                var updateResult = await _context.Users.UpdateOneAsync(filter, update);
-
-                if (updateResult.ModifiedCount == 0)
+                if (affectedRows == 0)
                 {
                     return false;
                 }
@@ -92,7 +84,7 @@ namespace TFC.Infraestructure.Persistence.Repository
         {
             try
             {
-                User existingUser = await _context.Users.Find(u => u.Email == createUserRequst.Email).FirstOrDefaultAsync();
+                User? existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == createUserRequst.Email);
                 if (existingUser != null)
                 {
                     throw new Exception("Ya existe un usuario con ese email");
@@ -107,7 +99,8 @@ namespace TFC.Infraestructure.Persistence.Repository
                     Email = createUserRequst.Email,
                 };
 
-                await _context.Users.InsertOneAsync(user);
+                await _context.Users.AddAsync(user);
+                await _context.SaveChangesAsync();
 
                 UserDTO createdUserDTO = new UserDTO()
                 {
@@ -130,8 +123,12 @@ namespace TFC.Infraestructure.Persistence.Repository
         {
             try
             {
-                var deleteResult = await _context.Users.DeleteOneAsync(u => u.Dni == deleteUserRequest.Dni);
-                return deleteResult.DeletedCount > 0;
+                User? user = await _context.Users.FirstOrDefaultAsync(u => u.Dni == deleteUserRequest.Dni);
+
+                _context.Users.Remove(user);
+                int affectedRows = await _context.SaveChangesAsync();
+
+                return affectedRows > 0;
             }
             catch (Exception ex)
             {
@@ -143,7 +140,7 @@ namespace TFC.Infraestructure.Persistence.Repository
         {
             try
             {
-                User user = await _context.Users.Find(u => u.Email == getUserByEmailRequest.Email).FirstOrDefaultAsync();
+                User? user = await _context.Users.FirstOrDefaultAsync(u => u.Email == getUserByEmailRequest.Email);
                 if (user == null)
                 {
                     return null;
@@ -171,7 +168,7 @@ namespace TFC.Infraestructure.Persistence.Repository
         {
             try
             {
-                List<User> users = await _context.Users.Find(_ => true).ToListAsync();
+                List<User> users = await _context.Users.AsNoTracking().ToListAsync();
                 if (users == null || users.Count == 0)
                 {
                     return null;
@@ -199,7 +196,7 @@ namespace TFC.Infraestructure.Persistence.Repository
         {
             try
             {
-                User? user = await _context.Users.Find(u => u.Dni == updateUserRequest.DniToBeFound).FirstOrDefaultAsync();
+                User? user = await _context.Users.FirstOrDefaultAsync(u => u.Dni == updateUserRequest.DniToBeFound);
                 if (user == null)
                 {
                     return null;
@@ -229,10 +226,9 @@ namespace TFC.Infraestructure.Persistence.Repository
                 //    }).ToList();
                 //}
 
-                var filter = Builders<User>.Filter.Eq(u => u.Dni, updateUserRequest.DniToBeFound);
-                var result = await _context.Users.ReplaceOneAsync(filter, user);
+                var affectedRows = await _context.SaveChangesAsync();
 
-                if (result.ModifiedCount == 0)
+                if (affectedRows == 0)
                 {
                     return null;
                 }

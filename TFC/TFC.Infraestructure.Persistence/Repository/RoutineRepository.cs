@@ -1,10 +1,12 @@
-﻿using MongoDB.Bson;
+﻿using Microsoft.EntityFrameworkCore;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using TFC.Application.DTO.EntityDTO;
 using TFC.Application.DTO.Routine.CreateRoutine;
 using TFC.Application.DTO.User.GetUserByEmail;
 using TFC.Application.Interface.Persistence;
 using TFC.Domain.Model.Entity;
+using TFC.Infraestructure.Persistence.Context;
 
 namespace TFC.Infraestructure.Persistence.Repository
 {
@@ -21,10 +23,10 @@ namespace TFC.Infraestructure.Persistence.Repository
         {
             try
             {
-                User user = await _context.Users.Find(u => u.Dni == createRoutineRequest.UserDni).FirstOrDefaultAsync();
+                User? user = await _context.Users.FirstOrDefaultAsync(u => u.Dni == createRoutineRequest.UserDni);
                 if (user == null)
                 {
-                    throw new Exception();
+                    return null;
                 }
 
                 Routine routine = new Routine
@@ -47,11 +49,16 @@ namespace TFC.Infraestructure.Persistence.Repository
                     }).ToList() ?? new List<SplitDay>(),
                 };
 
-                await _context.Routines.InsertOneAsync(routine);
+                await _context.Routines.AddAsync(routine);
+                await _context.SaveChangesAsync();
+                
+                if (user.Routines == null)
+                {
+                    user.Routines = new List<Routine>();
+                }
+                user.Routines.Add(routine);
 
-                user.RoutinesIds.Add(routine.Id);
-
-                await _context.Users.ReplaceOneAsync(u => u.Id == user.Id, user);
+                await _context.SaveChangesAsync();
 
                 RoutineDTO routineDTO = new RoutineDTO
                 {
@@ -82,7 +89,7 @@ namespace TFC.Infraestructure.Persistence.Repository
         {
             try
             {
-                Routine routine = await _context.Routines.Find(r => r.Id == updateRoutineRequest.RoutineId).FirstOrDefaultAsync();
+                Routine? routine = await _context.Routines.FirstOrDefaultAsync(r => r.Id == updateRoutineRequest.RoutineId);
 
                 if (routine == null)
                 {
@@ -104,8 +111,8 @@ namespace TFC.Infraestructure.Persistence.Repository
                         Weight = e.Weight
                     }).ToList()
                 }).ToList() ?? routine.SplitDays;
-               
-                await _context.Routines.ReplaceOneAsync(r => r.Id == routine.Id, routine);
+
+                await _context.SaveChangesAsync();
 
                 return new RoutineDTO
                 {
