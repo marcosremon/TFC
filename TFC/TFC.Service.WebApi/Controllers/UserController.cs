@@ -40,13 +40,13 @@ namespace TFC.Service.WebApi.Controllers
         [HttpGet("GetUsers")]
         public async Task<ActionResult<GetUsersResponse>> GetUsers()
         {
-            GetUsersResponse getUsersResponse = await _userApplication.GetUsers();
-            if (getUsersResponse.IsSuccess)
+            GetUsersResponse response = await _userApplication.GetUsers();
+            if (response.IsSuccess)
             {
-                return Ok(getUsersResponse);
+                return Ok(response);
             }
 
-            return BadRequest(getUsersResponse.Message);
+            return BadRequest(response.Message);
         }
 
         [HttpPost("CreateUser")]
@@ -61,13 +61,13 @@ namespace TFC.Service.WebApi.Controllers
                 return BadRequest();
             }
 
-            CreateUserResponse createUserResponse = await _userApplication.CreateUser(createUserRequst);
-            if (createUserResponse.IsSuccess)
+            CreateUserResponse response = await _userApplication.CreateUser(createUserRequst);
+            if (response.IsSuccess)
             {
-                return Ok(createUserResponse);
+                return Ok(response);
             }
 
-            return BadRequest(createUserResponse.Message);
+            return BadRequest(response.Message);
         }
 
         [HttpPut("UpdateUser")]
@@ -78,13 +78,13 @@ namespace TFC.Service.WebApi.Controllers
                 return BadRequest();
             }
 
-            UpdateUserResponse updateUserResponse = await _userApplication.UpdateUser(updateUserRequest);
-            if (updateUserResponse.IsSuccess)
+            UpdateUserResponse response = await _userApplication.UpdateUser(updateUserRequest);
+            if (response.IsSuccess)
             {
-                return Ok(updateUserResponse);
+                return Ok(response);
             }
 
-            return BadRequest(updateUserResponse.Message);
+            return BadRequest(response.Message);
         }
 
         [HttpDelete("DeleteUser")]
@@ -107,7 +107,8 @@ namespace TFC.Service.WebApi.Controllers
         [HttpPost("CreateNewPassword")]
         public async Task<ActionResult<CreateNewPasswordResponse>> CreateNewPassword([FromBody] CreateNewPasswordRequest createNewPasswordRequest)
         {
-            if (createNewPasswordRequest == null || string.IsNullOrEmpty(createNewPasswordRequest.UserEmail))
+            if (createNewPasswordRequest == null 
+                || string.IsNullOrEmpty(createNewPasswordRequest.UserEmail))
             {
                 return BadRequest();
             }
@@ -115,32 +116,32 @@ namespace TFC.Service.WebApi.Controllers
             CreateNewPasswordResponse response = await _userApplication.CreateNewPassword(createNewPasswordRequest);
             if (!response.IsSuccess)
             {
-                return BadRequest(response.Message);
+                return Ok(response);
             }
 
-            return Ok(response);
+            return BadRequest(response.Message);
         }
-
 
         [HttpPost("ChangePasswordWithPasswordAndEmail")]
         public async Task<ActionResult<ChangePasswordWithPasswordAndEmailResponse>> ChangePasswordWithPasswordAndEmail([FromBody] ChangePasswordWithPasswordAndEmailRequest changePasswordWithPasswordAndEmailRequest)
-        {
+        {   
             if (changePasswordWithPasswordAndEmailRequest == null 
                 || string.IsNullOrEmpty(changePasswordWithPasswordAndEmailRequest.UserEmail)
                 || string.IsNullOrEmpty(changePasswordWithPasswordAndEmailRequest.NewPassword)
                 || string.IsNullOrEmpty(changePasswordWithPasswordAndEmailRequest.OldPassword)
-                || string.IsNullOrEmpty(changePasswordWithPasswordAndEmailRequest.ConfirmNewPassword))
+                || string.IsNullOrEmpty(changePasswordWithPasswordAndEmailRequest.ConfirmNewPassword)
+                || changePasswordWithPasswordAndEmailRequest.NewPassword != changePasswordWithPasswordAndEmailRequest.ConfirmNewPassword)
             {
                 return BadRequest();
             }
 
             ChangePasswordWithPasswordAndEmailResponse response = await _userApplication.ChangePasswordWithPasswordAndEmail(changePasswordWithPasswordAndEmailRequest);
-            if (!response.IsSuccess)
+            if (response.IsSuccess)
             {
-                return BadRequest(response.Message);
+                return Ok(response);
             }
-
-            return Ok(response);
+         
+            return BadRequest(response.Message);
         }
     }
 }
