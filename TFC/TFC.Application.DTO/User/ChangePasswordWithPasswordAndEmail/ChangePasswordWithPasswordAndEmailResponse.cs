@@ -4,6 +4,6 @@ namespace TFC.Application.DTO.User.ChangePasswordWithPasswordAndEmail
 {
     public class ChangePasswordWithPasswordAndEmailResponse : BaseResponse
     {
-        public string? UserEmail { get; set; }
+        public long UserId { get; set; }
     }
 }

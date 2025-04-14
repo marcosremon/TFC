@@ -1,6 +1,4 @@
-﻿using TFC.Application.DTO.EntityDTO;
-
-namespace TFC.Application.DTO.User.UpdateUser
+﻿namespace TFC.Application.DTO.User.UpdateUser
 {
     public class UpdateUserRequst
     {

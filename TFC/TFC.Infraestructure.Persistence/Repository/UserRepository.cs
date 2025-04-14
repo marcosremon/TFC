@@ -24,48 +24,63 @@ namespace TFC.Infraestructure.Persistence.Repository
             _context = context;
         }
 
-        public async Task<bool> ChangePasswordWithPasswordAndEmail(ChangePasswordWithPasswordAndEmailRequest changePasswordRequest)
+        public async Task<ChangePasswordWithPasswordAndEmailResponse> ChangePasswordWithPasswordAndEmail(ChangePasswordWithPasswordAndEmailRequest changePasswordRequest)
         {
+            ChangePasswordWithPasswordAndEmailResponse response = new ChangePasswordWithPasswordAndEmailResponse();
+
             try
             {
                 User? user = await _context.Users.FirstOrDefaultAsync(u => u.Email == changePasswordRequest.UserEmail);
-
                 if (user == null)
                 {
-                    return false;
+                    response.IsSuccess = false;
+                    response.Message = "No se encontró el usuario con ese email";
+                    return response;
                 }
 
-                string decodePassword = PasswordUtils.PasswordDecoder(user.Password);
-                if (decodePassword != changePasswordRequest.OldPassword)
+                if (PasswordUtils.PasswordDecoder(user.Password) != changePasswordRequest.OldPassword)
                 {
-                    return false;
+                    response.IsSuccess = false;
+                    response.Message = "La contraseña actual no es correcta";
+                    return response;
                 }
 
                 user.Password = PasswordUtils.PasswordEncoder(changePasswordRequest.NewPassword);
-                var affectedRows = await _context.SaveChangesAsync();
+                int affectedRows = await _context.SaveChangesAsync();
 
                 if (affectedRows == 0)
                 {
-                    return false;
+                    response.IsSuccess = false;
+                    response.Message = "No se pudo cambiar la contraseña";
+                    return response;
                 }
 
                 Mails.SendEmail(user.Username, user.Email, changePasswordRequest.NewPassword);
-                return true;
+                response.IsSuccess = true;
+                response.Message = "Contraseña cambiada correctamente";
+                response.UserId = user.UserId;
             }
             catch (Exception ex)
             {
-                throw new Exception("Error al cambiar la contraseña: " + ex.Message);
+                response.IsSuccess = false;
+                response.Message = ex.Message;
             }
+
+            return response;
         }
 
-        public async Task<bool> CreateNewPassword(CreateNewPasswordRequest createNewPasswordRequest)
+        public async Task<CreateNewPasswordResponse> CreateNewPassword(CreateNewPasswordRequest createNewPasswordRequest)
         {
+            CreateNewPasswordResponse response = new CreateNewPasswordResponse();
+
             try
             {
                 User? user = await _context.Users.FirstOrDefaultAsync(u => u.Email == createNewPasswordRequest.UserEmail);
                 if (user == null)
                 {
-                    return false;
+                    response.IsSuccess = false;
+                    response.Message = "No se encontró el usuario con ese email";
+                    return response;
                 }
 
                 string newPassword = PasswordUtils.CreatePassword(8);
@@ -76,21 +91,27 @@ namespace TFC.Infraestructure.Persistence.Repository
 
                 if (affectedRows == 0)
                 {
-                    return false;
+                    response.IsSuccess = false;
+                    response.Message = "No se pudo cambiar la contraseña";
                 }
 
                 Mails.SendEmail(user.Username, user.Email, newPassword);
-                return true;
+                response.IsSuccess = true;
+                response.Message = "Contraseña cambiada correctamente";
+                response.UserId = user.UserId;
             }
             catch (Exception ex)
             {
-                throw new Exception("Error al crear la nueva contraseña: " + ex.Message);
+                response.IsSuccess = false;
+                response.Message = ex.Message;
             }
+
+            return response;
         }
 
         public async Task<CreateUserResponse> CreateUser(CreateUserRequst createUserRequst)
         {
-            CreateUserResponse createUserResponse = new CreateUserResponse();
+            CreateUserResponse response = new CreateUserResponse();
 
             try
             {
@@ -116,7 +137,7 @@ namespace TFC.Infraestructure.Persistence.Repository
                 await _context.Users.AddAsync(user);
                 await _context.SaveChangesAsync();
 
-                UserDTO createdUserDTO = new UserDTO()
+                UserDTO userDTO = new UserDTO()
                 {
                     Dni = user.Dni,
                     Username = user.Username,
@@ -125,53 +146,69 @@ namespace TFC.Infraestructure.Persistence.Repository
                     Email = user.Email
                 };
 
-                createUserResponse.IsSuccess = true;
-                createUserResponse.Message = "Usuario creado correctametne";
-                createUserResponse.UserId = user.UserId; 
+                response.IsSuccess = true;
+                response.Message = "Usuario creado correctametne";
+                response.UserDTO = userDTO; 
             }
             catch (Exception ex)
             {
-                createUserResponse.IsSuccess = false;
-                createUserResponse.Message = ex.Message;
-                return createUserResponse;
+                response.IsSuccess = false;
+                response.Message = ex.Message;
+                return response;
             }
 
-            return createUserResponse;
+            return response;
         }
 
-        public async Task<bool> DeleteUser(DeleteUserRequest deleteUserRequest)
+        public async Task<DeleteUserResponse> DeleteUser(DeleteUserRequest deleteUserRequest)
         {
+            DeleteUserResponse response = new DeleteUserResponse();
+
             try
             {
                 User? user = await _context.Users.FirstOrDefaultAsync(u => u.Dni == deleteUserRequest.Dni);
                 if (user == null)
                 {
-                    throw new Exception("no existe el usuario con ese dni");
+                    response.IsSuccess = false;
+                    response.Message = "No se encontró el usuario con ese dni";
+                    return response;
                 }
 
                 _context.Users.Remove(user);
                 int affectedRows = await _context.SaveChangesAsync();
 
-                return affectedRows > 0;
+                if (affectedRows == 0)
+                {
+                    response.IsSuccess = false;
+                    response.Message = "No se pudo eliminar el usuario";
+                    return response;
+                }
+
+                response.IsSuccess = true;
+                response.Message = "Usuario eliminado correctamente";
+                response.UserId = user.UserId;
             }
             catch (Exception ex)
             {
-                throw new Exception("Error al eliminar el usuario: " + ex.Message);
+                response.IsSuccess = false;
+                response.Message = ex.Message;
             }
+
+            return response;
         }
 
         public async Task<GetUserByEmailResponse> GetUserByEmail(GetUserByEmailRequest getUserByEmailRequest)
         {
-            GetUserByEmailResponse getUserByEmailResponse = new GetUserByEmailResponse();
+            GetUserByEmailResponse response = new GetUserByEmailResponse();
 
             try
             {
                 User? user = await _context.Users.FirstOrDefaultAsync(u => u.Email == getUserByEmailRequest.Email);
                 if (user == null)
                 {
-                    getUserByEmailResponse.IsSuccess = false;
-                    getUserByEmailResponse.Message = "No se encontró el usuario con ese email";
-                    return getUserByEmailResponse;
+                    response.IsSuccess = false;
+                    response.Message = "No se encontró el usuario con ese email";
+                    return response;
                 }
 
                 UserDTO userDTO = new UserDTO()
@@ -199,33 +236,34 @@ namespace TFC.Infraestructure.Persistence.Repository
                     }).ToList() ?? new List<RoutineDTO>()
                 };
 
-                getUserByEmailResponse.IsSuccess = true;
-                getUserByEmailResponse.Message = "Consulta correcta";
-                getUserByEmailResponse.User = userDTO;
+                response.IsSuccess = true;
+                response.Message = "Consulta correcta";
+                response.UserDTO = userDTO;
             }
             catch (Exception ex)
             {
-                getUserByEmailResponse.IsSuccess = false;
-                getUserByEmailResponse.Message = ex.Message;
+                response.IsSuccess = false;
+                response.Message = ex.Message;
             }
 
-            return getUserByEmailResponse;
+            return response;
         }
 
         public async Task<GetUsersResponse> GetUsers()
         {
-            GetUsersResponse getUsersResponse = new GetUsersResponse();
+            GetUsersResponse response = new GetUsersResponse();
+
             try
             {
                 List<User> users = await _context.Users.AsNoTracking().ToListAsync();
                 if (users == null || users.Count == 0)
                 {
-                    getUsersResponse.IsSuccess = false;
-                    getUsersResponse.Message = "No se encontraron usuarios";
-                    return getUsersResponse;
+                    response.IsSuccess = false;
+                    response.Message = "No se encontraron usuarios";
+                    return response;
                 }
 
-                List<UserDTO> userDTOs = users.Select(user => new UserDTO()
+                List<UserDTO> userDTO = users.Select(user => new UserDTO()
                 {
                     Dni = user.Dni,
                     Username = user.Username,
@@ -250,69 +288,57 @@ namespace TFC.Infraestructure.Persistence.Repository
                     }).ToList() ?? new List<RoutineDTO>()
                 }).ToList();
 
-                getUsersResponse.IsSuccess = true;
-                getUsersResponse.Message = "Consulta correcta";
-                getUsersResponse.Users = userDTOs;
+                response.IsSuccess = true;
+                response.Message = "Consulta correcta";
+                response.UsersDTO = userDTO;
             }
             catch (Exception ex)
             {
-                getUsersResponse.IsSuccess = false;
-                getUsersResponse.Message = ex.Message;
+                response.IsSuccess = false;
+                response.Message = ex.Message;
             }
 
-            return getUsersResponse;
+            return response;
         }
 
-        public async Task<UserDTO?> UpdateUser(UpdateUserRequst updateUserRequest)
+        public async Task<UpdateUserResponse> UpdateUser(UpdateUserRequst updateUserRequest)
         {
+            UpdateUserResponse response = new UpdateUserResponse();
+
             try
             {
                 User? user = await _context.Users.FirstOrDefaultAsync(u => u.Dni == updateUserRequest.DniToBeFound);
                 if (user == null)
                 {
-                    return null;
+                    response.IsSuccess = false;
+                    response.Message = "No se encontró el usuario con ese dni";
+                    return response;
                 }
 
                 user.Username = updateUserRequest.Username;
                 user.Surname = updateUserRequest.Surname;
                 user.Password = PasswordUtils.PasswordEncoder(updateUserRequest.Password);
                 user.Email = updateUserRequest.Email;
-                //if (updateUserRequest.Routines != null)
-                //{
-                //    user.Routines = updateUserRequest.Routines.Select(routine => new Routine()
-                //    {
-                //        RoutineName = routine.RoutineName,
-                //        RoutineDescription = routine.RoutineDescription,
-                //        SplitDays = routine.SplitDays?.Select(splitDay => new SplitDay()
-                //        {
-                //            DayName = splitDay.DayName,
-                //            Exercises = splitDay.Exercises?.Select(exercise => new Exercise()
-                //            {
-                //                ExerciseName = exercise.ExerciseName,
-                //                Sets = exercise.Sets,
-                //                Reps = exercise.Reps,
-                //                Weight = exercise.Weight
-                //            }).ToList() ?? new List<Exercise>()
-                //        }).ToList() ?? new List<SplitDay>()
-                //    }).ToList();
-                //}
-
-                var affectedRows = await _context.SaveChangesAsync();
-
+               
+                int affectedRows = await _context.SaveChangesAsync();
                 if (affectedRows == 0)
                 {
-                    return null;
+                    response.IsSuccess = false;
+                    response.Message = "No se pudo actualizar el usuario";
+                    return response;
                 }
 
-                return await GetUserByEmail(new GetUserByEmailRequest()
-                {
-                    Email = user.Email
-                });
+                response.IsSuccess = true;
+                response.Message = "Usuario actualizado correctamente";
+                response.UserId = user.UserId;
             }
             catch (Exception ex)
             {
-                throw new Exception("Error al actualizar el usuario: " + ex.Message);
+                response.IsSuccess = false;
+                response.Message = ex.Message;
             }
+
+            return response;
         }
     }
 }

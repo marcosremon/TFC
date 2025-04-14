@@ -5,6 +5,6 @@ namespace TFC.Application.DTO.User.GetUsers
 {
     public class GetUsersResponse : BaseResponse
     {
-        public List<UserDTO>? Users { get; set; }
+        public List<UserDTO>? UsersDTO { get; set; }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using TFC.Application.DTO.Routine.CreateRoutine;
 using TFC.Application.DTO.Routine.GetRoutines;
 using TFC.Application.Interface.Application;
@@ -18,7 +17,8 @@ namespace TFC.Service.WebApi.Controllers
         [HttpPost("CreateRoutine")]
         public async Task<ActionResult<CreateRoutineResponse>> CreateUser([FromBody] CreateRoutineRequest createRoutineRequest)
         {
-            if (createRoutineRequest == null || string.IsNullOrEmpty(createRoutineRequest.RoutineName))
+            if (createRoutineRequest == null 
+                || string.IsNullOrEmpty(createRoutineRequest.RoutineName))
             {
                 return BadRequest();
             }
@@ -35,7 +35,8 @@ namespace TFC.Service.WebApi.Controllers
         [HttpPut("UpdateRoutine")]
         public async Task<ActionResult<UpdateRoutineResponse>> UpdateUser([FromBody] UpdateRoutineRequest updateRoutineRequest)
         {
-            if (updateRoutineRequest == null || updateRoutineRequest.RoutineId == null)
+            if (updateRoutineRequest == null 
+                || updateRoutineRequest.RoutineId == null)
             {
                 return BadRequest();
             }

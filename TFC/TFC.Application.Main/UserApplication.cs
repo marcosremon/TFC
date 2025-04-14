@@ -22,63 +22,12 @@ namespace TFC.Application.Main
 
         public async Task<ChangePasswordWithPasswordAndEmailResponse> ChangePasswordWithPasswordAndEmail(ChangePasswordWithPasswordAndEmailRequest changePasswordWithPasswordAndEmailRequest)
         {
-            ChangePasswordWithPasswordAndEmailResponse changePasswordWithPasswordAndEmailResponse = new ChangePasswordWithPasswordAndEmailResponse();
-
-            try
-            {
-                if (changePasswordWithPasswordAndEmailRequest.NewPassword != changePasswordWithPasswordAndEmailRequest.ConfirmNewPassword)
-                {
-                    changePasswordWithPasswordAndEmailResponse.IsSuccess = false;
-                    changePasswordWithPasswordAndEmailResponse.Message = "las contraseñas no coinciden";
-                    return changePasswordWithPasswordAndEmailResponse;
-                }
-
-                bool newPassword = await _userRepository.ChangePasswordWithPasswordAndEmail(changePasswordWithPasswordAndEmailRequest);
-                if (!newPassword)
-                {
-                    changePasswordWithPasswordAndEmailResponse.IsSuccess = false;
-                    changePasswordWithPasswordAndEmailResponse.Message = "la nueva contraseña es nula";
-                    return changePasswordWithPasswordAndEmailResponse;
-                }
-
-                changePasswordWithPasswordAndEmailResponse.UserEmail = changePasswordWithPasswordAndEmailRequest.UserEmail;
-                changePasswordWithPasswordAndEmailResponse.IsSuccess = true;
-                changePasswordWithPasswordAndEmailResponse.Message = "contraseña guardada correctamente";
-            }
-            catch (Exception ex)
-            {
-                changePasswordWithPasswordAndEmailResponse.IsSuccess = false;
-                changePasswordWithPasswordAndEmailResponse.Message = ex.Message;
-            }
-
-            return changePasswordWithPasswordAndEmailResponse;
+            return await _userRepository.ChangePasswordWithPasswordAndEmail(changePasswordWithPasswordAndEmailRequest);
         }
 
         public async Task<CreateNewPasswordResponse> CreateNewPassword(CreateNewPasswordRequest createNewPasswordRequest)
         {
-            CreateNewPasswordResponse createNewPasswordResponse = new CreateNewPasswordResponse();
-
-            try
-            {
-                bool newPassword = await _userRepository.CreateNewPassword(createNewPasswordRequest);
-                if (!newPassword)
-                {
-                    createNewPasswordResponse.IsSuccess = false;
-                    createNewPasswordResponse.Message = "la nueva contraseña es nula";
-                    return createNewPasswordResponse;
-                }
-
-                createNewPasswordResponse.UserEmail = createNewPasswordRequest.UserEmail;
-                createNewPasswordResponse.IsSuccess = true;
-                createNewPasswordResponse.Message = "contraseña guardada correctamente";
-            }
-            catch (Exception ex)
-            {
-                createNewPasswordResponse.IsSuccess = false;
-                createNewPasswordResponse.Message = ex.Message;
-            }
-
-            return createNewPasswordResponse;
+            return await _userRepository.CreateNewPassword(createNewPasswordRequest);
         }
 
         public async Task<CreateUserResponse> CreateUser(CreateUserRequst createUserRequst)
@@ -88,28 +37,7 @@ namespace TFC.Application.Main
 
         public async Task<DeleteUserResponse> DeleteUser(DeleteUserRequest deleteUserRequest)
         {
-            DeleteUserResponse deleteUserResponse = new DeleteUserResponse();
-
-            try
-            {
-                bool isDeleted = await _userRepository.DeleteUser(deleteUserRequest);
-                if (isDeleted)
-                {
-                    deleteUserResponse.IsSuccess = true;
-                    deleteUserResponse.Message = "Usuario eliminado correctamente";
-                    return deleteUserResponse;
-                }
-
-                deleteUserResponse.IsSuccess = false;
-                deleteUserResponse.Message = "No se pudo eliminar el usuario";
-            }
-            catch (Exception ex)
-            {
-                deleteUserResponse.IsSuccess = false;
-                deleteUserResponse.Message = ex.Message;
-            }
-
-            return deleteUserResponse;
+            return await _userRepository.DeleteUser(deleteUserRequest);
         }
 
         public async Task<GetUserByEmailResponse> GetUserByEmail(GetUserByEmailRequest getUserByEmailRequest)
@@ -124,44 +52,7 @@ namespace TFC.Application.Main
 
         public async Task<UpdateUserResponse> UpdateUser(UpdateUserRequst updateUserRequest)
         {
-            UpdateUserResponse updateUserResponse = new UpdateUserResponse();
-
-            try
-            {
-                if (string.IsNullOrEmpty(updateUserRequest.Username) || string.IsNullOrEmpty(updateUserRequest.Password))
-                {
-                    updateUserResponse.IsSuccess = false;
-                    updateUserResponse.Message = "El nombre de usuario y la contraseña son obligatorios";
-                    return updateUserResponse;
-                }
-
-                if (string.IsNullOrEmpty(updateUserRequest.Surname))
-                {
-                    updateUserResponse.IsSuccess = false;
-                    updateUserResponse.Message = "el apellido son obligatorios";
-                    return updateUserResponse;
-                }
-
-                UserDTO? updatedUser = await _userRepository.UpdateUser(updateUserRequest);
-                if (updatedUser == null)
-                {
-                    updateUserResponse.IsSuccess = false;
-                    updateUserResponse.Message = "No se pudo actualizar el usuario";
-                    return updateUserResponse;
-                }
-
-                updateUserResponse.UserName = updatedUser.Username;
-                updateUserResponse.Email = updatedUser.Email;
-                updateUserResponse.IsSuccess = true;
-                updateUserResponse.Message = "Usuario actualizado correctamente";
-            }
-            catch (Exception ex)
-            {
-                updateUserResponse.IsSuccess = false;
-                updateUserResponse.Message = ex.Message;
-            }
-
-            return updateUserResponse;
+            return await _userRepository.UpdateUser(updateUserRequest);
         }
     }
 }

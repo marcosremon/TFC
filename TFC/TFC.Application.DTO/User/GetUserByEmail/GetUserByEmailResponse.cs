@@ -5,6 +5,6 @@ namespace TFC.Application.DTO.User.GetUserByEmail
 {
     public class GetUserByEmailResponse : BaseResponse
     {
-        public UserDTO? User { get; set; }
+        public UserDTO? UserDTO { get; set; }
     }
 }

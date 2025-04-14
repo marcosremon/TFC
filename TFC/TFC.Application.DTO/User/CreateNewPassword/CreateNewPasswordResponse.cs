@@ -4,6 +4,6 @@ namespace TFC.Application.DTO.User.CreateNewPassword
 {
     public class CreateNewPasswordResponse : BaseResponse
     {
-        public string? UserEmail { get; set; }
+        public long UserId { get; set; }
     }
 }

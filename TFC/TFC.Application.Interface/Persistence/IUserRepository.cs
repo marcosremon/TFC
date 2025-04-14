@@ -14,9 +14,9 @@ namespace TFC.Application.Interface.Persistence
         public Task<GetUserByEmailResponse> GetUserByEmail(GetUserByEmailRequest getUserByEmailRequest);
         public Task<GetUsersResponse> GetUsers();
         public Task<CreateUserResponse> CreateUser(CreateUserRequst createUserRequst);
-        public Task<UserDTO?> UpdateUser(UpdateUserRequst updateUserRequest);
-        public Task<bool> DeleteUser(DeleteUserRequest deleteUserRequest);
-        public Task<bool> CreateNewPassword(CreateNewPasswordRequest createNewPasswordRequest);
-        public Task<bool> ChangePasswordWithPasswordAndEmail(ChangePasswordWithPasswordAndEmailRequest changePasswordWithPasswordAndEmailRequest);
+        public Task<UpdateUserResponse> UpdateUser(UpdateUserRequst updateUserRequest);
+        public Task<DeleteUserResponse> DeleteUser(DeleteUserRequest deleteUserRequest);
+        public Task<CreateNewPasswordResponse> CreateNewPassword(CreateNewPasswordRequest createNewPasswordRequest);
+        public Task<ChangePasswordWithPasswordAndEmailResponse> ChangePasswordWithPasswordAndEmail(ChangePasswordWithPasswordAndEmailRequest changePasswordWithPasswordAndEmailRequest);
     }
 }

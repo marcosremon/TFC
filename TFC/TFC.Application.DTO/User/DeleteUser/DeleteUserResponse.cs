@@ -2,5 +2,8 @@
 
 namespace TFC.Application.DTO.User.DeleteUser
 {
-    public class DeleteUserResponse : BaseResponse {  }
+    public class DeleteUserResponse : BaseResponse 
+    { 
+        public long UserId { get; set; }
+    }
 }
