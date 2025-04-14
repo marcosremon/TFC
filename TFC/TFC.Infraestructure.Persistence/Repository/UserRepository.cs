@@ -6,6 +6,7 @@ using TFC.Application.DTO.User.CreateNewPassword;
 using TFC.Application.DTO.User.CreateUser;
 using TFC.Application.DTO.User.DeleteUser;
 using TFC.Application.DTO.User.GetUserByEmail;
+using TFC.Application.DTO.User.GetUsers;
 using TFC.Application.DTO.User.UpdateUser;
 using TFC.Application.Interface.Persistence;
 using TFC.Domain.Model.Entity;
@@ -159,14 +160,18 @@ namespace TFC.Infraestructure.Persistence.Repository
             }
         }
 
-        public async Task<UserDTO?> GetUserByEmail(GetUserByEmailRequest getUserByEmailRequest)
+        public async Task<GetUserByEmailResponse> GetUserByEmail(GetUserByEmailRequest getUserByEmailRequest)
         {
+            GetUserByEmailResponse getUserByEmailResponse = new GetUserByEmailResponse();
+
             try
             {
                 User? user = await _context.Users.FirstOrDefaultAsync(u => u.Email == getUserByEmailRequest.Email);
                 if (user == null)
                 {
-                    return null;
+                    getUserByEmailResponse.IsSuccess = false;
+                    getUserByEmailResponse.Message = "No se encontró el usuario con ese email";
+                    return getUserByEmailResponse;
                 }
 
                 UserDTO userDTO = new UserDTO()
@@ -194,22 +199,30 @@ namespace TFC.Infraestructure.Persistence.Repository
                     }).ToList() ?? new List<RoutineDTO>()
                 };
 
-                return userDTO;
+                getUserByEmailResponse.IsSuccess = true;
+                getUserByEmailResponse.Message = "Consulta correcta";
+                getUserByEmailResponse.User = userDTO;
             }
             catch (Exception ex)
             {
-                throw new Exception("Error al obtener el usuario por email: " + ex.Message);
+                getUserByEmailResponse.IsSuccess = false;
+                getUserByEmailResponse.Message = ex.Message;
             }
+
+            return getUserByEmailResponse;
         }
 
-        public async Task<List<UserDTO>?> GetUsers()
+        public async Task<GetUsersResponse> GetUsers()
         {
+            GetUsersResponse getUsersResponse = new GetUsersResponse();
             try
             {
                 List<User> users = await _context.Users.AsNoTracking().ToListAsync();
                 if (users == null || users.Count == 0)
                 {
-                    return null;
+                    getUsersResponse.IsSuccess = false;
+                    getUsersResponse.Message = "No se encontraron usuarios";
+                    return getUsersResponse;
                 }
 
                 List<UserDTO> userDTOs = users.Select(user => new UserDTO()
@@ -237,12 +250,17 @@ namespace TFC.Infraestructure.Persistence.Repository
                     }).ToList() ?? new List<RoutineDTO>()
                 }).ToList();
 
-                return userDTOs;
+                getUsersResponse.IsSuccess = true;
+                getUsersResponse.Message = "Consulta correcta";
+                getUsersResponse.Users = userDTOs;
             }
             catch (Exception ex)
             {
-                throw new Exception("Error al obtener los usuarios: " + ex.Message);
+                getUsersResponse.IsSuccess = false;
+                getUsersResponse.Message = ex.Message;
             }
+
+            return getUsersResponse;
         }
 
         public async Task<UserDTO?> UpdateUser(UpdateUserRequst updateUserRequest)

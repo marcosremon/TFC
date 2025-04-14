@@ -114,55 +114,12 @@ namespace TFC.Application.Main
 
         public async Task<GetUserByEmailResponse> GetUserByEmail(GetUserByEmailRequest getUserByEmailRequest)
         {
-            GetUserByEmailResponse getUserByEmail = new GetUserByEmailResponse();
-
-            try
-            {
-                UserDTO? user = await _userRepository.GetUserByEmail(getUserByEmailRequest);
-                if (user == null) 
-                {
-                    getUserByEmail.IsSuccess = false;
-                    getUserByEmail.Message = "No se encontraron usuarios";
-                    return getUserByEmail;
-                }
-
-                getUserByEmail.User = user;
-                getUserByEmail.IsSuccess = true;
-                getUserByEmail.Message = "query correcta";
-            }
-            catch (Exception ex)
-            {
-                getUserByEmail.IsSuccess = false;
-                getUserByEmail.Message = ex.Message;
-            }
-
-            return getUserByEmail;
+            return await _userRepository.GetUserByEmail(getUserByEmailRequest);
         }
 
         public async Task<GetUsersResponse> GetUsers()
         {
-            GetUsersResponse getUsers = new GetUsersResponse();
-
-            try
-            {
-                List<UserDTO>? users = await _userRepository.GetUsers();
-                if (users == null)
-                {
-                    getUsers.IsSuccess = false;
-                    getUsers.Message = "No se encontraron usuarios";
-                    return getUsers;
-                }
-
-                getUsers.IsSuccess = true;
-                getUsers.Message = "query correcta";
-                getUsers.Users = users;
-            }
-            catch (Exception ex)
-            {
-                getUsers.IsSuccess = false;
-                getUsers.Message = ex.Message;
-            }
-            return getUsers;
+            return await _userRepository.GetUsers();
         }
 
         public async Task<UpdateUserResponse> UpdateUser(UpdateUserRequst updateUserRequest)
