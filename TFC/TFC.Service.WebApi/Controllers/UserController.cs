@@ -114,7 +114,7 @@ namespace TFC.Service.WebApi.Controllers
             }
 
             CreateNewPasswordResponse response = await _userApplication.CreateNewPassword(createNewPasswordRequest);
-            if (!response.IsSuccess)
+            if (response.IsSuccess)
             {
                 return Ok(response);
             }
