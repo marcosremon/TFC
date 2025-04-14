@@ -2,6 +2,7 @@
 using MongoDB.Driver;
 using TFC.Application.DTO.EntityDTO;
 using TFC.Application.DTO.Routine.CreateRoutine;
+using TFC.Application.DTO.Routine.GetRoutines;
 using TFC.Application.Interface.Persistence;
 using TFC.Domain.Model.Entity;
 using TFC.Infraestructure.Persistence.Context;
@@ -17,14 +18,18 @@ namespace TFC.Infraestructure.Persistence.Repository
             _context = context;
         }
 
-        public async Task<RoutineDTO?> CreateRoutine(CreateRoutineRequest createRoutineRequest)
+        public async Task<CreateRoutineResponse> CreateRoutine(CreateRoutineRequest createRoutineRequest)
         {
+            CreateRoutineResponse response = new CreateRoutineResponse();
+
             try
             {
                 User? user = await _context.Users.FirstOrDefaultAsync(u => u.Dni == createRoutineRequest.UserDni);
                 if (user == null)
                 {
-                    return null;
+                    response.IsSuccess = false;
+                    response.Message = "User not found";
+                    return response;
                 }
 
                 Routine routine = new Routine
@@ -49,10 +54,12 @@ namespace TFC.Infraestructure.Persistence.Repository
                 
                 if (user.Routines == null)
                 {
-                    user.Routines = new List<Routine>();
+                    response.IsSuccess = false;
+                    response.Message = "User routines not found";
+                    return response;
                 }
-                user.Routines.Add(routine);
 
+                user.Routines.Add(routine);
                 await _context.SaveChangesAsync();
 
                 RoutineDTO routineDTO = new RoutineDTO
@@ -72,23 +79,32 @@ namespace TFC.Infraestructure.Persistence.Repository
                     }).ToList() ?? new List<SplitDayDTO>(),
                 };
 
-                return routineDTO;
+                response.IsSuccess = true;
+                response.RoutineDTO = routineDTO;
+                response.Message = "Routine created successfully";
+                return response;
             }
             catch (Exception ex)
             {
-                throw new Exception("Error creating routine " + ex.Message);
+                response.IsSuccess = false;
+                response.Message = ex.Message;
             }
+
+            return response;
         }
 
-        public async Task<RoutineDTO?> UpdateRoutine(UpdateRoutineRequest updateRoutineRequest)
+        public async Task<UpdateRoutineResponse> UpdateRoutine(UpdateRoutineRequest updateRoutineRequest)
         {
+            UpdateRoutineResponse response = new UpdateRoutineResponse();
+
             try
             {
                 Routine? routine = await _context.Routines.FirstOrDefaultAsync(r => r.RoutineId == updateRoutineRequest.RoutineId);
-
                 if (routine == null)
                 {
-                    return null;
+                    response.IsSuccess = false;
+                    response.Message = "Routine not found";
+                    return response;
                 }
 
                 routine.RoutineName = updateRoutineRequest.RoutineName ?? routine.RoutineName;
@@ -107,7 +123,7 @@ namespace TFC.Infraestructure.Persistence.Repository
 
                 await _context.SaveChangesAsync();
 
-                return new RoutineDTO
+                RoutineDTO routineDTO = new RoutineDTO
                 {
                     RoutineName = routine.RoutineName,
                     RoutineDescription = routine.RoutineDescription,
@@ -123,11 +139,18 @@ namespace TFC.Infraestructure.Persistence.Repository
                         }).ToList()
                     }).ToList()
                 };
+
+                response.IsSuccess = true;
+                response.RoutineDTO = routineDTO;
+                response.Message = "Routine updated successfully";
             }
             catch (Exception ex)
             {
-                throw new Exception("Error updating routine", ex);
+                response.IsSuccess = false;
+                response.Message = ex.Message;
             }
+            
+            return response;
         }
     }
 }

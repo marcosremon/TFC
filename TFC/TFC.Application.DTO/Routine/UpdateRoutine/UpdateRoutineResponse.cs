@@ -5,6 +5,6 @@ namespace TFC.Application.DTO.Routine.GetRoutines
 {
     public class UpdateRoutineResponse : BaseResponse
     {
-        public RoutineDTO? Routine { get; set; }
+        public RoutineDTO? RoutineDTO { get; set; }
     }
 }

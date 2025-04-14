@@ -23,13 +23,13 @@ namespace TFC.Service.WebApi.Controllers
                 return BadRequest();
             }
 
-            CreateRoutineResponse createRoutineResponse = await _routineApplication.CreateRoutine(createRoutineRequest);
-            if (createRoutineResponse.IsSuccess)
+            CreateRoutineResponse response = await _routineApplication.CreateRoutine(createRoutineRequest);
+            if (response.IsSuccess)
             {
-                return Ok(createRoutineResponse);
+                return Ok(response);
             }
 
-            return BadRequest(createRoutineResponse.Message);
+            return BadRequest(response.Message);
         }
 
         [HttpPut("UpdateRoutine")]
@@ -41,13 +41,13 @@ namespace TFC.Service.WebApi.Controllers
                 return BadRequest();
             }
 
-            UpdateRoutineResponse updateRoutineResponse = await _routineApplication.UpdateUser(updateRoutineRequest);
-            if (updateRoutineResponse.IsSuccess)
+            UpdateRoutineResponse response = await _routineApplication.UpdateUser(updateRoutineRequest);
+            if (response.IsSuccess)
             {
-                return Ok(updateRoutineResponse);
+                return Ok(response);
             }
 
-            return BadRequest(updateRoutineResponse.Message);
+            return BadRequest(response.Message);
         }
 
         //[HttpDelete("DeleteUser")]
