@@ -7,15 +7,24 @@ namespace TFC.Domain.Model.Entity
     {
         [Key]
         public long UserId { get; set; }
+
         [Required]
+        [MaxLength(9)]
         public string? Dni { get; set; }
+
+        [MaxLength(100)]
         public string? Username { get; set; }
+
+        [MaxLength(100)]
         public string? Surname { get; set; }
+
         [Required]
+        [EmailAddress]
+        [MaxLength(255)]
         public string? Email { get; set; }
         public byte[]? Password { get; set; }
         public Role Role { get; set; } = Role.User;
         public DateTime InscriptionDate { get; set; } = DateTime.UtcNow;
-        public List<Routine> Routines { get; set; } = new List<Routine>();
+        public virtual ICollection<Routine> Routines { get; set; } = new List<Routine>();
     }
 }

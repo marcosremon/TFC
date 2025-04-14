@@ -91,12 +91,12 @@ namespace TFC.Infraestructure.Persistence.Repository
         {
             try
             {
-                if (await _context.Users.FirstOrDefaultAsync(u => u.Dni == createUserRequst.Dni) != null)
+                if (await _context.Users.AnyAsync(u => u.Dni == createUserRequst.Dni) != null)
                 {
                     throw new Exception("Ya existe un usuario con ese dni");
                 }
 
-                if (await _context.Users.FirstOrDefaultAsync(u => u.Email == createUserRequst.Email) != null)
+                if (await _context.Users.AnyAsync(u => u.Email == createUserRequst.Email) != null)
                 {
                     throw new Exception("Ya existe un usuario con ese email");
                 }

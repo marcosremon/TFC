@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TFC.Domain.Model.Entity
 {
@@ -6,9 +7,17 @@ namespace TFC.Domain.Model.Entity
     {
         [Key]
         public long RoutineId { get; set; }
+
         [Required]
+        [MaxLength(100)]
         public string? RoutineName { get; set; }
+
+        [MaxLength(500)]
         public string? RoutineDescription { get; set; }
-        public List<SplitDay> SplitDays { get; set; } = new List<SplitDay>();
+
+        [ForeignKey("UserId")]
+        public long UserId { get; set; }
+        public virtual User? User { get; set; }
+        public virtual ICollection<SplitDay> SplitDays { get; set; } = new List<SplitDay>();
     }
 }
