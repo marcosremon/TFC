@@ -202,7 +202,10 @@ namespace TFC.Infraestructure.Persistence.Repository
 
             try
             {
-                User? user = await _context.Users.FirstOrDefaultAsync(u => u.Email == getUserByEmailRequest.Email);
+                User? user = await _context.Users.Include(u => u.Routines)
+                        .ThenInclude(r => r.SplitDays)
+                            .ThenInclude(sd => sd.Exercises)
+                    .FirstOrDefaultAsync(u => u.Email == getUserByEmailRequest.Email);
                 if (user == null)
                 {
                     response.IsSuccess = false;
@@ -219,13 +222,16 @@ namespace TFC.Infraestructure.Persistence.Repository
                     Email = user.Email,
                     Routines = user.Routines.Select(r => new RoutineDTO
                     {
+                        RoutineId = r.RoutineId,
                         RoutineName = r.RoutineName,
+                        UserId = r.UserId,
                         RoutineDescription = r.RoutineDescription,
                         SplitDays = r.SplitDays.Select(sd => new SplitDayDTO
                         {
                             DayName = sd.DayName,
                             Exercises = sd.Exercises.Select(e => new ExerciseDTO
                             {
+                                ExerciseId = e.ExerciseId,
                                 ExerciseName = e.ExerciseName,
                                 Sets = e.Sets,
                                 Reps = e.Reps,
@@ -254,30 +260,39 @@ namespace TFC.Infraestructure.Persistence.Repository
 
             try
             {
-                List<User> users = await _context.Users.AsNoTracking().ToListAsync();
-                if (users == null || users.Count == 0)
+                List<User> users = await _context.Users
+                    .AsNoTracking()
+                    .Include(u => u.Routines)  
+                        .ThenInclude(r => r.SplitDays)  
+                            .ThenInclude(sd => sd.Exercises)  
+                    .ToListAsync();
+
+                if (users == null || !users.Any())
                 {
                     response.IsSuccess = false;
                     response.Message = "No se encontraron usuarios";
                     return response;
                 }
 
-                List<UserDTO> userDTO = users.Select(user => new UserDTO()
+                List<UserDTO> userDTOs = users.Select(user => new UserDTO()
                 {
                     Dni = user.Dni,
                     Username = user.Username,
                     Surname = user.Surname,
                     Password = "********",
                     Email = user.Email,
-                    Routines = user.Routines.Select(r => new RoutineDTO
+                    Routines = user.Routines?.Select(r => new RoutineDTO 
                     {
+                        RoutineId = r.RoutineId,
+                        UserId = r.UserId,
                         RoutineName = r.RoutineName,
                         RoutineDescription = r.RoutineDescription,
-                        SplitDays = r.SplitDays.Select(sd => new SplitDayDTO
+                        SplitDays = r.SplitDays?.Select(sd => new SplitDayDTO
                         {
                             DayName = sd.DayName,
-                            Exercises = sd.Exercises.Select(e => new ExerciseDTO
+                            Exercises = sd.Exercises?.Select(e => new ExerciseDTO
                             {
+                                ExerciseId = e.ExerciseId,
                                 ExerciseName = e.ExerciseName,
                                 Sets = e.Sets,
                                 Reps = e.Reps,
@@ -289,12 +304,12 @@ namespace TFC.Infraestructure.Persistence.Repository
 
                 response.IsSuccess = true;
                 response.Message = "Consulta correcta";
-                response.UsersDTO = userDTO;
+                response.UsersDTO = userDTOs;
             }
             catch (Exception ex)
             {
                 response.IsSuccess = false;
-                response.Message = ex.Message;
+                response.Message = $"Error: {ex.Message}";
             }
 
             return response;

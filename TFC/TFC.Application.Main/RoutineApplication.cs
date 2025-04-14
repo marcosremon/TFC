@@ -1,5 +1,6 @@
 ﻿using TFC.Application.DTO.EntityDTO;
 using TFC.Application.DTO.Routine.CreateRoutine;
+using TFC.Application.DTO.Routine.DeleteRoutine;
 using TFC.Application.DTO.Routine.GetRoutines;
 using TFC.Application.Interface.Application;
 using TFC.Application.Interface.Persistence;
@@ -18,6 +19,11 @@ namespace TFC.Application.Main
         public async Task<CreateRoutineResponse> CreateRoutine(CreateRoutineRequest createRoutineRequest)
         {
             return await _routineRepository.CreateRoutine(createRoutineRequest);
+        }
+
+        public async Task<DeleteRoutineResponse> DeleteRoutine(DeleteRoutineRequest deleteRoutineRequest)
+        {
+            return await _routineRepository.DeleteRoutine(deleteRoutineRequest);
         }
 
         public async Task<UpdateRoutineResponse> UpdateUser(UpdateRoutineRequest updateRoutineRequest)

@@ -1,7 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using MongoDB.Driver;
 using TFC.Application.DTO.EntityDTO;
 using TFC.Application.DTO.Routine.CreateRoutine;
+using TFC.Application.DTO.Routine.DeleteRoutine;
 using TFC.Application.DTO.Routine.GetRoutines;
 using TFC.Application.Interface.Persistence;
 using TFC.Domain.Model.Entity;
@@ -24,7 +26,10 @@ namespace TFC.Infraestructure.Persistence.Repository
 
             try
             {
-                User? user = await _context.Users.FirstOrDefaultAsync(u => u.Dni == createRoutineRequest.UserDni);
+                User? user = await _context.Users
+                    .Include(u => u.Routines)
+                    .FirstOrDefaultAsync(u => u.Dni == createRoutineRequest.UserDni);
+
                 if (user == null)
                 {
                     response.IsSuccess = false;
@@ -36,6 +41,8 @@ namespace TFC.Infraestructure.Persistence.Repository
                 {
                     RoutineName = createRoutineRequest.RoutineName,
                     RoutineDescription = createRoutineRequest.RoutineDescription,
+                    UserId = user.UserId,
+                    User = user,
                     SplitDays = createRoutineRequest.SplitDays.Select(sd => new SplitDay
                     {
                         DayName = sd.DayName,
@@ -49,21 +56,15 @@ namespace TFC.Infraestructure.Persistence.Repository
                     }).ToList()
                 };
 
-                await _context.Routines.AddAsync(routine);
-                await _context.SaveChangesAsync();
-                
-                if (user.Routines == null)
-                {
-                    response.IsSuccess = false;
-                    response.Message = "User routines not found";
-                    return response;
-                }
-
+                user.Routines ??= new List<Routine>();
                 user.Routines.Add(routine);
+
+                await _context.Routines.AddAsync(routine);
                 await _context.SaveChangesAsync();
 
                 RoutineDTO routineDTO = new RoutineDTO
                 {
+                    RoutineId = routine.RoutineId, 
                     RoutineName = routine.RoutineName,
                     RoutineDescription = routine.RoutineDescription,
                     SplitDays = routine.SplitDays.Select(sd => new SplitDayDTO
@@ -75,14 +76,58 @@ namespace TFC.Infraestructure.Persistence.Repository
                             Sets = e.Sets,
                             Reps = e.Reps,
                             Weight = e.Weight
-                        }).ToList() ?? new List<ExerciseDTO>(),
-                    }).ToList() ?? new List<SplitDayDTO>(),
+                        }).ToList()
+                    }).ToList()
                 };
 
                 response.IsSuccess = true;
                 response.RoutineDTO = routineDTO;
                 response.Message = "Routine created successfully";
                 return response;
+            }
+            catch (Exception ex)
+            {
+                response.IsSuccess = false;
+                response.Message = $"Error creating routine: {ex.Message}";
+                return response;
+            }
+        }
+
+        public async Task<DeleteRoutineResponse> DeleteRoutine(DeleteRoutineRequest deleteRoutineRequest)
+        {
+            DeleteRoutineResponse response = new DeleteRoutineResponse();
+
+            try
+            {
+                Routine? routine = _context.Routines.FirstOrDefault(r => r.RoutineId == deleteRoutineRequest.RoutineId);
+                if (routine == null)
+                {
+                    response.IsSuccess = false;
+                    response.Message = "Routine not found";
+                    return response;
+                }
+
+                User? user = await _context.Users.FirstOrDefaultAsync(u => u.Dni == deleteRoutineRequest.UserDni);
+                if (user == null)
+                {
+                    response.IsSuccess = false;
+                    response.Message = "User not found";
+                    return response;
+                }
+
+                if (!user.Routines.Any(r => r.RoutineId == deleteRoutineRequest.RoutineId))
+                {
+                    response.IsSuccess = false;
+                    response.Message = "User doesn't have this routine";
+                    return response;
+                }
+
+                _context.Routines.Remove(routine);
+                user.Routines.Remove(routine);
+                await _context.SaveChangesAsync();
+
+                response.IsSuccess = true;
+                response.Message = "Routine deleted successfully";
             }
             catch (Exception ex)
             {

@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TFC.Application.DTO.Routine.CreateRoutine;
+using TFC.Application.DTO.Routine.DeleteRoutine;
 using TFC.Application.DTO.Routine.GetRoutines;
+using TFC.Application.DTO.User.DeleteUser;
 using TFC.Application.Interface.Application;
 
 namespace TFC.Service.WebApi.Controllers
@@ -50,21 +52,23 @@ namespace TFC.Service.WebApi.Controllers
             return BadRequest(response.Message);
         }
 
-        //[HttpDelete("DeleteUser")]
-        //public async Task<ActionResult<DeleteUserResponse>> DeleteUser([FromBody] DeleteUserRequest deleteUserRequest)
-        //{
-        //    if (deleteUserRequest == null || string.IsNullOrEmpty(deleteUserRequest.Dni))
-        //    {
-        //        return BadRequest();
-        //    }
+        [HttpDelete("DeleteRoutine")]
+        public async Task<ActionResult<DeleteRoutineResponse>> DeleteUser([FromBody] DeleteRoutineRequest deleteRoutineRequest)
+        {
+            if (deleteRoutineRequest == null 
+                || string.IsNullOrEmpty(deleteRoutineRequest.UserDni)
+                || deleteRoutineRequest.RoutineId == null)
+            {
+                return BadRequest();
+            }
 
-        //    DeleteUserResponse deleteUsersResponse = await _userApplication.DeleteUser(deleteUserRequest);
-        //    if (deleteUsersResponse.IsSuccess)
-        //    {
-        //        return Ok(deleteUsersResponse);
-        //    }
+            DeleteRoutineResponse response = await _routineApplication.DeleteRoutine(deleteRoutineRequest);
+            if (response.IsSuccess)
+            {
+                return Ok(response);
+            }
 
-        //    return BadRequest(deleteUsersResponse.Message);
-        //}
+            return BadRequest(response.Message);
+        }
     }
 }
