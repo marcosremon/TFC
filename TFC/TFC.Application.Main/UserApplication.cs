@@ -83,45 +83,7 @@ namespace TFC.Application.Main
 
         public async Task<CreateUserResponse> CreateUser(CreateUserRequst createUserRequst)
         {
-            CreateUserResponse createUserResponse = new CreateUserResponse();
-
-            try
-            {
-                if (string.IsNullOrEmpty(createUserRequst.Username) || string.IsNullOrEmpty(createUserRequst.Password))
-                {
-                    createUserResponse.IsSuccess = false;
-                    createUserResponse.Message = "El nombre de usuario y la contraseña son obligatorios";
-                    return createUserResponse;
-                }
-
-                if (string.IsNullOrEmpty(createUserRequst.Dni) || string.IsNullOrEmpty(createUserRequst.Surname))
-                {
-                    createUserResponse.IsSuccess = false;
-                    createUserResponse.Message = "El DNI y el apellido son obligatorios";
-                    return createUserResponse;
-                }
-
-                if (string.IsNullOrEmpty(createUserRequst.Email))
-                {
-                    createUserResponse.IsSuccess = false;
-                    createUserResponse.Message = "El email es obligatorio";
-                    return createUserResponse;
-                }
-
-                UserDTO? createdUser = await _userRepository.CreateUser(createUserRequst);
-
-                createUserResponse.UserName = createdUser.Username;
-                createUserResponse.Email = createdUser.Email;
-                createUserResponse.IsSuccess = true;
-                createUserResponse.Message = "Usuario creado correctamente";
-            }
-            catch (Exception ex)
-            {
-                createUserResponse.IsSuccess = false;
-                createUserResponse.Message = ex.Message;
-            }
-
-            return createUserResponse;
+            return await _userRepository.CreateUser(createUserRequst);
         }
 
         public async Task<DeleteUserResponse> DeleteUser(DeleteUserRequest deleteUserRequest)

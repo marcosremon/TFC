@@ -87,16 +87,18 @@ namespace TFC.Infraestructure.Persistence.Repository
             }
         }
 
-        public async Task<UserDTO> CreateUser(CreateUserRequst createUserRequst)
+        public async Task<CreateUserResponse> CreateUser(CreateUserRequst createUserRequst)
         {
+            CreateUserResponse createUserResponse = new CreateUserResponse();
+
             try
             {
-                if (await _context.Users.AnyAsync(u => u.Dni == createUserRequst.Dni) != null)
+                if (await _context.Users.AnyAsync(u => u.Dni == createUserRequst.Dni))
                 {
                     throw new Exception("Ya existe un usuario con ese dni");
                 }
 
-                if (await _context.Users.AnyAsync(u => u.Email == createUserRequst.Email) != null)
+                if (await _context.Users.AnyAsync(u => u.Email == createUserRequst.Email))
                 {
                     throw new Exception("Ya existe un usuario con ese email");
                 }
@@ -122,12 +124,18 @@ namespace TFC.Infraestructure.Persistence.Repository
                     Email = user.Email
                 };
 
-                return createdUserDTO;
+                createUserResponse.IsSuccess = true;
+                createUserResponse.Message = "Usuario creado correctametne";
+                createUserResponse.UserId = user.UserId; 
             }
             catch (Exception ex)
             {
-                throw new Exception("Error al crear el usuario: " + ex.Message);
+                createUserResponse.IsSuccess = false;
+                createUserResponse.Message = ex.Message;
+                return createUserResponse;
             }
+
+            return createUserResponse;
         }
 
         public async Task<bool> DeleteUser(DeleteUserRequest deleteUserRequest)

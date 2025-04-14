@@ -8,7 +8,6 @@ namespace TFC.Domain.Model.Entity
         [Key]
         public long UserId { get; set; }
 
-        [Required]
         [MaxLength(9)]
         public string? Dni { get; set; }
 
@@ -18,7 +17,6 @@ namespace TFC.Domain.Model.Entity
         [MaxLength(100)]
         public string? Surname { get; set; }
 
-        [Required]
         [EmailAddress]
         [MaxLength(255)]
         public string? Email { get; set; }

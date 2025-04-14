@@ -9,7 +9,6 @@ namespace TFC.Domain.Model.Entity
         [Key]
         public long ExerciseId { get; set; }
 
-        [Required]
         [MaxLength(100)]
         public string? ExerciseName { get; set; }
         public int? Sets { get; set; }

@@ -4,7 +4,6 @@ namespace TFC.Application.DTO.User.CreateUser
 {
     public class CreateUserResponse : BaseResponse 
     {
-        public string? UserName { get; set; } = string.Empty;
-        public string? Email { get; set; } = string.Empty;
+        public long UserId { get; set; } 
     }
 }

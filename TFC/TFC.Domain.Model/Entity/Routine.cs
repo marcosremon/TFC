@@ -8,7 +8,6 @@ namespace TFC.Domain.Model.Entity
         [Key]
         public long RoutineId { get; set; }
 
-        [Required]
         [MaxLength(100)]
         public string? RoutineName { get; set; }
 

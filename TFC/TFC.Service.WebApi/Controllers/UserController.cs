@@ -52,7 +52,11 @@ namespace TFC.Service.WebApi.Controllers
         [HttpPost("CreateUser")]
         public async Task<ActionResult<CreateUserResponse>> CreateUser([FromBody] CreateUserRequst createUserRequst)
         {
-            if (createUserRequst == null || string.IsNullOrEmpty(createUserRequst.Email))
+            if (createUserRequst == null 
+                || string.IsNullOrEmpty(createUserRequst.Email) 
+                || string.IsNullOrEmpty(createUserRequst.Dni) 
+                || string.IsNullOrEmpty(createUserRequst.Username) 
+                || string.IsNullOrEmpty(createUserRequst.Password))
             {
                 return BadRequest();
             }

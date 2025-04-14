@@ -12,7 +12,7 @@ namespace TFC.Application.Interface.Persistence
     {
         public Task<UserDTO?> GetUserByEmail(GetUserByEmailRequest getUserByEmailRequest);
         public Task<List<UserDTO>?> GetUsers();
-        public Task<UserDTO> CreateUser(CreateUserRequst createUserRequst);
+        public Task<CreateUserResponse> CreateUser(CreateUserRequst createUserRequst);
         public Task<UserDTO?> UpdateUser(UpdateUserRequst updateUserRequest);
         public Task<bool> DeleteUser(DeleteUserRequest deleteUserRequest);
         public Task<bool> CreateNewPassword(CreateNewPasswordRequest createNewPasswordRequest);
