@@ -1,5 +1,4 @@
-﻿using TFC.Application.DTO.EntityDTO;
-using TFC.Application.DTO.User.ChangePasswordWithPasswordAndEmail;
+﻿using TFC.Application.DTO.User.ChangePasswordWithPasswordAndEmail;
 using TFC.Application.DTO.User.CreateNewPassword;
 using TFC.Application.DTO.User.CreateUser;
 using TFC.Application.DTO.User.DeleteUser;
