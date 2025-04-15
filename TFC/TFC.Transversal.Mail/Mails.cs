@@ -5,8 +5,8 @@ public class Mails
 {
     private const string SmtpHost = "smtp.gmail.com";
     private const int SmtpPort = 587;
-    private const string Email = "marcosremon2@gmail.com"; 
-    private const string AppPassword = "lpqa srml fzsb bijh"; 
+    private const string Email = "enviarcorreoscontrasenya@gmail.com"; 
+    private const string AppPassword = "nycw xndf imae xbws"; 
 
     public static void SendEmail(string recipientName, string recipientEmail, string newPassword)
     {
