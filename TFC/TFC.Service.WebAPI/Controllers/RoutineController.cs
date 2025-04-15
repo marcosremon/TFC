@@ -2,6 +2,7 @@
 using TFC.Application.DTO.Routine.CreateRoutine;
 using TFC.Application.DTO.Routine.DeleteRoutine;
 using TFC.Application.DTO.Routine.GetRoutines;
+using TFC.Application.DTO.Routine.GetRoutinesByFriendCode;
 using TFC.Application.DTO.User.DeleteUser;
 using TFC.Application.Interface.Application;
 
@@ -19,7 +20,7 @@ namespace TFC.Service.WebApi.Controllers
         [HttpPost("CreateRoutine")]
         public async Task<ActionResult<CreateRoutineResponse>> CreateUser([FromBody] CreateRoutineRequest createRoutineRequest)
         {
-            if (createRoutineRequest == null 
+            if (createRoutineRequest == null
                 || string.IsNullOrEmpty(createRoutineRequest.RoutineName))
             {
                 return BadRequest();
@@ -37,7 +38,7 @@ namespace TFC.Service.WebApi.Controllers
         [HttpPut("UpdateRoutine")]
         public async Task<ActionResult<UpdateRoutineResponse>> UpdateUser([FromBody] UpdateRoutineRequest updateRoutineRequest)
         {
-            if (updateRoutineRequest == null 
+            if (updateRoutineRequest == null
                 || updateRoutineRequest.RoutineId == null)
             {
                 return BadRequest();
@@ -55,7 +56,7 @@ namespace TFC.Service.WebApi.Controllers
         [HttpDelete("DeleteRoutine")]
         public async Task<ActionResult<DeleteRoutineResponse>> DeleteUser([FromBody] DeleteRoutineRequest deleteRoutineRequest)
         {
-            if (deleteRoutineRequest == null 
+            if (deleteRoutineRequest == null
                 || string.IsNullOrEmpty(deleteRoutineRequest.UserDni)
                 || deleteRoutineRequest.RoutineId == null)
             {
@@ -63,6 +64,24 @@ namespace TFC.Service.WebApi.Controllers
             }
 
             DeleteRoutineResponse response = await _routineApplication.DeleteRoutine(deleteRoutineRequest);
+            if (response.IsSuccess)
+            {
+                return Ok(response);
+            }
+
+            return BadRequest(response.Message);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<GetRoutinesByFriendCodeResponse>> GetRoutinesByFriendCode([FromBody] GetRoutinesByFriendCodeRequest getRoutinesByFriendCodeRequest)
+        {
+            if (getRoutinesByFriendCodeRequest == null
+                || string.IsNullOrEmpty(getRoutinesByFriendCodeRequest.FriendCode))
+            {
+                return BadRequest();
+            }
+
+            GetRoutinesByFriendCodeResponse response = await _routineApplication.GetRoutinesByFriendCode(getRoutinesByFriendCodeRequest);
             if (response.IsSuccess)
             {
                 return Ok(response);

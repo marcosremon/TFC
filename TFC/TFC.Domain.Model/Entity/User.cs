@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using TFC.Domain.Model.Enum;
 
 namespace TFC.Domain.Model.Entity
@@ -20,6 +21,8 @@ namespace TFC.Domain.Model.Entity
         [EmailAddress]
         [MaxLength(255)]
         public string? Email { get; set; }
+        [JsonIgnore]
+        public string? FriendCode { get; set; } = string.Empty;
         public byte[]? Password { get; set; }
         public Role Role { get; set; } = Role.User;
         public DateTime InscriptionDate { get; set; } = DateTime.UtcNow;
