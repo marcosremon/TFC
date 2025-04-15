@@ -1,0 +1,3 @@
+- Implementar id amigo para poder ver rutinas de amigos
+- Implementar crud de splits para poder eliminar o añadir días a una rutina
+- Implementar crud de ejercicios para poder eliminar o añadir ejercicios a un día

@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using MongoDB.Driver;
 using TFC.Application.DTO.EntityDTO;
 using TFC.Application.DTO.Routine.CreateRoutine;

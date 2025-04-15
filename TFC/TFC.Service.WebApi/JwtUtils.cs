@@ -42,7 +42,7 @@ namespace TFC.Service.WebApi
             {
             new Claim(JwtRegisteredClaimNames.Sub, username),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            //new Claim(ClaimTypes.Role, "USER"),
+            new Claim(ClaimTypes.Role, "USER"),
             new Claim(ClaimTypes.Role, "ADMIN")
 
         };
