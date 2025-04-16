@@ -1,7 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Reflection;
+using Microsoft.EntityFrameworkCore;
 using TFC.Domain.Model.Entity;
-using System.Reflection;
-using TFC.Domain.Model.Enum;
 
 namespace TFC.Infraestructure.Persistence.Context
 {
@@ -21,7 +20,6 @@ namespace TFC.Infraestructure.Persistence.Context
         {
             base.OnModelCreating(modelBuilder);
 
-            // Configuración para User
             modelBuilder.Entity<User>(entity =>
             {
                 entity.HasKey(u => u.UserId);
@@ -32,7 +30,6 @@ namespace TFC.Infraestructure.Persistence.Context
                 entity.HasIndex(u => u.Email).IsUnique();
             });
 
-            // Configuración para Routine
             modelBuilder.Entity<Routine>(entity =>
             {
                 entity.HasKey(r => r.RoutineId);
@@ -45,7 +42,6 @@ namespace TFC.Infraestructure.Persistence.Context
                       .OnDelete(DeleteBehavior.Cascade);
             });
 
-            // Configuración para SplitDay (clave compuesta)
             modelBuilder.Entity<SplitDay>(entity =>
             {
                 entity.HasKey(sd => new { sd.RoutineId, sd.DayName });
@@ -56,7 +52,6 @@ namespace TFC.Infraestructure.Persistence.Context
                       .OnDelete(DeleteBehavior.Cascade);
             });
 
-            // Configuración para Exercise
             modelBuilder.Entity<Exercise>(entity =>
             {
                 entity.HasKey(e => e.ExerciseId);
@@ -68,27 +63,20 @@ namespace TFC.Infraestructure.Persistence.Context
                       .OnDelete(DeleteBehavior.Cascade);
             });
 
-            // Aplicar configuraciones adicionales desde otros assemblies
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            // La configuración principal ya se hace en Program.cs
-            // Aquí solo añadimos configuraciones adicionales
-
             if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
             {
                 optionsBuilder.EnableSensitiveDataLogging();
                 optionsBuilder.EnableDetailedErrors();
             }
-
-            // optionsBuilder.AddInterceptors(_auditableEntitySaveChangesInterceptor);
         }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
-            // Puedes añadir lógica adicional antes de guardar si es necesario
             return await base.SaveChangesAsync(cancellationToken);
         }
     }

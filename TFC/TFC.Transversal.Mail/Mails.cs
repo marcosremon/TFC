@@ -4,7 +4,7 @@ using MimeKit;
 
 public static class Mails
 {
-    private static IConfiguration _configuration;
+    private static IConfiguration? _configuration;
 
     public static void Initialize(IConfiguration configuration)
     {
@@ -14,11 +14,11 @@ public static class Mails
     public static void SendEmail(string recipientName, string recipientEmail, string newPassword)
     {
         var emailSettings = _configuration.GetSection("EmailSettings");
-        string smtpHost = emailSettings["SmtpHost"];
-        int smtpPort = int.Parse(emailSettings["SmtpPort"]);
-        string senderEmail = emailSettings["SenderEmail"];
-        string appPassword = emailSettings["AppPassword"];
-        string senderName = emailSettings["SenderName"];
+        string? smtpHost = emailSettings["SmtpHost"];
+        int smtpPort = int.Parse(emailSettings["SmtpPort"]); 
+        string? senderEmail = emailSettings["SenderEmail"];
+        string? appPassword = emailSettings["AppPassword"];
+        string? senderName = emailSettings["SenderName"];
 
         var message = new MimeMessage();
         message.From.Add(new MailboxAddress(senderName, senderEmail));
