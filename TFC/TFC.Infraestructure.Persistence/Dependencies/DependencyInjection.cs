@@ -13,10 +13,14 @@ namespace TFC.Infrastructure.Persistence.Dependencies
             // Application
             services.AddScoped<IUserApplication, UserApplication>();
             services.AddScoped<IRoutineApplication, RoutineApplication>();
+            services.AddScoped<ISplitDayApplication, SplitDayApplication>();
+            services.AddScoped<IExerciseApplication, ExerciseApplication>();
 
             // Repository
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IRoutineRepository, RoutineRepository>();
+            services.AddScoped<ISplitDayRepository, SplitDayRepository>();
+            services.AddScoped<IExerciseRepository, ExerciseRepository>();
 
 
             return services;
