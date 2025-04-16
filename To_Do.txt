@@ -1,4 +1,5 @@
-- Implementar id amigo para poder ver rutinas de amigos
+- Implementar friendCode para poder ver rutinas de amigos
+- Descomentar método getRoutinesByFriendCode después de implementar friendCode
 - hacer metodos de SplitRepository
 - hacer metodos de ExerciseRepository
-- Implementar transacciones
+- Implementar transacciones en splitRepository y ExerciseRepository
