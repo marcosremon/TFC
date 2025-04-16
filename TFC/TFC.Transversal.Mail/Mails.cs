@@ -13,11 +13,6 @@ public static class Mails
 
     public static void SendEmail(string recipientName, string recipientEmail, string newPassword)
     {
-        if (_configuration == null)
-        {
-            throw new InvalidOperationException("Configuration has not been initialized. Call Mail.Initialize() first.");
-        }
-
         var emailSettings = _configuration.GetSection("EmailSettings");
         string smtpHost = emailSettings["SmtpHost"];
         int smtpPort = int.Parse(emailSettings["SmtpPort"]);

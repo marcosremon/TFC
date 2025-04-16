@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using TFC.Application.DTO.EntityDTO;
 using TFC.Application.DTO.User.ChangePasswordWithPasswordAndEmail;
 using TFC.Application.DTO.User.CreateNewPassword;
@@ -27,173 +28,200 @@ namespace TFC.Infraestructure.Persistence.Repository
         {
             ChangePasswordWithPasswordAndEmailResponse response = new ChangePasswordWithPasswordAndEmailResponse();
 
-            try
+            using (ApplicationDbContext context = _context)
             {
-                User? user = await _context.Users.FirstOrDefaultAsync(u => u.Email == changePasswordRequest.UserEmail);
-                if (user == null)
+                IDbContextTransaction dbContextTransaction = context.Database.BeginTransaction();
+                try
+                {
+                    User? user = await _context.Users.FirstOrDefaultAsync(u => u.Email == changePasswordRequest.UserEmail);
+                    if (user == null)
+                    {
+                        response.IsSuccess = false;
+                        response.Message = "No se encontró el usuario con ese email";
+                        return response;
+                    }
+
+                    if (PasswordUtils.PasswordDecoder(user.Password) != changePasswordRequest.OldPassword)
+                    {
+                        response.IsSuccess = false;
+                        response.Message = "La contraseña actual no es correcta";
+                        return response;
+                    }
+
+                    user.Password = PasswordUtils.PasswordEncoder(changePasswordRequest.NewPassword);
+                    int affectedRows = await _context.SaveChangesAsync();
+
+                    if (affectedRows == 0)
+                    {
+                        response.IsSuccess = false;
+                        response.Message = "No se pudo cambiar la contraseña";
+                        return response;
+                    }
+
+                    Mails.SendEmail(user.Username, user.Email, changePasswordRequest.NewPassword);
+                    response.IsSuccess = true;
+                    response.Message = "Contraseña cambiada correctamente";
+                    response.UserId = user.UserId;
+
+                    dbContextTransaction.Commit();
+                }
+                catch (Exception ex)
                 {
                     response.IsSuccess = false;
-                    response.Message = "No se encontró el usuario con ese email";
-                    return response;
+                    response.Message = ex.Message;
+                    dbContextTransaction.Rollback();
                 }
 
-                if (PasswordUtils.PasswordDecoder(user.Password) != changePasswordRequest.OldPassword)
-                {
-                    response.IsSuccess = false;
-                    response.Message = "La contraseña actual no es correcta";
-                    return response;
-                }
-
-                user.Password = PasswordUtils.PasswordEncoder(changePasswordRequest.NewPassword);
-                int affectedRows = await _context.SaveChangesAsync();
-
-                if (affectedRows == 0)
-                {
-                    response.IsSuccess = false;
-                    response.Message = "No se pudo cambiar la contraseña";
-                    return response;
-                }
-
-                Mails.SendEmail(user.Username, user.Email, changePasswordRequest.NewPassword);
-                response.IsSuccess = true;
-                response.Message = "Contraseña cambiada correctamente";
-                response.UserId = user.UserId;
+                return response;
             }
-            catch (Exception ex)
-            {
-                response.IsSuccess = false;
-                response.Message = ex.Message;
-            }
-
-            return response;
         }
 
         public async Task<CreateNewPasswordResponse> CreateNewPassword(CreateNewPasswordRequest createNewPasswordRequest)
         {
             CreateNewPasswordResponse response = new CreateNewPasswordResponse();
 
-            try
+            using (ApplicationDbContext context = _context)
             {
-                User? user = await _context.Users.FirstOrDefaultAsync(u => u.Email == createNewPasswordRequest.UserEmail);
-                if (user == null)
+                IDbContextTransaction dbContextTransaction = context.Database.BeginTransaction();
+                try
+                {
+                    User? user = await _context.Users.FirstOrDefaultAsync(u => u.Email == createNewPasswordRequest.UserEmail);
+                    if (user == null)
+                    {
+                        response.IsSuccess = false;
+                        response.Message = "No se encontró el usuario con ese email";
+                        return response;
+                    }
+
+                    string newPassword = PasswordUtils.CreatePassword(8);
+                    byte[] passwordHash = PasswordUtils.PasswordEncoder(newPassword);
+
+                    user.Password = passwordHash;
+                    int affectedRows = await _context.SaveChangesAsync();
+
+                    if (affectedRows == 0)
+                    {
+                        response.IsSuccess = false;
+                        response.Message = "No se pudo cambiar la contraseña";
+                    }
+
+                    Mails.SendEmail(user.Username, user.Email, newPassword);
+                    response.IsSuccess = true;
+                    response.Message = "Contraseña cambiada correctamente";
+                    response.UserId = user.UserId;
+
+                    dbContextTransaction.Commit();
+                }
+                catch (Exception ex)
                 {
                     response.IsSuccess = false;
-                    response.Message = "No se encontró el usuario con ese email";
-                    return response;
+                    response.Message = ex.Message;
+                    dbContextTransaction.Rollback();
                 }
 
-                string newPassword = PasswordUtils.CreatePassword(8);
-                byte[] passwordHash = PasswordUtils.PasswordEncoder(newPassword);
-
-                user.Password = passwordHash;
-                int affectedRows = await _context.SaveChangesAsync();
-
-                if (affectedRows == 0)
-                {
-                    response.IsSuccess = false;
-                    response.Message = "No se pudo cambiar la contraseña";
-                }
-
-                Mails.SendEmail(user.Username, user.Email, newPassword);
-                response.IsSuccess = true;
-                response.Message = "Contraseña cambiada correctamente";
-                response.UserId = user.UserId;
+                return response;
             }
-            catch (Exception ex)
-            {
-                response.IsSuccess = false;
-                response.Message = ex.Message;
-            }
-
-            return response;
         }
 
         public async Task<CreateUserResponse> CreateUser(CreateUserRequst createUserRequst)
         {
             CreateUserResponse response = new CreateUserResponse();
 
-            try
+            using (ApplicationDbContext context = _context)
             {
-                if (await _context.Users.AnyAsync(u => u.Dni == createUserRequst.Dni))
+                IDbContextTransaction dbContextTransaction = context.Database.BeginTransaction();
+                try
                 {
-                    throw new Exception("Ya existe un usuario con ese dni");
+                    if (await _context.Users.AnyAsync(u => u.Dni == createUserRequst.Dni))
+                    {
+                        throw new Exception("Ya existe un usuario con ese dni");
+                    }
+
+                    if (await _context.Users.AnyAsync(u => u.Email == createUserRequst.Email))
+                    {
+                        throw new Exception("Ya existe un usuario con ese email");
+                    }
+
+                    User user = new User()
+                    {
+                        Dni = createUserRequst.Dni,
+                        Username = createUserRequst.Username,
+                        Surname = createUserRequst.Surname,
+                        Password = PasswordUtils.PasswordEncoder(createUserRequst.Password),
+                        Email = createUserRequst.Email,
+                    };
+
+                    await _context.Users.AddAsync(user);
+                    await _context.SaveChangesAsync();
+
+                    UserDTO userDTO = new UserDTO()
+                    {
+                        Dni = user.Dni,
+                        Username = user.Username,
+                        Surname = user.Surname,
+                        Password = "********",
+                        Email = user.Email
+                    };
+
+                    response.IsSuccess = true;
+                    response.Message = "Usuario creado correctametne";
+                    response.UserDTO = userDTO;
+
+                    dbContextTransaction.Commit();
+                }
+                catch (Exception ex)
+                {
+                    response.IsSuccess = false;
+                    response.Message = ex.Message;
+                    dbContextTransaction.Rollback();
                 }
 
-                if (await _context.Users.AnyAsync(u => u.Email == createUserRequst.Email))
-                {
-                    throw new Exception("Ya existe un usuario con ese email");
-                }
-
-                User user = new User()
-                {
-                    Dni = createUserRequst.Dni,
-                    Username = createUserRequst.Username,
-                    Surname = createUserRequst.Surname,
-                    Password = PasswordUtils.PasswordEncoder(createUserRequst.Password),
-                    Email = createUserRequst.Email,
-                };
-
-                await _context.Users.AddAsync(user);
-                await _context.SaveChangesAsync();
-
-                UserDTO userDTO = new UserDTO()
-                {
-                    Dni = user.Dni,
-                    Username = user.Username,
-                    Surname = user.Surname,
-                    Password = "********",
-                    Email = user.Email
-                };
-
-                response.IsSuccess = true;
-                response.Message = "Usuario creado correctametne";
-                response.UserDTO = userDTO; 
-            }
-            catch (Exception ex)
-            {
-                response.IsSuccess = false;
-                response.Message = ex.Message;
                 return response;
             }
-
-            return response;
         }
 
         public async Task<DeleteUserResponse> DeleteUser(DeleteUserRequest deleteUserRequest)
         {
             DeleteUserResponse response = new DeleteUserResponse();
 
-            try
+            using (ApplicationDbContext context = _context)
             {
-                User? user = await _context.Users.FirstOrDefaultAsync(u => u.Dni == deleteUserRequest.Dni);
-                if (user == null)
+                IDbContextTransaction dbContextTransaction = context.Database.BeginTransaction();
+                try
+                {
+                    User? user = await _context.Users.FirstOrDefaultAsync(u => u.Dni == deleteUserRequest.Dni);
+                    if (user == null)
+                    {
+                        response.IsSuccess = false;
+                        response.Message = "No se encontró el usuario con ese dni";
+                        return response;
+                    }
+
+                    _context.Users.Remove(user);
+                    int affectedRows = await _context.SaveChangesAsync();
+
+                    if (affectedRows == 0)
+                    {
+                        response.IsSuccess = false;
+                        response.Message = "No se pudo eliminar el usuario";
+                        return response;
+                    }
+
+                    response.IsSuccess = true;
+                    response.Message = "Usuario eliminado correctamente";
+                    response.UserId = user.UserId;
+
+                    dbContextTransaction.Commit();
+                }
+                catch (Exception ex)
                 {
                     response.IsSuccess = false;
-                    response.Message = "No se encontró el usuario con ese dni";
-                    return response;
+                    response.Message = ex.Message;
+                    dbContextTransaction.Rollback();
                 }
 
-                _context.Users.Remove(user);
-                int affectedRows = await _context.SaveChangesAsync();
-
-                if (affectedRows == 0)
-                {
-                    response.IsSuccess = false;
-                    response.Message = "No se pudo eliminar el usuario";
-                    return response;
-                }
-
-                response.IsSuccess = true;
-                response.Message = "Usuario eliminado correctamente";
-                response.UserId = user.UserId;
+                return response;
             }
-            catch (Exception ex)
-            {
-                response.IsSuccess = false;
-                response.Message = ex.Message;
-            }
-
-            return response;
         }
 
         public async Task<GetUserByEmailResponse> GetUserByEmail(GetUserByEmailRequest getUserByEmailRequest)
@@ -319,40 +347,47 @@ namespace TFC.Infraestructure.Persistence.Repository
         {
             UpdateUserResponse response = new UpdateUserResponse();
 
-            try
+            using (ApplicationDbContext context = _context)
             {
-                User? user = await _context.Users.FirstOrDefaultAsync(u => u.Dni == updateUserRequest.DniToBeFound);
-                if (user == null)
+                IDbContextTransaction dbContextTransaction = context.Database.BeginTransaction();
+                try
+                {
+                    User? user = await _context.Users.FirstOrDefaultAsync(u => u.Dni == updateUserRequest.DniToBeFound);
+                    if (user == null)
+                    {
+                        response.IsSuccess = false;
+                        response.Message = "No se encontró el usuario con ese dni";
+                        return response;
+                    }
+
+                    user.Username = updateUserRequest.Username;
+                    user.Surname = updateUserRequest.Surname;
+                    user.Password = PasswordUtils.PasswordEncoder(updateUserRequest.Password);
+                    user.Email = updateUserRequest.Email;
+
+                    int affectedRows = await _context.SaveChangesAsync();
+                    if (affectedRows == 0)
+                    {
+                        response.IsSuccess = false;
+                        response.Message = "No se pudo actualizar el usuario";
+                        return response;
+                    }
+
+                    response.IsSuccess = true;
+                    response.Message = "Usuario actualizado correctamente";
+                    response.UserId = user.UserId;
+
+                    dbContextTransaction.Commit();
+                }
+                catch (Exception ex)
                 {
                     response.IsSuccess = false;
-                    response.Message = "No se encontró el usuario con ese dni";
-                    return response;
+                    response.Message = ex.Message;
+                    dbContextTransaction.Rollback();
                 }
 
-                user.Username = updateUserRequest.Username;
-                user.Surname = updateUserRequest.Surname;
-                user.Password = PasswordUtils.PasswordEncoder(updateUserRequest.Password);
-                user.Email = updateUserRequest.Email;
-               
-                int affectedRows = await _context.SaveChangesAsync();
-                if (affectedRows == 0)
-                {
-                    response.IsSuccess = false;
-                    response.Message = "No se pudo actualizar el usuario";
-                    return response;
-                }
-
-                response.IsSuccess = true;
-                response.Message = "Usuario actualizado correctamente";
-                response.UserId = user.UserId;
+                return response;
             }
-            catch (Exception ex)
-            {
-                response.IsSuccess = false;
-                response.Message = ex.Message;
-            }
-
-            return response;
         }
     }
 }
