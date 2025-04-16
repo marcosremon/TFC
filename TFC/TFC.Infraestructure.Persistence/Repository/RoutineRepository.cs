@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using MongoDB.Driver;
 using TFC.Application.DTO.EntityDTO;
 using TFC.Application.DTO.Routine.CreateRoutine;
@@ -24,71 +25,78 @@ namespace TFC.Infraestructure.Persistence.Repository
         {
             CreateRoutineResponse response = new CreateRoutineResponse();
 
-            try
+            using (ApplicationDbContext context = _context)
             {
-                User? user = await _context.Users
-                    .Include(u => u.Routines)
-                    .FirstOrDefaultAsync(u => u.Dni == createRoutineRequest.UserDni);
+                IDbContextTransaction dbContextTransaction = context.Database.BeginTransaction();
+                try
+                {
+                    User? user = await _context.Users
+                        .Include(u => u.Routines)
+                        .FirstOrDefaultAsync(u => u.Dni == createRoutineRequest.UserDni);
 
-                if (user == null)
+                    if (user == null)
+                    {
+                        response.IsSuccess = false;
+                        response.Message = "User not found";
+                        return response;
+                    }
+
+                    Routine routine = new Routine
+                    {
+                        RoutineName = createRoutineRequest.RoutineName,
+                        RoutineDescription = createRoutineRequest.RoutineDescription,
+                        UserId = user.UserId,
+                        User = user,
+                        SplitDays = createRoutineRequest.SplitDays.Select(sd => new SplitDay
+                        {
+                            DayName = sd.DayName,
+                            Exercises = sd.Exercises.Select(e => new Exercise
+                            {
+                                ExerciseName = e.ExerciseName,
+                                Sets = e.Sets,
+                                Reps = e.Reps,
+                                Weight = e.Weight
+                            }).ToList()
+                        }).ToList()
+                    };
+
+                    user.Routines ??= new List<Routine>();
+                    user.Routines.Add(routine);
+
+                    await _context.Routines.AddAsync(routine);
+                    await _context.SaveChangesAsync();
+
+                    RoutineDTO routineDTO = new RoutineDTO
+                    {
+                        RoutineId = routine.RoutineId,
+                        RoutineName = routine.RoutineName,
+                        RoutineDescription = routine.RoutineDescription,
+                        SplitDays = routine.SplitDays.Select(sd => new SplitDayDTO
+                        {
+                            DayName = sd.DayName,
+                            Exercises = sd.Exercises.Select(e => new ExerciseDTO
+                            {
+                                ExerciseName = e.ExerciseName,
+                                Sets = e.Sets,
+                                Reps = e.Reps,
+                                Weight = e.Weight
+                            }).ToList()
+                        }).ToList()
+                    };
+
+                    dbContextTransaction.Commit();
+
+                    response.IsSuccess = true;
+                    response.RoutineDTO = routineDTO;
+                    response.Message = "Routine created successfully";
+                }
+                catch (Exception ex)
                 {
                     response.IsSuccess = false;
-                    response.Message = "User not found";
-                    return response;
+                    response.Message = $"Error creating routine: {ex.Message}";
+                    dbContextTransaction.Rollback();
                 }
 
-                Routine routine = new Routine
-                {
-                    RoutineName = createRoutineRequest.RoutineName,
-                    RoutineDescription = createRoutineRequest.RoutineDescription,
-                    UserId = user.UserId,
-                    User = user,
-                    SplitDays = createRoutineRequest.SplitDays.Select(sd => new SplitDay
-                    {
-                        DayName = sd.DayName,
-                        Exercises = sd.Exercises.Select(e => new Exercise
-                        {
-                            ExerciseName = e.ExerciseName,
-                            Sets = e.Sets,
-                            Reps = e.Reps,
-                            Weight = e.Weight
-                        }).ToList()
-                    }).ToList()
-                };
-
-                user.Routines ??= new List<Routine>();
-                user.Routines.Add(routine);
-
-                await _context.Routines.AddAsync(routine);
-                await _context.SaveChangesAsync();
-
-                RoutineDTO routineDTO = new RoutineDTO
-                {
-                    RoutineId = routine.RoutineId, 
-                    RoutineName = routine.RoutineName,
-                    RoutineDescription = routine.RoutineDescription,
-                    SplitDays = routine.SplitDays.Select(sd => new SplitDayDTO
-                    {
-                        DayName = sd.DayName,
-                        Exercises = sd.Exercises.Select(e => new ExerciseDTO
-                        {
-                            ExerciseName = e.ExerciseName,
-                            Sets = e.Sets,
-                            Reps = e.Reps,
-                            Weight = e.Weight
-                        }).ToList()
-                    }).ToList()
-                };
-
-                response.IsSuccess = true;
-                response.RoutineDTO = routineDTO;
-                response.Message = "Routine created successfully";
-                return response;
-            }
-            catch (Exception ex)
-            {
-                response.IsSuccess = false;
-                response.Message = $"Error creating routine: {ex.Message}";
                 return response;
             }
         }
@@ -97,45 +105,52 @@ namespace TFC.Infraestructure.Persistence.Repository
         {
             DeleteRoutineResponse response = new DeleteRoutineResponse();
 
-            try
+            using (ApplicationDbContext context = _context)
             {
-                Routine? routine = _context.Routines.FirstOrDefault(r => r.RoutineId == deleteRoutineRequest.RoutineId);
-                if (routine == null)
+                IDbContextTransaction dbContextTransaction = context.Database.BeginTransaction();
+                try
+                {
+                    Routine? routine = _context.Routines.FirstOrDefault(r => r.RoutineId == deleteRoutineRequest.RoutineId);
+                    if (routine == null)
+                    {
+                        response.IsSuccess = false;
+                        response.Message = "Routine not found";
+                        return response;
+                    }
+
+                    User? user = await _context.Users.FirstOrDefaultAsync(u => u.Dni == deleteRoutineRequest.UserDni);
+                    if (user == null)
+                    {
+                        response.IsSuccess = false;
+                        response.Message = "User not found";
+                        return response;
+                    }
+
+                    if (!user.Routines.Any(r => r.RoutineId == deleteRoutineRequest.RoutineId))
+                    {
+                        response.IsSuccess = false;
+                        response.Message = "User doesn't have this routine";
+                        return response;
+                    }
+
+                    _context.Routines.Remove(routine);
+                    user.Routines.Remove(routine);
+                    await _context.SaveChangesAsync();
+
+                    dbContextTransaction.Commit();
+
+                    response.IsSuccess = true;
+                    response.Message = "Routine deleted successfully";
+                }
+                catch (Exception ex)
                 {
                     response.IsSuccess = false;
-                    response.Message = "Routine not found";
-                    return response;
+                    response.Message = ex.Message;
+                    dbContextTransaction.Rollback();
                 }
 
-                User? user = await _context.Users.FirstOrDefaultAsync(u => u.Dni == deleteRoutineRequest.UserDni);
-                if (user == null)
-                {
-                    response.IsSuccess = false;
-                    response.Message = "User not found";
-                    return response;
-                }
-
-                if (!user.Routines.Any(r => r.RoutineId == deleteRoutineRequest.RoutineId))
-                {
-                    response.IsSuccess = false;
-                    response.Message = "User doesn't have this routine";
-                    return response;
-                }
-
-                _context.Routines.Remove(routine);
-                user.Routines.Remove(routine);
-                await _context.SaveChangesAsync();
-
-                response.IsSuccess = true;
-                response.Message = "Routine deleted successfully";
+                return response;
             }
-            catch (Exception ex)
-            {
-                response.IsSuccess = false;
-                response.Message = ex.Message;
-            }
-
-            return response;
         }
 
         public async Task<GetRoutinesByFriendCodeResponse> GetRoutinesByFriendCode(GetRoutinesByFriendCodeRequest getRoutinesByFriendCodeRequest)
@@ -189,60 +204,67 @@ namespace TFC.Infraestructure.Persistence.Repository
         {
             UpdateRoutineResponse response = new UpdateRoutineResponse();
 
-            try
+            using (ApplicationDbContext context = _context)
             {
-                Routine? routine = await _context.Routines.FirstOrDefaultAsync(r => r.RoutineId == updateRoutineRequest.RoutineId);
-                if (routine == null)
+                IDbContextTransaction dbContextTransaction = context.Database.BeginTransaction();
+                try
                 {
-                    response.IsSuccess = false;
-                    response.Message = "Routine not found";
-                    return response;
-                }
-
-                routine.RoutineName = updateRoutineRequest.RoutineName ?? routine.RoutineName;
-                routine.RoutineDescription = updateRoutineRequest.RoutineDescription ?? routine.RoutineDescription;
-                routine.SplitDays = updateRoutineRequest.SplitDays.Select(sd => new SplitDay
-                {
-                    DayName = sd.DayName,
-                    Exercises = sd.Exercises.Select(e => new Exercise
+                    Routine? routine = await _context.Routines.FirstOrDefaultAsync(r => r.RoutineId == updateRoutineRequest.RoutineId);
+                    if (routine == null)
                     {
-                        ExerciseName = e.ExerciseName,
-                        Sets = e.Sets,
-                        Reps = e.Reps,
-                        Weight = e.Weight
-                    }).ToList()
-                }).ToList() ?? routine.SplitDays;
+                        response.IsSuccess = false;
+                        response.Message = "Routine not found";
+                        return response;
+                    }
 
-                await _context.SaveChangesAsync();
-
-                RoutineDTO routineDTO = new RoutineDTO
-                {
-                    RoutineName = routine.RoutineName,
-                    RoutineDescription = routine.RoutineDescription,
-                    SplitDays = routine.SplitDays.Select(sd => new SplitDayDTO
+                    routine.RoutineName = updateRoutineRequest.RoutineName ?? routine.RoutineName;
+                    routine.RoutineDescription = updateRoutineRequest.RoutineDescription ?? routine.RoutineDescription;
+                    routine.SplitDays = updateRoutineRequest.SplitDays.Select(sd => new SplitDay
                     {
                         DayName = sd.DayName,
-                        Exercises = sd.Exercises.Select(e => new ExerciseDTO
+                        Exercises = sd.Exercises.Select(e => new Exercise
                         {
                             ExerciseName = e.ExerciseName,
                             Sets = e.Sets,
                             Reps = e.Reps,
                             Weight = e.Weight
                         }).ToList()
-                    }).ToList()
-                };
+                    }).ToList() ?? routine.SplitDays;
 
-                response.IsSuccess = true;
-                response.RoutineDTO = routineDTO;
-                response.Message = "Routine updated successfully";
+                    await _context.SaveChangesAsync();
+
+                    RoutineDTO routineDTO = new RoutineDTO
+                    {
+                        RoutineName = routine.RoutineName,
+                        RoutineDescription = routine.RoutineDescription,
+                        SplitDays = routine.SplitDays.Select(sd => new SplitDayDTO
+                        {
+                            DayName = sd.DayName,
+                            Exercises = sd.Exercises.Select(e => new ExerciseDTO
+                            {
+                                ExerciseName = e.ExerciseName,
+                                Sets = e.Sets,
+                                Reps = e.Reps,
+                                Weight = e.Weight
+                            }).ToList()
+                        }).ToList()
+                    };
+
+                    dbContextTransaction.Commit();
+
+                    response.IsSuccess = true;
+                    response.RoutineDTO = routineDTO;
+                    response.Message = "Routine updated successfully";
+                }
+                catch (Exception ex)
+                {
+                    response.IsSuccess = false;
+                    response.Message = ex.Message;
+                    dbContextTransaction.Rollback();
+                }
+
+                return response;
             }
-            catch (Exception ex)
-            {
-                response.IsSuccess = false;
-                response.Message = ex.Message;
-            }
-            
-            return response;
         }
     }
 }
