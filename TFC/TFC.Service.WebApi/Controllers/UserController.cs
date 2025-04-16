@@ -24,17 +24,13 @@ namespace TFC.Service.WebApi.Controllers
         [HttpPost("GetUserByEmail")]
         public async Task<ActionResult<GetUserByEmailResponse>> GetUserByEmail([FromBody] GetUserByEmailRequest getUserByEmailRequest)
         {
-            if (getUserByEmailRequest == null || string.IsNullOrEmpty(getUserByEmailRequest.Email))
+            GetUserByEmailResponse response = await _userApplication.GetUserByEmail(getUserByEmailRequest);
+            if (!response.IsSuccess || response == null)
             {
-                return BadRequest();
+                return BadRequest(response.Message);
             }
 
-            GetUserByEmailResponse getUserResponse = await _userApplication.GetUserByEmail(getUserByEmailRequest);
-            if (getUserResponse.IsSuccess)
-            {
-                return Ok(getUserResponse);
-            }
-            return BadRequest(getUserResponse.Message);
+            return Ok(response);
         }
 
         [HttpGet("GetUsers")]
@@ -52,96 +48,61 @@ namespace TFC.Service.WebApi.Controllers
         [HttpPost("CreateUser")]
         public async Task<ActionResult<CreateUserResponse>> CreateUser([FromBody] CreateUserRequst createUserRequst)
         {
-            if (createUserRequst == null 
-                || string.IsNullOrEmpty(createUserRequst.Email) 
-                || string.IsNullOrEmpty(createUserRequst.Dni) 
-                || string.IsNullOrEmpty(createUserRequst.Username) 
-                || string.IsNullOrEmpty(createUserRequst.Password))
-            {
-                return BadRequest();
-            }
-
             CreateUserResponse response = await _userApplication.CreateUser(createUserRequst);
-            if (response.IsSuccess)
+            if (!response.IsSuccess || response == null)
             {
-                return Ok(response);
+                return BadRequest(response.Message);
             }
 
-            return BadRequest(response.Message);
+            return Ok(response);
         }
 
         [HttpPut("UpdateUser")]
         public async Task<ActionResult<UpdateUserResponse>> UpdateUser([FromBody] UpdateUserRequst updateUserRequest)
         {
-            if (updateUserRequest == null || string.IsNullOrEmpty(updateUserRequest.DniToBeFound) || string.IsNullOrEmpty(updateUserRequest.Email))
-            {
-                return BadRequest();
-            }
-
             UpdateUserResponse response = await _userApplication.UpdateUser(updateUserRequest);
-            if (response.IsSuccess)
+            if (!response.IsSuccess || response == null)
             {
-                return Ok(response);
+                return BadRequest(response.Message);
             }
 
-            return BadRequest(response.Message);
+            return Ok(response);
         }
 
         [HttpDelete("DeleteUser")]
         public async Task<ActionResult<DeleteUserResponse>> DeleteUser([FromBody] DeleteUserRequest deleteUserRequest)
         {
-            if (deleteUserRequest == null || string.IsNullOrEmpty(deleteUserRequest.Dni))
+            DeleteUserResponse response = await _userApplication.DeleteUser(deleteUserRequest);
+            if (!response.IsSuccess || response == null)
             {
-                return BadRequest();
+                return BadRequest(response.Message);
             }
 
-            DeleteUserResponse deleteUsersResponse = await _userApplication.DeleteUser(deleteUserRequest);
-            if (deleteUsersResponse.IsSuccess)
-            {
-                return Ok(deleteUsersResponse);
-            }
-
-            return BadRequest(deleteUsersResponse.Message);
+            return Ok(response);
         }
 
         [HttpPost("CreateNewPassword")]
         public async Task<ActionResult<CreateNewPasswordResponse>> CreateNewPassword([FromBody] CreateNewPasswordRequest createNewPasswordRequest)
         {
-            if (createNewPasswordRequest == null 
-                || string.IsNullOrEmpty(createNewPasswordRequest.UserEmail))
-            {
-                return BadRequest();
-            }
-
             CreateNewPasswordResponse response = await _userApplication.CreateNewPassword(createNewPasswordRequest);
-            if (response.IsSuccess)
+            if (!response.IsSuccess || response == null)
             {
-                return Ok(response);
+                return BadRequest(response.Message);
             }
 
-            return BadRequest(response.Message);
+            return Ok(response);
         }
 
         [HttpPost("ChangePasswordWithPasswordAndEmail")]
         public async Task<ActionResult<ChangePasswordWithPasswordAndEmailResponse>> ChangePasswordWithPasswordAndEmail([FromBody] ChangePasswordWithPasswordAndEmailRequest changePasswordWithPasswordAndEmailRequest)
         {   
-            if (changePasswordWithPasswordAndEmailRequest == null 
-                || string.IsNullOrEmpty(changePasswordWithPasswordAndEmailRequest.UserEmail)
-                || string.IsNullOrEmpty(changePasswordWithPasswordAndEmailRequest.NewPassword)
-                || string.IsNullOrEmpty(changePasswordWithPasswordAndEmailRequest.OldPassword)
-                || string.IsNullOrEmpty(changePasswordWithPasswordAndEmailRequest.ConfirmNewPassword)
-                || changePasswordWithPasswordAndEmailRequest.NewPassword != changePasswordWithPasswordAndEmailRequest.ConfirmNewPassword)
-            {
-                return BadRequest();
-            }
-
             ChangePasswordWithPasswordAndEmailResponse response = await _userApplication.ChangePasswordWithPasswordAndEmail(changePasswordWithPasswordAndEmailRequest);
-            if (response.IsSuccess)
+            if (!response.IsSuccess || response == null)
             {
-                return Ok(response);
+                return BadRequest(response.Message);
             }
          
-            return BadRequest(response.Message);
+            return Ok(response);
         }
     }
 }

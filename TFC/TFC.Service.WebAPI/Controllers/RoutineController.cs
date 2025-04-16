@@ -20,74 +20,49 @@ namespace TFC.Service.WebApi.Controllers
         [HttpPost("CreateRoutine")]
         public async Task<ActionResult<CreateRoutineResponse>> CreateUser([FromBody] CreateRoutineRequest createRoutineRequest)
         {
-            if (createRoutineRequest == null
-                || string.IsNullOrEmpty(createRoutineRequest.RoutineName))
-            {
-                return BadRequest();
-            }
-
             CreateRoutineResponse response = await _routineApplication.CreateRoutine(createRoutineRequest);
-            if (response.IsSuccess)
+            if (!response.IsSuccess || response == null)
             {
-                return Ok(response);
+                return BadRequest(response.Message);
             }
 
-            return BadRequest(response.Message);
+            return Ok(response);
         }
 
         [HttpPut("UpdateRoutine")]
         public async Task<ActionResult<UpdateRoutineResponse>> UpdateUser([FromBody] UpdateRoutineRequest updateRoutineRequest)
         {
-            if (updateRoutineRequest == null
-                || updateRoutineRequest.RoutineId == null)
-            {
-                return BadRequest();
-            }
-
             UpdateRoutineResponse response = await _routineApplication.UpdateUser(updateRoutineRequest);
-            if (response.IsSuccess)
+            if (!response.IsSuccess || response == null)
             {
-                return Ok(response);
+                return BadRequest(response.Message);
             }
 
-            return BadRequest(response.Message);
+            return Ok(response);
         }
 
         [HttpDelete("DeleteRoutine")]
         public async Task<ActionResult<DeleteRoutineResponse>> DeleteUser([FromBody] DeleteRoutineRequest deleteRoutineRequest)
         {
-            if (deleteRoutineRequest == null
-                || string.IsNullOrEmpty(deleteRoutineRequest.UserDni)
-                || deleteRoutineRequest.RoutineId == null)
-            {
-                return BadRequest();
-            }
-
             DeleteRoutineResponse response = await _routineApplication.DeleteRoutine(deleteRoutineRequest);
-            if (response.IsSuccess)
+            if (!response.IsSuccess || response == null)
             {
-                return Ok(response);
+                return BadRequest(response.Message);
             }
 
-            return BadRequest(response.Message);
+            return Ok(response);
         }
 
         [HttpPost]
         public async Task<ActionResult<GetRoutinesByFriendCodeResponse>> GetRoutinesByFriendCode([FromBody] GetRoutinesByFriendCodeRequest getRoutinesByFriendCodeRequest)
         {
-            if (getRoutinesByFriendCodeRequest == null
-                || string.IsNullOrEmpty(getRoutinesByFriendCodeRequest.FriendCode))
-            {
-                return BadRequest();
-            }
-
             GetRoutinesByFriendCodeResponse response = await _routineApplication.GetRoutinesByFriendCode(getRoutinesByFriendCodeRequest);
-            if (response.IsSuccess)
+            if (!response.IsSuccess || response == null)
             {
-                return Ok(response);
+                return BadRequest(response.Message);
             }
 
-            return BadRequest(response.Message);
+            return Ok(response);
         }
     }
 }

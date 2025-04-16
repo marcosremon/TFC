@@ -19,21 +19,46 @@ namespace TFC.Application.Main
 
         public async Task<CreateRoutineResponse> CreateRoutine(CreateRoutineRequest createRoutineRequest)
         {
+            if (createRoutineRequest == null
+                || string.IsNullOrEmpty(createRoutineRequest.RoutineName))
+            {
+                return null;
+            }
+
             return await _routineRepository.CreateRoutine(createRoutineRequest);
         }
 
         public async Task<DeleteRoutineResponse> DeleteRoutine(DeleteRoutineRequest deleteRoutineRequest)
         {
+            if (deleteRoutineRequest == null
+               || string.IsNullOrEmpty(deleteRoutineRequest.UserDni)
+               || deleteRoutineRequest.RoutineId == null)
+            {
+                return null;
+            }
+
             return await _routineRepository.DeleteRoutine(deleteRoutineRequest);
         }
 
         public async Task<GetRoutinesByFriendCodeResponse> GetRoutinesByFriendCode(GetRoutinesByFriendCodeRequest getRoutinesByFriendCodeRequest)
         {
+            if (getRoutinesByFriendCodeRequest == null
+               || string.IsNullOrEmpty(getRoutinesByFriendCodeRequest.FriendCode))
+            {
+                return null;
+            }
+
             return await _routineRepository.GetRoutinesByFriendCode(getRoutinesByFriendCodeRequest);
         }
 
         public async Task<UpdateRoutineResponse> UpdateUser(UpdateRoutineRequest updateRoutineRequest)
         {
+            if (updateRoutineRequest == null
+                || updateRoutineRequest.RoutineId == null)
+            {
+                return null;
+            }
+
             return await _routineRepository.UpdateRoutine(updateRoutineRequest);
         }
     }
