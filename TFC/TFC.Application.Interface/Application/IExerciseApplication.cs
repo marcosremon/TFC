@@ -6,7 +6,7 @@ namespace TFC.Application.Interface.Application
 {
     public interface IExerciseApplication
     {
-        public Task<UpdateExerciseResponse> AddExercise(UpdateExerciseRequest addExerciseRequest);
+        public Task<AddExerciseResponse> AddExercise(AddExerciseRequest addExerciseRequest);
         public Task<DeleteExerciseResponse> DeleteExercise(DeleteExerciseRequest deleteExerciseRequest);
         public Task<GetExercisesByDayNameResponse> GetExercisesByDayName(GetExercisesByDayNameRequest getExercisesByDayNameRequest);
         public Task<UpdateExerciseResponse> UpdateExercise(UpdateExerciseRequest updateExerciseRequest);

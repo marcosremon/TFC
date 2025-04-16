@@ -15,7 +15,7 @@ namespace TFC.Infraestructure.Persistence.Repository
             _context = context;
         }
 
-        public async Task<UpdateExerciseResponse> AddExercise(UpdateExerciseRequest addExerciseRequest)
+        public async Task<AddExerciseResponse> AddExercise(AddExerciseRequest addExerciseRequest)
         {
             throw new NotImplementedException();
         }

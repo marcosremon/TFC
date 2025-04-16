@@ -15,7 +15,7 @@ namespace TFC.Application.Main
             _exerciseRepository = exerciseRepository;
         }
 
-        public async Task<UpdateExerciseResponse> AddExercise(UpdateExerciseRequest addExerciseRequest)
+        public async Task<AddExerciseResponse> AddExercise(AddExerciseRequest addExerciseRequest)
         {
             return await _exerciseRepository.AddExercise(addExerciseRequest);
         }

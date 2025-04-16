@@ -22,7 +22,6 @@ namespace TFC.Domain.Model.Entity
         [MaxLength(255)]
         public string? Email { get; set; }
         [JsonIgnore]
-        public string? FriendCode { get; set; } = string.Empty;
         public byte[]? Password { get; set; }
         public Role Role { get; set; } = Role.User;
         public DateTime InscriptionDate { get; set; } = DateTime.UtcNow;

@@ -16,7 +16,7 @@ namespace TFC.Service.WebApi.Controllers
         }
 
         [HttpPost("AddExercise")]
-        public async Task<ActionResult<DeleteExerciseResponse>> AddExercise([FromBody] DeleteExerciseRequest addExerciseRequest)
+        public async Task<ActionResult<AddExerciseResponse>> AddExercise([FromBody] AddExerciseRequest addExerciseRequest)
         {
             if (addExerciseRequest == null
                 || addExerciseRequest.UserId == null
@@ -27,7 +27,7 @@ namespace TFC.Service.WebApi.Controllers
                 return BadRequest();
             }
 
-            UpdateExerciseResponse response = await _exerciseApplication.AddExercise(addExerciseRequest);
+            AddExerciseResponse response = await _exerciseApplication.AddExercise(addExerciseRequest);
             if (response.IsSuccess)
             {
                 return Ok(response);

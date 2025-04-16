@@ -22,7 +22,6 @@ namespace TFC.Infrastructure.Persistence.Dependencies
             services.AddScoped<ISplitDayRepository, SplitDayRepository>();
             services.AddScoped<IExerciseRepository, ExerciseRepository>();
 
-
             return services;
         }
     }
