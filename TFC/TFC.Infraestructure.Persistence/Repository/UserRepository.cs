@@ -58,12 +58,12 @@ namespace TFC.Infraestructure.Persistence.Repository
                         return response;
                     }
 
+                    dbContextTransaction.Commit();
+
                     Mails.SendEmail(user.Username, user.Email, changePasswordRequest.NewPassword);
                     response.IsSuccess = true;
                     response.Message = "Contraseña cambiada correctamente";
                     response.UserId = user.UserId;
-
-                    dbContextTransaction.Commit();
                 }
                 catch (Exception ex)
                 {
@@ -105,12 +105,12 @@ namespace TFC.Infraestructure.Persistence.Repository
                         response.Message = "No se pudo cambiar la contraseña";
                     }
 
+                    dbContextTransaction.Commit();
+
                     Mails.SendEmail(user.Username, user.Email, newPassword);
                     response.IsSuccess = true;
                     response.Message = "Contraseña cambiada correctamente";
                     response.UserId = user.UserId;
-
-                    dbContextTransaction.Commit();
                 }
                 catch (Exception ex)
                 {
@@ -163,11 +163,11 @@ namespace TFC.Infraestructure.Persistence.Repository
                         Email = user.Email
                     };
 
+                    dbContextTransaction.Commit();
+
                     response.IsSuccess = true;
                     response.Message = "Usuario creado correctametne";
                     response.UserDTO = userDTO;
-
-                    dbContextTransaction.Commit();
                 }
                 catch (Exception ex)
                 {
@@ -207,11 +207,11 @@ namespace TFC.Infraestructure.Persistence.Repository
                         return response;
                     }
 
+                    dbContextTransaction.Commit();
+
                     response.IsSuccess = true;
                     response.Message = "Usuario eliminado correctamente";
                     response.UserId = user.UserId;
-
-                    dbContextTransaction.Commit();
                 }
                 catch (Exception ex)
                 {
@@ -373,11 +373,11 @@ namespace TFC.Infraestructure.Persistence.Repository
                         return response;
                     }
 
+                    dbContextTransaction.Commit();
+
                     response.IsSuccess = true;
                     response.Message = "Usuario actualizado correctamente";
                     response.UserId = user.UserId;
-
-                    dbContextTransaction.Commit();
                 }
                 catch (Exception ex)
                 {
