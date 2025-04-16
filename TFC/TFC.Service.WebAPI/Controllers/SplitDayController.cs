@@ -19,73 +19,49 @@ namespace TFC.Service.WebApi.Controllers
         [HttpPost("AddSplitDay")]
         public async Task<ActionResult<AddSplitDayResponse>> CreateSplitDay([FromBody] AddSplitDayRequest anyadirSplitDayRequest)
         {
-            if (anyadirSplitDayRequest == null
-                || anyadirSplitDayRequest.DayName == null
-                || anyadirSplitDayRequest.UserId == null
-                || anyadirSplitDayRequest.RoutineId == null)
-            {
-                return BadRequest();
-            }
-
             AddSplitDayResponse response = await _splitDayApplication.CreateSplitDay(anyadirSplitDayRequest);
-            if (response.IsSuccess)
+            if (!response.IsSuccess || response == null)
             {
-                return Ok(response);
+                return BadRequest(response.Message);
             }
 
-            return BadRequest(response.Message);
+            return Ok(response);
         }
 
         [HttpPut("UpdateSplitDay")]
         public async Task<ActionResult<ActualizarSplitDayResponse>> UpdateSplitDay([FromBody] ActualizarSplitDayRequest actualizarSplitDayRequest)
         {
-            if (actualizarSplitDayRequest == null
-               || actualizarSplitDayRequest.DayName == null
-               || actualizarSplitDayRequest.UserId == null
-               || actualizarSplitDayRequest.RoutineId == null)
-            {
-                return BadRequest();
-            }
-
             ActualizarSplitDayResponse response = await _splitDayApplication.UpdateSplitDay(actualizarSplitDayRequest);
-            if (response.IsSuccess)
+            if (!response.IsSuccess || response == null)
             {
-                return Ok(response);
+                return BadRequest(response.Message);
             }
 
-            return BadRequest(response.Message);
+            return Ok(response);
         }
 
         [HttpDelete("DeleteSplitDay")]
         public async Task<ActionResult<DeleteSplitDayResponse>> DeleteSplitDay([FromBody] DeleteSplitDayRequest deleteSplitDayRequest)
         {
-            if (deleteSplitDayRequest == null
-                || deleteSplitDayRequest.DayName == null
-                || deleteSplitDayRequest.UserId == null
-                || deleteSplitDayRequest.RoutineId == null)
-            {
-                return BadRequest();
-            }
-
             DeleteSplitDayResponse response = await _splitDayApplication.DeleteSplitDay(deleteSplitDayRequest);
-            if (response.IsSuccess)
+            if (!response.IsSuccess || response == null)
             {
-                return Ok(response);
+                return BadRequest(response.Message);
             }
 
-            return BadRequest(response.Message);
+            return Ok(response);
         }
 
         [HttpPost("GetSplitsDay")]
         public async Task<ActionResult<GetAllUserSplitsResponse>> GetAllUserSplits([FromBody] GetAllUserSplitsRequest getAllUserSplitsResponse)
         {
             GetAllUserSplitsResponse response = await _splitDayApplication.GetAllUserSplits(getAllUserSplitsResponse);
-            if (response.IsSuccess)
+            if (!response.IsSuccess || response == null)
             {
-                return Ok(response);
+                return BadRequest(response.Message);
             }
 
-            return BadRequest(response.Message);
+            return Ok(response);
         }
     }
 }

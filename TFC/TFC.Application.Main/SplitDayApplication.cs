@@ -18,11 +18,27 @@ namespace TFC.Application.Main
 
         public async Task<AddSplitDayResponse> CreateSplitDay(AddSplitDayRequest anyadirSplitDayRequest)
         {
+            if (anyadirSplitDayRequest == null
+                || anyadirSplitDayRequest.DayName == null
+                || anyadirSplitDayRequest.UserId == null
+                || anyadirSplitDayRequest.RoutineId == null)
+            {
+                return null;
+            }
+
             return await _splitDayRepository.CreateSplitDay(anyadirSplitDayRequest);
         }
 
         public async Task<DeleteSplitDayResponse> DeleteSplitDay(DeleteSplitDayRequest deleteSplitDayRequest)
         {
+            if (deleteSplitDayRequest == null
+               || deleteSplitDayRequest.DayName == null
+               || deleteSplitDayRequest.UserId == null
+               || deleteSplitDayRequest.RoutineId == null)
+            {
+                return null;
+            }
+
             return await _splitDayRepository.DeleteSplitDay(deleteSplitDayRequest);
         }
 
@@ -33,6 +49,14 @@ namespace TFC.Application.Main
 
         public async Task<ActualizarSplitDayResponse> UpdateSplitDay(ActualizarSplitDayRequest actualizarSplitDayRequest)
         {
+            if (actualizarSplitDayRequest == null
+               || actualizarSplitDayRequest.DayName == null
+               || actualizarSplitDayRequest.UserId == null
+               || actualizarSplitDayRequest.RoutineId == null)
+            {
+                return null;
+            }
+
             return await _splitDayRepository.UpdateSplitDay(actualizarSplitDayRequest);
         }
     }
