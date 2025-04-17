@@ -5,7 +5,7 @@ namespace TFC.Domain.Model.Entity
 {
     public class SplitDay
     {
-        public WeekDay DayName { get; set; }
+        public WeekDay? DayName { get; set; }
 
         [ForeignKey("RoutineId")]
         public long RoutineId { get; set; }
