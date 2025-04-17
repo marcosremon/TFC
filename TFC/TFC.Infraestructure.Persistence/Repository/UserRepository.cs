@@ -147,6 +147,7 @@ namespace TFC.Infraestructure.Persistence.Repository
                         Dni = createUserRequst.Dni,
                         Username = createUserRequst.Username,
                         Surname = createUserRequst.Surname,
+                        FriendCode = PasswordUtils.CreatePassword(8),
                         Password = PasswordUtils.PasswordEncoder(createUserRequst.Password),
                         Email = createUserRequst.Email,
                     };
@@ -158,6 +159,7 @@ namespace TFC.Infraestructure.Persistence.Repository
                     {
                         Dni = user.Dni,
                         Username = user.Username,
+                        FriendCode = user.FriendCode,
                         Surname = user.Surname,
                         Password = "********",
                         Email = user.Email
@@ -246,6 +248,7 @@ namespace TFC.Infraestructure.Persistence.Repository
                     Dni = user.Dni,
                     Username = user.Username,
                     Surname = user.Surname,
+                    FriendCode = user.FriendCode,
                     Password = "********",
                     Email = user.Email,
                     Routines = user.Routines.Select(r => new RoutineDTO
@@ -308,6 +311,7 @@ namespace TFC.Infraestructure.Persistence.Repository
                     Username = user.Username,
                     Surname = user.Surname,
                     Password = "********",
+                    FriendCode = user.FriendCode,
                     Email = user.Email,
                     Routines = user.Routines?.Select(r => new RoutineDTO 
                     {
