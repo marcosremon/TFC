@@ -1,8 +1,9 @@
-﻿using MailKit.Net.Smtp;
+﻿using System.Net.Mail;
+using MailKit.Net.Smtp;
 using Microsoft.Extensions.Configuration;
 using MimeKit;
 
-public static class Mails
+public static class MailUtilities
 {
     private static IConfiguration? _configuration;
 
@@ -38,6 +39,19 @@ public static class Mails
             client.Authenticate(senderEmail, appPassword);
             client.Send(message);
             client.Disconnect(true);
+        }
+    }
+
+    public static bool IsEmailValid(string email)
+    {
+        try
+        {
+            MailAddress m = new MailAddress(email);
+            return true;
+        }
+        catch (FormatException)
+        {
+            return false;
         }
     }
 }

@@ -60,7 +60,7 @@ namespace TFC.Infraestructure.Persistence.Repository
 
                     dbContextTransaction.Commit();
 
-                    Mails.SendEmail(user.Username, user.Email, changePasswordRequest.NewPassword);
+                    MailUtilities.SendEmail(user.Username, user.Email, changePasswordRequest.NewPassword);
                     response.IsSuccess = true;
                     response.Message = "Contraseña cambiada correctamente";
                     response.UserId = user.UserId;
@@ -107,7 +107,7 @@ namespace TFC.Infraestructure.Persistence.Repository
 
                     dbContextTransaction.Commit();
 
-                    Mails.SendEmail(user.Username, user.Email, newPassword);
+                    MailUtilities.SendEmail(user.Username, user.Email, newPassword);
                     response.IsSuccess = true;
                     response.Message = "Contraseña cambiada correctamente";
                     response.UserId = user.UserId;
