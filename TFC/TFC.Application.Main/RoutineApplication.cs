@@ -19,10 +19,13 @@ namespace TFC.Application.Main
 
         public async Task<CreateRoutineResponse> CreateRoutine(CreateRoutineRequest createRoutineRequest)
         {
-            if (createRoutineRequest == null
-                || string.IsNullOrEmpty(createRoutineRequest.RoutineName))
+            if (createRoutineRequest == null || string.IsNullOrEmpty(createRoutineRequest.RoutineName))
             {
-                return null;
+                return new CreateRoutineResponse
+                {
+                    IsSuccess = false,
+                    Message = "Invalid request: CreateRoutineRequest is null or RoutineName is missing."
+                };
             }
 
             return await _routineRepository.CreateRoutine(createRoutineRequest);
@@ -34,7 +37,11 @@ namespace TFC.Application.Main
                || string.IsNullOrEmpty(deleteRoutineRequest.UserDni)
                || deleteRoutineRequest.RoutineId == null)
             {
-                return null;
+                return new DeleteRoutineResponse
+                {
+                    IsSuccess = false,
+                    Message = "Invalid request: DeleteRoutineRequest is null, UserDni is missing, or RoutineId is missing."
+                };
             }
 
             return await _routineRepository.DeleteRoutine(deleteRoutineRequest);
@@ -42,10 +49,13 @@ namespace TFC.Application.Main
 
         public async Task<GetRoutinesByFriendCodeResponse> GetRoutinesByFriendCode(GetRoutinesByFriendCodeRequest getRoutinesByFriendCodeRequest)
         {
-            if (getRoutinesByFriendCodeRequest == null
-               || string.IsNullOrEmpty(getRoutinesByFriendCodeRequest.FriendCode))
+            if (getRoutinesByFriendCodeRequest == null || string.IsNullOrEmpty(getRoutinesByFriendCodeRequest.FriendCode))
             {
-                return null;
+                return new GetRoutinesByFriendCodeResponse
+                {
+                    IsSuccess = false,
+                    Message = "Invalid request: GetRoutinesByFriendCodeRequest is null or FriendCode is missing."
+                };
             }
 
             return await _routineRepository.GetRoutinesByFriendCode(getRoutinesByFriendCodeRequest);
@@ -53,10 +63,13 @@ namespace TFC.Application.Main
 
         public async Task<UpdateRoutineResponse> UpdateUser(UpdateRoutineRequest updateRoutineRequest)
         {
-            if (updateRoutineRequest == null
-                || updateRoutineRequest.RoutineId == null)
+            if (updateRoutineRequest == null || updateRoutineRequest.RoutineId == 0)
             {
-                return null;
+                return new UpdateRoutineResponse
+                {
+                    IsSuccess = false,
+                    Message = "Invalid request: UpdateRoutineRequest is null or RoutineId is missing."
+                };
             }
 
             return await _routineRepository.UpdateRoutine(updateRoutineRequest);
