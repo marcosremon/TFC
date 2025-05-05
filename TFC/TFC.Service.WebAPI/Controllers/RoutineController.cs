@@ -53,7 +53,7 @@ namespace TFC.Service.WebApi.Controllers
             return Ok(response);
         }
 
-        [HttpPost]
+        [HttpPost("GetRoutinesByFriendCode")]
         public async Task<ActionResult<GetRoutinesByFriendCodeResponse>> GetRoutinesByFriendCode([FromBody] GetRoutinesByFriendCodeRequest getRoutinesByFriendCodeRequest)
         {
             GetRoutinesByFriendCodeResponse response = await _routineApplication.GetRoutinesByFriendCode(getRoutinesByFriendCodeRequest);
