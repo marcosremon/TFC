@@ -1,7 +1,6 @@
-﻿using System.Net.Mail;
-using MailKit.Net.Smtp;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using MimeKit;
+using System.Net.Mail;
 
 public static class MailUtilities
 {
@@ -32,7 +31,7 @@ public static class MailUtilities
                    "Por seguridad, te recomendamos cambiar esta contraseña después de iniciar sesión."
         };
 
-        using (var client = new SmtpClient())
+        using (var client = new MailKit.Net.Smtp.SmtpClient())
         {
             client.Timeout = 10000;
             client.Connect(smtpHost, smtpPort, MailKit.Security.SecureSocketOptions.StartTls);

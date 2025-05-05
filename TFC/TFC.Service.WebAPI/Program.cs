@@ -17,7 +17,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Configuracion Mails
-Mails.Initialize(builder.Configuration);
+MailUtilities.Initialize(builder.Configuration);
 
 // Configuración de SQL Server con Entity Framework Core
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
