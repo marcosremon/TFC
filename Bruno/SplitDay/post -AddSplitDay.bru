@@ -1,0 +1,29 @@
+meta {
+  name: post /AddSplitDay
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/AddSplitDay
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "dayName": "",
+    "routineId": "",
+    "userId": "",
+    "exercises": [
+      {
+        "exerciseId": "",
+        "exerciseName": "",
+        "sets": "",
+        "reps": "",
+        "weight": "",
+        "dayName": ""
+      }
+    ]
+  }
+}

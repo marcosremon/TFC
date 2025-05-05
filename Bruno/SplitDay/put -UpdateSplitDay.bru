@@ -1,0 +1,29 @@
+meta {
+  name: put /UpdateSplitDay
+  type: http
+  seq: 2
+}
+
+put {
+  url: {{baseUrl}}/UpdateSplitDay
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "dayName": "",
+    "routineId": "",
+    "userId": "",
+    "exercises": [
+      {
+        "exerciseId": "",
+        "exerciseName": "",
+        "sets": "",
+        "reps": "",
+        "weight": "",
+        "dayName": ""
+      }
+    ]
+  }
+}

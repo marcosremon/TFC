@@ -1,0 +1,17 @@
+meta {
+  name: post /GetUserByEmail
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/GetUserByEmail
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": ""
+  }
+}

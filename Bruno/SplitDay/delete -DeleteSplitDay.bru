@@ -1,0 +1,19 @@
+meta {
+  name: delete /DeleteSplitDay
+  type: http
+  seq: 3
+}
+
+delete {
+  url: {{baseUrl}}/DeleteSplitDay
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "dayName": "",
+    "routineId": "",
+    "userId": ""
+  }
+}

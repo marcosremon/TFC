@@ -1,0 +1,21 @@
+meta {
+  name: put /UpdateUser
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{baseUrl}}/UpdateUser
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "dniToBeFound": "",
+    "username": "",
+    "surname": "",
+    "email": "",
+    "password": ""
+  }
+}

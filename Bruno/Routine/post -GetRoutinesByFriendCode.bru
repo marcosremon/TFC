@@ -1,0 +1,17 @@
+meta {
+  name: post /GetRoutinesByFriendCode
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/GetRoutinesByFriendCode
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "friendCode": ""
+  }
+}

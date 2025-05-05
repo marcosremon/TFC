@@ -1,0 +1,23 @@
+meta {
+  name: post /AddExercise
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/AddExercise
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "userId": "",
+    "routineId": "",
+    "dayName": "",
+    "exerciseName": "",
+    "sets": "",
+    "reps": "",
+    "weight": ""
+  }
+}

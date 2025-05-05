@@ -1,0 +1,18 @@
+meta {
+  name: delete /DeleteRoutine
+  type: http
+  seq: 3
+}
+
+delete {
+  url: {{baseUrl}}/DeleteRoutine
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "userDni": "",
+    "routineId": ""
+  }
+}

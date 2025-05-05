@@ -1,0 +1,19 @@
+meta {
+  name: post /GetExercisesByDayName
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/GetExercisesByDayName
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "userId": "",
+    "routineId": "",
+    "dayName": ""
+  }
+}

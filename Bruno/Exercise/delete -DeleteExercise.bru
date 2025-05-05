@@ -1,0 +1,23 @@
+meta {
+  name: delete /DeleteExercise
+  type: http
+  seq: 3
+}
+
+delete {
+  url: {{baseUrl}}/DeleteExercise
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "userId": "",
+    "routineId": "",
+    "dayName": "",
+    "exerciseName": "",
+    "sets": "",
+    "reps": "",
+    "weight": ""
+  }
+}
