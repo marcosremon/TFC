@@ -28,7 +28,11 @@ namespace TFC.Application.Main
                 || string.IsNullOrEmpty(changePasswordWithPasswordAndEmailRequest.ConfirmNewPassword)
                 || changePasswordWithPasswordAndEmailRequest.NewPassword != changePasswordWithPasswordAndEmailRequest.ConfirmNewPassword)
             {
-                return null;
+                return new ChangePasswordWithPasswordAndEmailResponse
+                {
+                    IsSuccess = false,
+                    Message = "Invalid request: Missing or mismatched fields in ChangePasswordWithPasswordAndEmailRequest."
+                };
             }
 
             return await _userRepository.ChangePasswordWithPasswordAndEmail(changePasswordWithPasswordAndEmailRequest);
@@ -36,10 +40,13 @@ namespace TFC.Application.Main
 
         public async Task<CreateNewPasswordResponse> CreateNewPassword(CreateNewPasswordRequest createNewPasswordRequest)
         {
-            if (createNewPasswordRequest == null
-                || string.IsNullOrEmpty(createNewPasswordRequest.UserEmail))
+            if (createNewPasswordRequest == null || string.IsNullOrEmpty(createNewPasswordRequest.UserEmail))
             {
-                return null;
+                return new CreateNewPasswordResponse
+                {
+                    IsSuccess = false,
+                    Message = "Invalid request: CreateNewPasswordRequest is null or UserEmail is missing."
+                };
             }
 
             return await _userRepository.CreateNewPassword(createNewPasswordRequest);
@@ -53,7 +60,11 @@ namespace TFC.Application.Main
                 || string.IsNullOrEmpty(createUserRequst.Username)
                 || string.IsNullOrEmpty(createUserRequst.Password))
             {
-                return null;
+                return new CreateUserResponse
+                {
+                    IsSuccess = false,
+                    Message = "Invalid request: Missing fields in CreateUserRequst."
+                };
             }
 
             return await _userRepository.CreateUser(createUserRequst);
@@ -61,10 +72,13 @@ namespace TFC.Application.Main
 
         public async Task<DeleteUserResponse> DeleteUser(DeleteUserRequest deleteUserRequest)
         {
-            if (deleteUserRequest == null
-                || string.IsNullOrEmpty(deleteUserRequest.Dni))
+            if (deleteUserRequest == null || string.IsNullOrEmpty(deleteUserRequest.Dni))
             {
-                return null;
+                return new DeleteUserResponse
+                {
+                    IsSuccess = false,
+                    Message = "Invalid request: DeleteUserRequest is null or Dni is missing."
+                };
             }
 
             return await _userRepository.DeleteUser(deleteUserRequest);
@@ -74,7 +88,11 @@ namespace TFC.Application.Main
         {
             if (getUserByEmailRequest == null || string.IsNullOrEmpty(getUserByEmailRequest.Email))
             {
-                return null;
+                return new GetUserByEmailResponse
+                {
+                    IsSuccess = false,
+                    Message = "Invalid request: GetUserByEmailRequest is null or Email is missing."
+                };
             }
 
             return await _userRepository.GetUserByEmail(getUserByEmailRequest);
@@ -87,11 +105,15 @@ namespace TFC.Application.Main
 
         public async Task<UpdateUserResponse> UpdateUser(UpdateUserRequst updateUserRequest)
         {
-            if (updateUserRequest == null 
-                || string.IsNullOrEmpty(updateUserRequest.DniToBeFound) 
+            if (updateUserRequest == null
+                || string.IsNullOrEmpty(updateUserRequest.DniToBeFound)
                 || string.IsNullOrEmpty(updateUserRequest.Email))
             {
-                return null;
+                return new UpdateUserResponse
+                {
+                    IsSuccess = false,
+                    Message = "Invalid request: Missing fields in UpdateUserRequst."
+                };
             }
 
             return await _userRepository.UpdateUser(updateUserRequest);

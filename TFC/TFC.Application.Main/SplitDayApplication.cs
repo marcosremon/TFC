@@ -23,7 +23,11 @@ namespace TFC.Application.Main
                 || anyadirSplitDayRequest.UserId == null
                 || anyadirSplitDayRequest.RoutineId == null)
             {
-                return null;
+                return new AddSplitDayResponse
+                {
+                    IsSuccess = false,
+                    Message = "Invalid request: AddSplitDayRequest is null or required fields are missing."
+                };
             }
 
             return await _splitDayRepository.CreateSplitDay(anyadirSplitDayRequest);
@@ -36,15 +40,28 @@ namespace TFC.Application.Main
                || deleteSplitDayRequest.UserId == null
                || deleteSplitDayRequest.RoutineId == null)
             {
-                return null;
+                return new DeleteSplitDayResponse
+                {
+                    IsSuccess = false,
+                    Message = "Invalid request: DeleteSplitDayRequest is null or required fields are missing."
+                };
             }
 
             return await _splitDayRepository.DeleteSplitDay(deleteSplitDayRequest);
         }
 
-        public async Task<GetAllUserSplitsResponse> GetAllUserSplits(GetAllUserSplitsRequest getAllUserSplitsResponse)
+        public async Task<GetAllUserSplitsResponse> GetAllUserSplits(GetAllUserSplitsRequest getAllUserSplitsRequest)
         {
-            return await _splitDayRepository.GetAllUserSplits(getAllUserSplitsResponse);
+            if (getAllUserSplitsRequest == null || getAllUserSplitsRequest.UserId == null)
+            {
+                return new GetAllUserSplitsResponse
+                {
+                    IsSuccess = false,
+                    Message = "Invalid request: GetAllUserSplitsRequest is null or UserId is missing."
+                };
+            }
+
+            return await _splitDayRepository.GetAllUserSplits(getAllUserSplitsRequest);
         }
 
         public async Task<ActualizarSplitDayResponse> UpdateSplitDay(ActualizarSplitDayRequest actualizarSplitDayRequest)
@@ -54,7 +71,11 @@ namespace TFC.Application.Main
                || actualizarSplitDayRequest.UserId == null
                || actualizarSplitDayRequest.RoutineId == null)
             {
-                return null;
+                return new ActualizarSplitDayResponse
+                {
+                    IsSuccess = false,
+                    Message = "Invalid request: ActualizarSplitDayRequest is null or required fields are missing."
+                };
             }
 
             return await _splitDayRepository.UpdateSplitDay(actualizarSplitDayRequest);

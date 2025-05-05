@@ -23,7 +23,11 @@ namespace TFC.Application.Main
                 || addExerciseRequest.DayName == null
                 || string.IsNullOrEmpty(addExerciseRequest.ExerciseName))
             {
-                return null;
+                return new AddExerciseResponse
+                {
+                    IsSuccess = false,
+                    Message = "Invalid request: AddExerciseRequest is null or required fields are missing."
+                };
             }
 
             return await _exerciseRepository.AddExercise(addExerciseRequest);
@@ -37,7 +41,11 @@ namespace TFC.Application.Main
                 || deleteExerciseRequest.DayName == null
                 || string.IsNullOrEmpty(deleteExerciseRequest.ExerciseName))
             {
-                return null;
+                return new DeleteExerciseResponse
+                {
+                    IsSuccess = false,
+                    Message = "Invalid request: DeleteExerciseRequest is null or required fields are missing."
+                };
             }
 
             return await _exerciseRepository.DeleteExercise(deleteExerciseRequest);
@@ -50,7 +58,11 @@ namespace TFC.Application.Main
                 || getExercisesByDayNameRequest.RoutineId == null
                 || getExercisesByDayNameRequest.DayName == null)
             {
-                return null;
+                return new GetExercisesByDayNameResponse
+                {
+                    IsSuccess = false,
+                    Message = "Invalid request: GetExercisesByDayNameRequest is null or required fields are missing."
+                };
             }
 
             return await _exerciseRepository.GetExercisesByDayName(getExercisesByDayNameRequest);
@@ -64,7 +76,11 @@ namespace TFC.Application.Main
                 || updateExerciseRequest.DayName == null
                 || string.IsNullOrEmpty(updateExerciseRequest.ExerciseName))
             {
-                return null;
+                return new UpdateExerciseResponse
+                {
+                    IsSuccess = false,
+                    Message = "Invalid request: UpdateExerciseRequest is null or required fields are missing."
+                };
             }
 
             return await _exerciseRepository.UpdateExercise(updateExerciseRequest);
