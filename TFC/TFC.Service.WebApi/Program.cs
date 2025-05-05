@@ -17,13 +17,13 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Configuracion Mails
-Mails.Initialize(builder.Configuration);
+MailUtilities.Initialize(builder.Configuration);
 
 // Configuración de SQL Server con Entity Framework Core
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("DefaultConnection"),
-        sqlOptions => sqlOptions.EnableRetryOnFailure()));
+        sqlOptions => sqlOptions.EnableRetryOnFailure(0)));
 
 // Inicializa JwtUtils con la configuración
 JwtUtils.Initialize(builder.Configuration);
