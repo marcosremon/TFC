@@ -33,6 +33,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TFC.Service.WebApi", "TFC.S
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TFC.Infraestructure.Persistence", "TFC.Infraestructure.Persistence\TFC.Infraestructure.Persistence.csproj", "{2126EC26-F06C-4519-BE27-A58493E9EF4E}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentation", "{26A344EE-F436-429F-8A1F-3E0DCC803F99}"
+	ProjectSection(SolutionItems) = preProject
+		Endpoints Documentation.xlsx = Endpoints Documentation.xlsx
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
