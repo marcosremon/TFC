@@ -7,9 +7,9 @@ namespace TFC.Application.Interface.Application
 {
     public interface IRoutineApplication
     {
-        public Task<CreateRoutineResponse> CreateRoutine(CreateRoutineRequest createRoutineRequest);
-        public Task<DeleteRoutineResponse> DeleteRoutine(DeleteRoutineRequest deleteRoutineRequest);
-        public Task<GetRoutinesByFriendCodeResponse> GetRoutinesByFriendCode(GetRoutinesByFriendCodeRequest getRoutinesByFriendCodeRequest);
-        public Task<UpdateRoutineResponse> UpdateUser(UpdateRoutineRequest updateRoutineRequest);
+        Task<CreateRoutineResponse> CreateRoutine(CreateRoutineRequest createRoutineRequest);
+        Task<DeleteRoutineResponse> DeleteRoutine(DeleteRoutineRequest deleteRoutineRequest);
+        Task<GetRoutinesByFriendCodeResponse> GetRoutinesByFriendCode(GetRoutinesByFriendCodeRequest getRoutinesByFriendCodeRequest);
+        Task<UpdateRoutineResponse> UpdateUser(UpdateRoutineRequest updateRoutineRequest);
     }
 }

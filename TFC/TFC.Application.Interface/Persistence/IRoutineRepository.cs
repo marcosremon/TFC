@@ -7,9 +7,9 @@ namespace TFC.Application.Interface.Persistence
 {
     public interface IRoutineRepository
     {
-        public Task<CreateRoutineResponse> CreateRoutine(CreateRoutineRequest createRoutineRequest);
-        public Task<DeleteRoutineResponse> DeleteRoutine(DeleteRoutineRequest deleteRoutineRequest);
-        public Task<GetRoutinesByFriendCodeResponse> GetRoutinesByFriendCode(GetRoutinesByFriendCodeRequest getRoutinesByFriendCodeRequest);
-        public Task<UpdateRoutineResponse> UpdateRoutine(UpdateRoutineRequest updateRoutineRequest);
+        Task<CreateRoutineResponse> CreateRoutine(CreateRoutineRequest createRoutineRequest);
+        Task<DeleteRoutineResponse> DeleteRoutine(DeleteRoutineRequest deleteRoutineRequest);
+        Task<GetRoutinesByFriendCodeResponse> GetRoutinesByFriendCode(GetRoutinesByFriendCodeRequest getRoutinesByFriendCodeRequest);
+        Task<UpdateRoutineResponse> UpdateRoutine(UpdateRoutineRequest updateRoutineRequest);
     }
 }

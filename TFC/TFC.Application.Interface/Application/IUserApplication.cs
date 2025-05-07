@@ -10,12 +10,12 @@ namespace TFC.Application.Interface.Application
 {
     public interface IUserApplication
     {
-        public Task<GetUserByEmailResponse> GetUserByEmail(GetUserByEmailRequest getUserByEmailRequest);
-        public Task<GetUsersResponse> GetUsers();
-        public Task<CreateUserResponse> CreateUser(CreateUserRequst createUserRequst);
-        public Task<UpdateUserResponse> UpdateUser(UpdateUserRequst updateUserRequest);
-        public Task<DeleteUserResponse> DeleteUser(DeleteUserRequest deleteUserRequest);
-        public Task<CreateNewPasswordResponse> CreateNewPassword(CreateNewPasswordRequest createNewPasswordRequest);
-        public Task<ChangePasswordWithPasswordAndEmailResponse> ChangePasswordWithPasswordAndEmail(ChangePasswordWithPasswordAndEmailRequest changePasswordWithPasswordAndEmailRequest);
+        Task<GetUserByEmailResponse> GetUserByEmail(GetUserByEmailRequest getUserByEmailRequest);
+        Task<GetUsersResponse> GetUsers();
+        Task<CreateUserResponse> CreateUser(CreateUserRequst createUserRequst);
+        Task<UpdateUserResponse> UpdateUser(UpdateUserRequst updateUserRequest);
+        Task<DeleteUserResponse> DeleteUser(DeleteUserRequest deleteUserRequest);
+        Task<CreateNewPasswordResponse> CreateNewPassword(CreateNewPasswordRequest createNewPasswordRequest);
+        Task<ChangePasswordWithPasswordAndEmailResponse> ChangePasswordWithPasswordAndEmail(ChangePasswordWithPasswordAndEmailRequest changePasswordWithPasswordAndEmailRequest);
     }
 }

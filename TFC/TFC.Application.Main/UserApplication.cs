@@ -84,7 +84,7 @@ namespace TFC.Application.Main
             return await _userRepository.DeleteUser(deleteUserRequest);
         }
 
-        public async Task<GetUserByEmailResponse?> GetUserByEmail(GetUserByEmailRequest getUserByEmailRequest)
+        public async Task<GetUserByEmailResponse> GetUserByEmail(GetUserByEmailRequest getUserByEmailRequest)
         {
             if (getUserByEmailRequest == null || string.IsNullOrEmpty(getUserByEmailRequest.Email))
             {
