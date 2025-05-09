@@ -36,6 +36,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentation", "{26A344EE-F436-429F-8A1F-3E0DCC803F99}"
 	ProjectSection(SolutionItems) = preProject
 		DatabaseSchema.txt = DatabaseSchema.txt
+		Endpoints Documentation.xlsx = Endpoints Documentation.xlsx
+		To_Do.txt = To_Do.txt
 	EndProjectSection
 EndProject
 Global
