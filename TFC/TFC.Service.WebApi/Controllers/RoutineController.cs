@@ -56,13 +56,13 @@ namespace TFC.Service.WebApi.Controllers
         [HttpPost("GetRoutinesByFriendCode")]
         public async Task<ActionResult<GetRoutinesByFriendCodeResponse>> GetRoutinesByFriendCode([FromBody] GetRoutinesByFriendCodeRequest getRoutinesByFriendCodeRequest)
         {
-            GetRoutinesByFriendCodeResponse response = await _routineApplication.GetRoutinesByFriendCode(getRoutinesByFriendCodeRequest);
-            if (!response.IsSuccess || response == null)
+            GetRoutinesByFriendCodeResponse getRoutinesByFriendCodeResponse = await _routineApplication.GetRoutinesByFriendCode(getRoutinesByFriendCodeRequest);
+            if (!getRoutinesByFriendCodeResponse.IsSuccess || getRoutinesByFriendCodeResponse == null)
             {
-                return BadRequest(response.Message);
+                return BadRequest(getRoutinesByFriendCodeResponse.Message);
             }
 
-            return Ok(response);
+            return Ok(getRoutinesByFriendCodeResponse);
         }
     }
 }

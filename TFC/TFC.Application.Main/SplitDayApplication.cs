@@ -64,7 +64,7 @@ namespace TFC.Application.Main
             return await _splitDayRepository.GetAllUserSplits(getAllUserSplitsRequest);
         }
 
-        public async Task<ActualizarSplitDayResponse> UpdateSplitDay(ActualizarSplitDayRequest actualizarSplitDayRequest)
+        public async Task<ActualizarSplitDayResponse> UpdateSplitDay(UpdateSplitDayRequest actualizarSplitDayRequest)
         {
             if (actualizarSplitDayRequest == null
                || actualizarSplitDayRequest.DayName == null

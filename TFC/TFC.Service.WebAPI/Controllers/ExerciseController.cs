@@ -54,13 +54,13 @@ namespace TFC.Service.WebApi.Controllers
         [HttpPost("GetExercisesByDayName")]
         public async Task<ActionResult<GetExercisesByDayNameResponse>> GetExercisesByDayName([FromBody] GetExercisesByDayNameRequest getExercisesByDayNameRequest)
         {
-            GetExercisesByDayNameResponse response = await _exerciseApplication.GetExercisesByDayName(getExercisesByDayNameRequest);
-            if (!response.IsSuccess || response == null)
+            GetExercisesByDayNameResponse getExercisesByDayNameResponse = await _exerciseApplication.GetExercisesByDayName(getExercisesByDayNameRequest);
+            if (getExercisesByDayNameResponse.IsSuccess)
             {
-                return BadRequest(response.Message);
+                return Ok(getExercisesByDayNameResponse);
             }
 
-            return Ok(response);
+            return BadRequest(getExercisesByDayNameResponse.Message);
         }
     }
 }

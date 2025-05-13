@@ -201,7 +201,7 @@ namespace TFC.Infraestructure.Persistence.Repository
             return response;
         }
 
-        public async Task<ActualizarSplitDayResponse> UpdateSplitDay(ActualizarSplitDayRequest actualizarSplitDayRequest)
+        public async Task<ActualizarSplitDayResponse> UpdateSplitDay(UpdateSplitDayRequest actualizarSplitDayRequest)
         {
             throw new NotImplementedException();
         }
