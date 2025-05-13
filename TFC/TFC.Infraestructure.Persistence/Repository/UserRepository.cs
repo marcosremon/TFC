@@ -27,7 +27,6 @@ namespace TFC.Infraestructure.Persistence.Repository
         public async Task<ChangePasswordWithPasswordAndEmailResponse> ChangePasswordWithPasswordAndEmail(ChangePasswordWithPasswordAndEmailRequest changePasswordRequest)
         {
             ChangePasswordWithPasswordAndEmailResponse response = new ChangePasswordWithPasswordAndEmailResponse();
-
             using (ApplicationDbContext context = _context)
             {
                 IDbContextTransaction dbContextTransaction = context.Database.BeginTransaction();
@@ -79,7 +78,6 @@ namespace TFC.Infraestructure.Persistence.Repository
         public async Task<CreateNewPasswordResponse> CreateNewPassword(CreateNewPasswordRequest createNewPasswordRequest)
         {
             CreateNewPasswordResponse response = new CreateNewPasswordResponse();
-
             using (ApplicationDbContext context = _context)
             {
                 IDbContextTransaction dbContextTransaction = context.Database.BeginTransaction();
@@ -126,7 +124,6 @@ namespace TFC.Infraestructure.Persistence.Repository
         public async Task<CreateUserResponse> CreateUser(CreateUserRequst createUserRequst)
         {
             CreateUserResponse response = new CreateUserResponse();
-
             using (ApplicationDbContext context = _context)
             {
                 IDbContextTransaction dbContextTransaction = context.Database.BeginTransaction();
@@ -185,7 +182,6 @@ namespace TFC.Infraestructure.Persistence.Repository
         public async Task<DeleteUserResponse> DeleteUser(DeleteUserRequest deleteUserRequest)
         {
             DeleteUserResponse response = new DeleteUserResponse();
-
             using (ApplicationDbContext context = _context)
             {
                 IDbContextTransaction dbContextTransaction = context.Database.BeginTransaction();
@@ -229,7 +225,6 @@ namespace TFC.Infraestructure.Persistence.Repository
         public async Task<GetUserByEmailResponse> GetUserByEmail(GetUserByEmailRequest getUserByEmailRequest)
         {
             GetUserByEmailResponse response = new GetUserByEmailResponse();
-
             try
             {
                 User? user = await _context.Users.Include(u => u.Routines)
@@ -288,7 +283,6 @@ namespace TFC.Infraestructure.Persistence.Repository
         public async Task<GetUsersResponse> GetUsers()
         {
             GetUsersResponse response = new GetUsersResponse();
-
             try
             {
                 List<User> users = await _context.Users
@@ -350,7 +344,6 @@ namespace TFC.Infraestructure.Persistence.Repository
         public async Task<UpdateUserResponse> UpdateUser(UpdateUserRequst updateUserRequest)
         {
             UpdateUserResponse response = new UpdateUserResponse();
-
             using (ApplicationDbContext context = _context)
             {
                 IDbContextTransaction dbContextTransaction = context.Database.BeginTransaction();

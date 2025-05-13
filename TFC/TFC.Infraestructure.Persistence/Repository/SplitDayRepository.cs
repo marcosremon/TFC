@@ -1,10 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using TFC.Application.DTO.EntityDTO;
-using TFC.Application.DTO.SplitDay.ActualizarSplitDay;
 using TFC.Application.DTO.SplitDay.AnyadirSplitDay;
 using TFC.Application.DTO.SplitDay.DeleteSplitDay;
 using TFC.Application.DTO.SplitDay.GetAllUserSplits;
+using TFC.Application.DTO.SplitDay.UpdateSplitDay;
 using TFC.Application.Interface.Persistence;
 using TFC.Domain.Model.Entity;
 using TFC.Infraestructure.Persistence.Context;
@@ -23,11 +23,9 @@ namespace TFC.Infraestructure.Persistence.Repository
         public async Task<AddSplitDayResponse> CreateSplitDay(AddSplitDayRequest addSplitDayRequest)
         {
             AddSplitDayResponse response = new AddSplitDayResponse();
-
             using (ApplicationDbContext context = _context)
             {
                 IDbContextTransaction dbContextTransaction = context.Database.BeginTransaction();
-
                 try
                 {
                     User? user = await context.Users
@@ -106,11 +104,9 @@ namespace TFC.Infraestructure.Persistence.Repository
         public async Task<DeleteSplitDayResponse> DeleteSplitDay(DeleteSplitDayRequest deleteSplitDayRequest)
         {
             DeleteSplitDayResponse response = new DeleteSplitDayResponse();
-
             using (ApplicationDbContext context = _context)
             {
                 IDbContextTransaction dbContextTransaction = context.Database.BeginTransaction();
-
                 try
                 {
                     User? user = await context.Users
@@ -160,7 +156,6 @@ namespace TFC.Infraestructure.Persistence.Repository
         public async Task<GetAllUserSplitsResponse> GetAllUserSplits(GetAllUserSplitsRequest getAllUserSplitsResponse)
         {
             GetAllUserSplitsResponse response = new GetAllUserSplitsResponse();
-
             try
             {
                 User? user = await _context.Users
@@ -201,7 +196,7 @@ namespace TFC.Infraestructure.Persistence.Repository
             return response;
         }
 
-        public async Task<ActualizarSplitDayResponse> UpdateSplitDay(UpdateSplitDayRequest actualizarSplitDayRequest)
+        public async Task<UpdateSplitDayResponse> UpdateSplitDay(UpdateSplitDayRequest actualizarSplitDayRequest)
         {
             throw new NotImplementedException();
         }

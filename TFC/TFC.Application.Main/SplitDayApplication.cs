@@ -1,7 +1,7 @@
-﻿using TFC.Application.DTO.SplitDay.ActualizarSplitDay;
-using TFC.Application.DTO.SplitDay.AnyadirSplitDay;
+﻿using TFC.Application.DTO.SplitDay.AnyadirSplitDay;
 using TFC.Application.DTO.SplitDay.DeleteSplitDay;
 using TFC.Application.DTO.SplitDay.GetAllUserSplits;
+using TFC.Application.DTO.SplitDay.UpdateSplitDay;
 using TFC.Application.Interface.Application;
 using TFC.Application.Interface.Persistence;
 
@@ -64,14 +64,14 @@ namespace TFC.Application.Main
             return await _splitDayRepository.GetAllUserSplits(getAllUserSplitsRequest);
         }
 
-        public async Task<ActualizarSplitDayResponse> UpdateSplitDay(UpdateSplitDayRequest actualizarSplitDayRequest)
+        public async Task<UpdateSplitDayResponse> UpdateSplitDay(UpdateSplitDayRequest actualizarSplitDayRequest)
         {
             if (actualizarSplitDayRequest == null
                || actualizarSplitDayRequest.DayName == null
                || actualizarSplitDayRequest.UserId == null
                || actualizarSplitDayRequest.RoutineId == null)
             {
-                return new ActualizarSplitDayResponse
+                return new UpdateSplitDayResponse
                 {
                     IsSuccess = false,
                     Message = "Invalid request: ActualizarSplitDayRequest is null or required fields are missing."

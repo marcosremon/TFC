@@ -18,49 +18,78 @@ namespace TFC.Service.WebApi.Controllers
         [HttpPost("AddExercise")]
         public async Task<ActionResult<AddExerciseResponse>> AddExercise([FromBody] AddExerciseRequest addExerciseRequest)
         {
-            AddExerciseResponse response = await _exerciseApplication.AddExercise(addExerciseRequest);
-            if (!response.IsSuccess || response == null)
+            try
             {
-                return BadRequest(response.Message);
-            }
+                AddExerciseResponse response = await _exerciseApplication.AddExercise(addExerciseRequest);
+                if (response.IsSuccess)
+                {
+                    return Created(string.Empty, response);
+                }
 
-            return Ok(response);
+                return BadRequest(response?.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPut("UpdateExercise")]
         public async Task<ActionResult<UpdateExerciseResponse>> UpdateExercise([FromBody] UpdateExerciseRequest updateExerciseRequest)
         {
-            UpdateExerciseResponse response = await _exerciseApplication.UpdateExercise(updateExerciseRequest);
-            if (!response.IsSuccess || response == null)
+            try
             {
-                return BadRequest(response.Message);
-            }
+                UpdateExerciseResponse response = await _exerciseApplication.UpdateExercise(updateExerciseRequest);
+                if (response.IsSuccess)
+                {
+                    return Ok(response);
+                }
 
-            return Ok(response);
+                return BadRequest(response?.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpDelete("DeleteExercise")]
         public async Task<ActionResult<DeleteExerciseResponse>> DeleteExercise([FromBody] DeleteExerciseRequest deleteExerciseRequest)
         {
-            DeleteExerciseResponse response = await _exerciseApplication.DeleteExercise(deleteExerciseRequest);
-            if (!response.IsSuccess || response == null)
+            try
             {
-                return BadRequest(response.Message);
-            }
+                DeleteExerciseResponse response = await _exerciseApplication.DeleteExercise(deleteExerciseRequest);
+                if (response.IsSuccess)
+                {
+                    return NoContent();
+                }
 
-            return Ok(response);
+                return BadRequest(response?.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost("GetExercisesByDayName")]
         public async Task<ActionResult<GetExercisesByDayNameResponse>> GetExercisesByDayName([FromBody] GetExercisesByDayNameRequest getExercisesByDayNameRequest)
         {
-            GetExercisesByDayNameResponse getExercisesByDayNameResponse = await _exerciseApplication.GetExercisesByDayName(getExercisesByDayNameRequest);
-            if (getExercisesByDayNameResponse.IsSuccess)
+            try
             {
-                return Ok(getExercisesByDayNameResponse);
-            }
+                GetExercisesByDayNameResponse getExercisesByDayNameResponse = await _exerciseApplication.GetExercisesByDayName(getExercisesByDayNameRequest);
+                if (getExercisesByDayNameResponse.IsSuccess)
+                {
+                    // 200 OK is appropriate for successful retrieval
+                    return Ok(getExercisesByDayNameResponse);
+                }
 
-            return BadRequest(getExercisesByDayNameResponse.Message);
+                return BadRequest(getExercisesByDayNameResponse.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

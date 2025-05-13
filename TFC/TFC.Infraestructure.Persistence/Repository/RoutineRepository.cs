@@ -24,7 +24,6 @@ namespace TFC.Infraestructure.Persistence.Repository
         public async Task<CreateRoutineResponse> CreateRoutine(CreateRoutineRequest createRoutineRequest)
         {
             CreateRoutineResponse response = new CreateRoutineResponse();
-
             using (ApplicationDbContext context = _context)
             {
                 IDbContextTransaction dbContextTransaction = context.Database.BeginTransaction();
@@ -104,7 +103,6 @@ namespace TFC.Infraestructure.Persistence.Repository
         public async Task<DeleteRoutineResponse> DeleteRoutine(DeleteRoutineRequest deleteRoutineRequest)
         {
             DeleteRoutineResponse response = new DeleteRoutineResponse();
-
             using (ApplicationDbContext context = _context)
             {
                 IDbContextTransaction dbContextTransaction = context.Database.BeginTransaction();
@@ -156,7 +154,6 @@ namespace TFC.Infraestructure.Persistence.Repository
         public async Task<GetRoutinesByFriendCodeResponse> GetRoutinesByFriendCode(GetRoutinesByFriendCodeRequest getRoutinesByFriendCodeRequest)
         {
             GetRoutinesByFriendCodeResponse response = new GetRoutinesByFriendCodeResponse();
-
             try
             {
                 User? friend = _context.Users.Include(u => u.Routines)
@@ -203,7 +200,6 @@ namespace TFC.Infraestructure.Persistence.Repository
         public async Task<UpdateRoutineResponse> UpdateRoutine(UpdateRoutineRequest updateRoutineRequest)
         {
             UpdateRoutineResponse response = new UpdateRoutineResponse();
-
             using (ApplicationDbContext context = _context)
             {
                 IDbContextTransaction dbContextTransaction = context.Database.BeginTransaction();

@@ -16,18 +16,18 @@ namespace TFC.Service.WebApi.Controllers
             _splitDayApplication = splitDayApplication;
         }
 
-        [HttpPost("AddSplitDay")]
+        [HttpPost("CreateSplitDay")]
         public async Task<ActionResult<AddSplitDayResponse>> CreateSplitDay([FromBody] AddSplitDayRequest anyadirSplitDayRequest)
         {
             try
             {
-                AddSplitDayResponse addSplitDayResponse = await _splitDayApplication.CreateSplitDay(anyadirSplitDayRequest);
-                if (addSplitDayResponse.IsSuccess)
+                AddSplitDayResponse response = await _splitDayApplication.CreateSplitDay(anyadirSplitDayRequest);
+                if (response.IsSuccess)
                 {
-                    return Ok(addSplitDayResponse);
+                    return Created(string.Empty, response);
                 }
 
-                return BadRequest(addSplitDayResponse.Message);
+                return BadRequest(response?.Message);
             }
             catch (Exception ex)
             {
@@ -40,13 +40,13 @@ namespace TFC.Service.WebApi.Controllers
         {
             try
             {
-                UpdateSplitDayResponse updateSplitDayResponse = await _splitDayApplication.UpdateSplitDay(actualizarSplitDayRequest);
-                if (updateSplitDayResponse.IsSuccess)
+                UpdateSplitDayResponse response = await _splitDayApplication.UpdateSplitDay(actualizarSplitDayRequest);
+                if (response.IsSuccess)
                 {
-                    return Ok(updateSplitDayResponse);
+                    return Ok(response);
                 }
 
-                return BadRequest(updateSplitDayResponse.Message);
+                return BadRequest(response?.Message);
             }
             catch (Exception ex)
             {
@@ -59,13 +59,13 @@ namespace TFC.Service.WebApi.Controllers
         {
             try
             {
-                DeleteSplitDayResponse deletesplitdayresponse = await _splitDayApplication.DeleteSplitDay(deleteSplitDayRequest);
-                if (deletesplitdayresponse.IsSuccess)
+                DeleteSplitDayResponse response = await _splitDayApplication.DeleteSplitDay(deleteSplitDayRequest);
+                if (response.IsSuccess)
                 {
-                    return Ok(deletesplitdayresponse);
+                    return NoContent();
                 }
 
-                return BadRequest(deletesplitdayresponse.Message);
+                return BadRequest(response?.Message);
             }
             catch (Exception ex)
             {
@@ -78,13 +78,13 @@ namespace TFC.Service.WebApi.Controllers
         {
             try
             {
-                GetAllUserSplitsResponse getallusersplitsresponse = await _splitDayApplication.GetAllUserSplits(getAllUserSplitsRequest);
-                if (getallusersplitsresponse.IsSuccess)
+                GetAllUserSplitsResponse response = await _splitDayApplication.GetAllUserSplits(getAllUserSplitsRequest);
+                if (response.IsSuccess)
                 {
-                    return Ok(getallusersplitsresponse);
+                    return Ok(response);
                 }
 
-                return BadRequest(getallusersplitsresponse.Message);
+                return BadRequest(response?.Message);
             }
             catch (Exception ex)
             {

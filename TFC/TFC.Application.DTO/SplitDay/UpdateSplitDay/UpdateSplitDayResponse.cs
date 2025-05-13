@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Kintech.RestCA.Transversal.Common;
+using TFC.Application.DTO.EntityDTO;
 
 namespace TFC.Application.DTO.SplitDay.UpdateSplitDay
 {
-    internal class UpdateSplitDayResponse
+    public class UpdateSplitDayResponse : BaseResponse
     {
+        public UserDTO? UserDTO { get; set; }
     }
 }

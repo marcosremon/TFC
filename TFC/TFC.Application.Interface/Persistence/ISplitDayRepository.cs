@@ -1,7 +1,7 @@
-﻿using TFC.Application.DTO.SplitDay.ActualizarSplitDay;
-using TFC.Application.DTO.SplitDay.AnyadirSplitDay;
+﻿using TFC.Application.DTO.SplitDay.AnyadirSplitDay;
 using TFC.Application.DTO.SplitDay.DeleteSplitDay;
 using TFC.Application.DTO.SplitDay.GetAllUserSplits;
+using TFC.Application.DTO.SplitDay.UpdateSplitDay;
 
 namespace TFC.Application.Interface.Persistence
 {
@@ -10,6 +10,6 @@ namespace TFC.Application.Interface.Persistence
         Task<AddSplitDayResponse> CreateSplitDay(AddSplitDayRequest anyadirSplitDayRequest);
         Task<DeleteSplitDayResponse> DeleteSplitDay(DeleteSplitDayRequest deleteSplitDayRequest);
         Task<GetAllUserSplitsResponse> GetAllUserSplits(GetAllUserSplitsRequest getAllUserSplitsResponse);
-        Task<ActualizarSplitDayResponse> UpdateSplitDay(UpdateSplitDayRequest actualizarSplitDayRequest);
+        Task<UpdateSplitDayResponse> UpdateSplitDay(UpdateSplitDayRequest actualizarSplitDayRequest);
     }
 }
