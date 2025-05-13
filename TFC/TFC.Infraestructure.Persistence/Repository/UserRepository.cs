@@ -361,14 +361,8 @@ namespace TFC.Infraestructure.Persistence.Repository
                     user.Surname = updateUserRequest.Surname;
                     user.Password = PasswordUtils.PasswordEncoder(updateUserRequest.Password);
                     user.Email = updateUserRequest.Email;
-
-                    int affectedRows = await _context.SaveChangesAsync();
-                    if (affectedRows == 0)
-                    {
-                        response.IsSuccess = false;
-                        response.Message = "No se pudo actualizar el usuario";
-                        return response;
-                    }
+                    
+                    await _context.SaveChangesAsync();
 
                     dbContextTransaction.Commit();
 

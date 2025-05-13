@@ -242,9 +242,7 @@ namespace TFC.Infraestructure.Persistence.Repository
 
                 await _context.SaveChangesAsync();
 
-                response.IsSuccess = true;
-                response.Message = "Split day updated successfully.";
-                response.UserDTO = new UserDTO
+                UserDTO userDTO = new UserDTO
                 {
                     UserId = user.UserId,
                     Username = user.Username,
@@ -267,6 +265,10 @@ namespace TFC.Infraestructure.Persistence.Repository
                         }).ToList()
                     }).ToList()
                 };
+
+                response.IsSuccess = true;
+                response.Message = "Split day updated successfully.";
+                response.UserDTO = userDTO;
             }
             catch (Exception ex)
             {

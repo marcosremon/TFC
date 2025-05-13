@@ -74,9 +74,7 @@ namespace TFC.Infraestructure.Persistence.Repository
                     _context.Exercises.Add(newExercise);
                     await _context.SaveChangesAsync();
 
-                    response.IsSuccess = true;
-                    response.Message = "Exercise added successfully.";
-                    response.UserDTO = new UserDTO
+                    UserDTO userDTO = new UserDTO
                     {
                         UserId = user.UserId,
                         Routines = user.Routines.Select(r => new RoutineDTO
@@ -96,6 +94,10 @@ namespace TFC.Infraestructure.Persistence.Repository
                             }).ToList()
                         }).ToList()
                     };
+
+                    response.IsSuccess = true;
+                    response.Message = "Exercise added successfully.";
+                    response.UserDTO = userDTO;
                 }
                 catch (Exception ex)
                 {
@@ -151,10 +153,8 @@ namespace TFC.Infraestructure.Persistence.Repository
 
                 _context.Exercises.Remove(exerciseToDelete);
                 await _context.SaveChangesAsync();
-
-                response.IsSuccess = true;
-                response.Message = "Exercise deleted successfully.";
-                response.UserDTO = new UserDTO
+                
+                UserDTO userDTO = new UserDTO
                 {
                     UserId = user.UserId,
                     Routines = user.Routines.Select(r => new RoutineDTO
@@ -174,6 +174,10 @@ namespace TFC.Infraestructure.Persistence.Repository
                         }).ToList()
                     }).ToList()
                 };
+
+                response.IsSuccess = true;
+                response.Message = "Exercise deleted successfully.";
+                response.UserDTO = userDTO;
             }
             catch (Exception ex)
             {
@@ -215,9 +219,7 @@ namespace TFC.Infraestructure.Persistence.Repository
                     return response;
                 }
 
-                response.IsSuccess = true;
-                response.Message = "Exercises retrieved successfully";
-                response.Exercises = splitDay.Exercises.Select(e => new ExerciseDTO
+                List<ExerciseDTO> exercises = splitDay.Exercises.Select(e => new ExerciseDTO
                 {
                     ExerciseId = e.ExerciseId,
                     ExerciseName = e.ExerciseName,
@@ -225,7 +227,11 @@ namespace TFC.Infraestructure.Persistence.Repository
                     Reps = e.Reps,
                     Weight = e.Weight,
                     DayName = e.DayName
-                }).ToList(); ;
+                }).ToList();
+
+                response.IsSuccess = true;
+                response.Message = "Exercises retrieved successfully";
+                response.Exercises = exercises;
             }
             catch (Exception ex)
             {
@@ -278,20 +284,13 @@ namespace TFC.Infraestructure.Persistence.Repository
                     return response;
                 }
 
-                if (updateExerciseRequest.Sets.HasValue)
-                    exerciseToUpdate.Sets = updateExerciseRequest.Sets.Value;
-
-                if (updateExerciseRequest.Reps.HasValue)
-                    exerciseToUpdate.Reps = updateExerciseRequest.Reps.Value;
-
-                if (updateExerciseRequest.Weight.HasValue)
-                    exerciseToUpdate.Weight = updateExerciseRequest.Weight.Value;
+                exerciseToUpdate.Sets = updateExerciseRequest.Sets;
+                exerciseToUpdate.Reps = updateExerciseRequest.Reps;
+                exerciseToUpdate.Weight = updateExerciseRequest.Weight;
 
                 await _context.SaveChangesAsync();
 
-                response.IsSuccess = true;
-                response.Message = "Exercise updated successfully.";
-                response.UserDTO = new UserDTO
+                UserDTO userDTO = new UserDTO
                 {
                     UserId = user.UserId,
                     Routines = user.Routines.Select(r => new RoutineDTO
@@ -311,6 +310,10 @@ namespace TFC.Infraestructure.Persistence.Repository
                         }).ToList()
                     }).ToList()
                 };
+
+                response.IsSuccess = true;
+                response.Message = "Exercise updated successfully.";
+                response.UserDTO = userDTO;
             }
             catch (Exception ex)
             {
