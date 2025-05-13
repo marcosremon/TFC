@@ -1,3 +1,2 @@
-- hacer metodos de SplitUpdate
-- hacer metodos de ExerciseRepository
-- Implementar transacciones en splitRepository y ExerciseRepository en caso de que sean necearias
+- probar metodos de SplitUpdate
+- probar metodos de ExerciseRepository
