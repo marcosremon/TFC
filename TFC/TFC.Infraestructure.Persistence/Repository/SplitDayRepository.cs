@@ -196,9 +196,84 @@ namespace TFC.Infraestructure.Persistence.Repository
             return response;
         }
 
-        public async Task<UpdateSplitDayResponse> UpdateSplitDay(UpdateSplitDayRequest actualizarSplitDayRequest)
+        public async Task<UpdateSplitDayResponse> UpdateSplitDay(UpdateSplitDayRequest updateSplitDayRequest)
         {
-            throw new NotImplementedException();
+            UpdateSplitDayResponse response = new UpdateSplitDayResponse();
+            try
+            {
+                User? user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == updateSplitDayRequest.UserId);
+                if (user == null)
+                {
+                    response.IsSuccess = false;
+                    response.Message = "User not found.";
+                    return response;
+                }
+
+                Routine? routine = await _context.Routines.FirstOrDefaultAsync(r => r.RoutineId == updateSplitDayRequest.RoutineId);
+                if (routine == null)
+                {
+                    response.IsSuccess = false;
+                    response.Message = "Routine not found.";
+                    return response;
+                }
+
+                if (!user.Routines.Any(r => r.RoutineId == routine.RoutineId))
+                {
+                    response.IsSuccess = false;
+                    response.Message = "User does not have this routine.";
+                    return response;
+                }
+
+                SplitDay? splitDay = await _context.SplitDays
+                    .Include(sd => sd.Exercises)
+                    .FirstOrDefaultAsync(sd => sd.DayName == updateSplitDayRequest.DayName && sd.RoutineId == routine.RoutineId);
+
+                splitDay.Exercises.Clear();
+                updateSplitDayRequest.Exercises.ToList().ForEach(e =>
+                {
+                    splitDay.Exercises.Add(new Exercise
+                    {
+                        ExerciseId = e.ExerciseId,
+                        ExerciseName = e.ExerciseName,
+                        Reps = e.Reps,
+                        Sets = e.Sets
+                    });
+                });
+
+                await _context.SaveChangesAsync();
+
+                response.IsSuccess = true;
+                response.Message = "Split day updated successfully.";
+                response.UserDTO = new UserDTO
+                {
+                    UserId = user.UserId,
+                    Username = user.Username,
+                    FriendCode = user.FriendCode,
+                    Email = user.Email,
+                    Routines = user.Routines.Select(r => new RoutineDTO
+                    {
+                        RoutineId = r.RoutineId,
+                        RoutineName = r.RoutineName,
+                        SplitDays = r.SplitDays.Select(sd => new SplitDayDTO
+                        {
+                            DayName = sd.DayName,
+                            Exercises = sd.Exercises.Select(e => new ExerciseDTO
+                            {
+                                ExerciseId = e.ExerciseId,
+                                ExerciseName = e.ExerciseName,
+                                Reps = e.Reps,
+                                Sets = e.Sets
+                            }).ToList()
+                        }).ToList()
+                    }).ToList()
+                };
+            }
+            catch (Exception ex)
+            {
+                response.IsSuccess = false;
+                response.Message = ex.Message;
+            }
+            return response;
         }
     }
 }
