@@ -3,7 +3,6 @@ using TFC.Application.DTO.Routine.CreateRoutine;
 using TFC.Application.DTO.Routine.DeleteRoutine;
 using TFC.Application.DTO.Routine.GetRoutines;
 using TFC.Application.DTO.Routine.GetRoutinesByFriendCode;
-using TFC.Application.DTO.User.DeleteUser;
 using TFC.Application.Interface.Application;
 
 namespace TFC.Service.WebApi.Controllers
@@ -18,51 +17,79 @@ namespace TFC.Service.WebApi.Controllers
         }
 
         [HttpPost("CreateRoutine")]
-        public async Task<ActionResult<CreateRoutineResponse>> CreateUser([FromBody] CreateRoutineRequest createRoutineRequest)
+        public async Task<ActionResult<CreateRoutineResponse>> CreateRoutine([FromBody] CreateRoutineRequest createRoutineRequest)
         {
-            CreateRoutineResponse response = await _routineApplication.CreateRoutine(createRoutineRequest);
-            if (!response.IsSuccess || response == null)
+            try
             {
-                return BadRequest(response.Message);
-            }
+                CreateRoutineResponse response = await _routineApplication.CreateRoutine(createRoutineRequest);
+                if (response.IsSuccess)
+                {
+                    return Created(string.Empty, response);
+                }
 
-            return Ok(response);
+                return BadRequest(response?.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPut("UpdateRoutine")]
-        public async Task<ActionResult<UpdateRoutineResponse>> UpdateUser([FromBody] UpdateRoutineRequest updateRoutineRequest)
+        public async Task<ActionResult<UpdateRoutineResponse>> UpdateRoutine([FromBody] UpdateRoutineRequest updateRoutineRequest)
         {
-            UpdateRoutineResponse response = await _routineApplication.UpdateUser(updateRoutineRequest);
-            if (!response.IsSuccess || response == null)
+            try
             {
-                return BadRequest(response.Message);
-            }
+                UpdateRoutineResponse response = await _routineApplication.UpdateUser(updateRoutineRequest);
+                if (response.IsSuccess)
+                {
+                    return Ok(response);
+                }
 
-            return Ok(response);
+                return BadRequest(response?.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpDelete("DeleteRoutine")]
-        public async Task<ActionResult<DeleteRoutineResponse>> DeleteUser([FromBody] DeleteRoutineRequest deleteRoutineRequest)
+        public async Task<ActionResult<DeleteRoutineResponse>> DeleteRoutine([FromBody] DeleteRoutineRequest deleteRoutineRequest)
         {
-            DeleteRoutineResponse response = await _routineApplication.DeleteRoutine(deleteRoutineRequest);
-            if (!response.IsSuccess || response == null)
+            try
             {
-                return BadRequest(response.Message);
-            }
+                DeleteRoutineResponse response = await _routineApplication.DeleteRoutine(deleteRoutineRequest);
+                if (response.IsSuccess)
+                {
+                    return NoContent();
+                }
 
-            return Ok(response);
+                return BadRequest(response?.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost("GetRoutinesByFriendCode")]
         public async Task<ActionResult<GetRoutinesByFriendCodeResponse>> GetRoutinesByFriendCode([FromBody] GetRoutinesByFriendCodeRequest getRoutinesByFriendCodeRequest)
         {
-            GetRoutinesByFriendCodeResponse response = await _routineApplication.GetRoutinesByFriendCode(getRoutinesByFriendCodeRequest);
-            if (!response.IsSuccess || response == null)
+            try
             {
-                return BadRequest(response.Message);
-            }
+                GetRoutinesByFriendCodeResponse getRoutinesByFriendCodeResponse = await _routineApplication.GetRoutinesByFriendCode(getRoutinesByFriendCodeRequest);
+                if (getRoutinesByFriendCodeResponse.IsSuccess)
+                {
+                    return Ok(getRoutinesByFriendCodeResponse);
+                }
 
-            return Ok(response);
+                return BadRequest(getRoutinesByFriendCodeResponse?.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

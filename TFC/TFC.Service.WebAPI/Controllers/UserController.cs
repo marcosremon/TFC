@@ -22,85 +22,134 @@ namespace TFC.Service.WebApi.Controllers
         [HttpPost("GetUserByEmail")]
         public async Task<ActionResult<GetUserByEmailResponse>> GetUserByEmail([FromBody] GetUserByEmailRequest getUserByEmailRequest)
         {
-            GetUserByEmailResponse response = await _userApplication.GetUserByEmail(getUserByEmailRequest);
-            if (!response.IsSuccess || response == null)
+            try
             {
-                return BadRequest(response.Message);
-            }
+                GetUserByEmailResponse response = await _userApplication.GetUserByEmail(getUserByEmailRequest);
+                if (response.IsSuccess)
+                {
+                    return Ok(response);
+                }
 
-            return Ok(response);
+                return BadRequest(response?.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("GetUsers")]
         public async Task<ActionResult<GetUsersResponse>> GetUsers()
         {
-            GetUsersResponse response = await _userApplication.GetUsers();
-            if (response.IsSuccess)
+            try
             {
-                return Ok(response);
-            }
+                GetUsersResponse response = await _userApplication.GetUsers();
+                if (response.IsSuccess)
+                {
+                    return Ok(response);
+                }
 
-            return BadRequest(response.Message);
+                return BadRequest(response?.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost("CreateUser")]
         public async Task<ActionResult<CreateUserResponse>> CreateUser([FromBody] CreateUserRequst createUserRequst)
         {
-            CreateUserResponse response = await _userApplication.CreateUser(createUserRequst);
-            if (!response.IsSuccess || response == null)
+            try
             {
-                return BadRequest(response.Message);
-            }
+                CreateUserResponse response = await _userApplication.CreateUser(createUserRequst);
+                if (response.IsSuccess)
+                {
+                    return Created(string.Empty, response);
+                }
 
-            return Ok(response);
+                return BadRequest(response?.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPut("UpdateUser")]
         public async Task<ActionResult<UpdateUserResponse>> UpdateUser([FromBody] UpdateUserRequst updateUserRequest)
         {
-            UpdateUserResponse response = await _userApplication.UpdateUser(updateUserRequest);
-            if (!response.IsSuccess || response == null)
+            try
             {
-                return BadRequest(response.Message);
-            }
+                UpdateUserResponse response = await _userApplication.UpdateUser(updateUserRequest);
+                if (response.IsSuccess)
+                {
+                    return Ok(response);
+                }
 
-            return Ok(response);
+                return BadRequest(response?.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpDelete("DeleteUser")]
         public async Task<ActionResult<DeleteUserResponse>> DeleteUser([FromBody] DeleteUserRequest deleteUserRequest)
         {
-            DeleteUserResponse response = await _userApplication.DeleteUser(deleteUserRequest);
-            if (!response.IsSuccess || response == null)
+            try
             {
-                return BadRequest(response.Message);
-            }
+                DeleteUserResponse response = await _userApplication.DeleteUser(deleteUserRequest);
+                if (response.IsSuccess)
+                {
+                    return NoContent();
+                }
 
-            return Ok(response);
+                return BadRequest(response?.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost("CreateNewPassword")]
         public async Task<ActionResult<CreateNewPasswordResponse>> CreateNewPassword([FromBody] CreateNewPasswordRequest createNewPasswordRequest)
         {
-            CreateNewPasswordResponse response = await _userApplication.CreateNewPassword(createNewPasswordRequest);
-            if (!response.IsSuccess || response == null)
+            try
             {
-                return BadRequest(response.Message);
-            }
+                CreateNewPasswordResponse response = await _userApplication.CreateNewPassword(createNewPasswordRequest);
+                if (response.IsSuccess)
+                {
+                    return Ok(response);
+                }
 
-            return Ok(response);
+                return BadRequest(response?.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost("ChangePasswordWithPasswordAndEmail")]
         public async Task<ActionResult<ChangePasswordWithPasswordAndEmailResponse>> ChangePasswordWithPasswordAndEmail([FromBody] ChangePasswordWithPasswordAndEmailRequest changePasswordWithPasswordAndEmailRequest)
-        {   
-            ChangePasswordWithPasswordAndEmailResponse response = await _userApplication.ChangePasswordWithPasswordAndEmail(changePasswordWithPasswordAndEmailRequest);
-            if (!response.IsSuccess || response == null)
+        {
+            try
             {
-                return BadRequest(response.Message);
+                ChangePasswordWithPasswordAndEmailResponse response = await _userApplication.ChangePasswordWithPasswordAndEmail(changePasswordWithPasswordAndEmailRequest);
+                if (response.IsSuccess)
+                {
+                    return Ok(response);
+                }
+
+                return BadRequest(response?.Message);
             }
-         
-            return Ok(response);
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }
