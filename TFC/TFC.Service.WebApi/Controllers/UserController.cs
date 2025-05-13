@@ -24,13 +24,13 @@ namespace TFC.Service.WebApi.Controllers
         {
             try
             {
-                GetUserByEmailResponse getUserByEmailResponse = await _userApplication.GetUserByEmail(getUserByEmailRequest);
-                if (getUserByEmailResponse.IsSuccess)
+                GetUserByEmailResponse response = await _userApplication.GetUserByEmail(getUserByEmailRequest);
+                if (response.IsSuccess)
                 {
-                    return BadRequest(getUserByEmailResponse);
+                    return Ok(response);
                 }
 
-                return BadRequest(getUserByEmailResponse.Message);
+                return BadRequest(response?.Message);
             }
             catch (Exception ex)
             {
@@ -43,13 +43,13 @@ namespace TFC.Service.WebApi.Controllers
         {
             try
             {
-                GetUsersResponse getUsersResponse = await _userApplication.GetUsers();
-                if (getUsersResponse.IsSuccess)
+                GetUsersResponse response = await _userApplication.GetUsers();
+                if (response.IsSuccess)
                 {
-                    return Ok(getUsersResponse);
+                    return Ok(response);
                 }
 
-                return BadRequest(getUsersResponse.Message);
+                return BadRequest(response?.Message);
             }
             catch (Exception ex)
             {
@@ -62,13 +62,13 @@ namespace TFC.Service.WebApi.Controllers
         {
             try
             {
-                CreateUserResponse createUserResponse = await _userApplication.CreateUser(createUserRequst);
-                if (createUserResponse.IsSuccess)
+                CreateUserResponse response = await _userApplication.CreateUser(createUserRequst);
+                if (response.IsSuccess)
                 {
-                    return Ok(createUserResponse);
+                    return Created(string.Empty, response);
                 }
 
-                return BadRequest(createUserResponse.Message);
+                return BadRequest(response?.Message);
             }
             catch (Exception ex)
             {
@@ -81,13 +81,13 @@ namespace TFC.Service.WebApi.Controllers
         {
             try
             {
-                UpdateUserResponse updateUserResponse = await _userApplication.UpdateUser(updateUserRequest);
-                if (updateUserResponse.IsSuccess)
+                UpdateUserResponse response = await _userApplication.UpdateUser(updateUserRequest);
+                if (response.IsSuccess)
                 {
-                    return Ok(updateUserResponse);
+                    return Ok(response);
                 }
 
-                return BadRequest(updateUserResponse.Message);
+                return BadRequest(response?.Message);
             }
             catch (Exception ex)
             {
@@ -100,13 +100,13 @@ namespace TFC.Service.WebApi.Controllers
         {
             try
             {
-                DeleteUserResponse deleteUserResponse = await _userApplication.DeleteUser(deleteUserRequest);
-                if (deleteUserResponse.IsSuccess)
+                DeleteUserResponse response = await _userApplication.DeleteUser(deleteUserRequest);
+                if (response.IsSuccess)
                 {
-                    return Ok(deleteUserResponse);
+                    return NoContent();
                 }
 
-                return BadRequest(deleteUserResponse.Message);
+                return BadRequest(response?.Message);
             }
             catch (Exception ex)
             {
@@ -119,13 +119,13 @@ namespace TFC.Service.WebApi.Controllers
         {
             try
             {
-                CreateNewPasswordResponse createNewPasswordResponse = await _userApplication.CreateNewPassword(createNewPasswordRequest);
-                if (createNewPasswordResponse.IsSuccess)
+                CreateNewPasswordResponse response = await _userApplication.CreateNewPassword(createNewPasswordRequest);
+                if (response.IsSuccess)
                 {
-                    return Ok(createNewPasswordResponse);
+                    return Ok(response);
                 }
 
-                return BadRequest(createNewPasswordResponse.Message);
+                return BadRequest(response?.Message);
             }
             catch (Exception ex)
             {
@@ -136,13 +136,20 @@ namespace TFC.Service.WebApi.Controllers
         [HttpPost("ChangePasswordWithPasswordAndEmail")]
         public async Task<ActionResult<ChangePasswordWithPasswordAndEmailResponse>> ChangePasswordWithPasswordAndEmail([FromBody] ChangePasswordWithPasswordAndEmailRequest changePasswordWithPasswordAndEmailRequest)
         {
-            ChangePasswordWithPasswordAndEmailResponse changePasswordWithPasswordAndEmailResponse = await _userApplication.ChangePasswordWithPasswordAndEmail(changePasswordWithPasswordAndEmailRequest);
-            if (changePasswordWithPasswordAndEmailResponse.IsSuccess)
+            try
             {
-                return BadRequest(changePasswordWithPasswordAndEmailResponse.Message);
-            }
+                ChangePasswordWithPasswordAndEmailResponse response = await _userApplication.ChangePasswordWithPasswordAndEmail(changePasswordWithPasswordAndEmailRequest);
+                if (response.IsSuccess)
+                {
+                    return Ok(response);
+                }
 
-            return Ok(changePasswordWithPasswordAndEmailResponse);
+                return BadRequest(response?.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }
