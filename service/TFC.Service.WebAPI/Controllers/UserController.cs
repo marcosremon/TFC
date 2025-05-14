@@ -52,7 +52,7 @@ namespace TFC.Service.WebApi.Controllers
                 GetUsersResponse response = await _userApplication.GetUsers();
                 if (response.IsSuccess)
                 {
-                    Log.Instance.Trace($"Usuarios encontrados: {response.Users?.Count}");
+                    Log.Instance.Trace($"Usuarios encontrados: {response.UsersDTO?.Count}");
                     return Ok(response);
                 }
 
@@ -118,7 +118,7 @@ namespace TFC.Service.WebApi.Controllers
                 DeleteUserResponse response = await _userApplication.DeleteUser(deleteUserRequest);
                 if (response.IsSuccess)
                 {
-                    Log.Instance.Trace($"Usuario eliminado correctamente con email: {deleteUserRequest.Email}");
+                    Log.Instance.Trace($"Usuario eliminado correctamente con DNI: {deleteUserRequest.Dni}");
                     return NoContent();
                 }
 
@@ -140,7 +140,7 @@ namespace TFC.Service.WebApi.Controllers
                 CreateNewPasswordResponse response = await _userApplication.CreateNewPassword(createNewPasswordRequest);
                 if (response.IsSuccess)
                 {
-                    Log.Instance.Trace($"Nueva contraseña creada correctamente para el usuario con email: {createNewPasswordRequest.Email}");
+                    Log.Instance.Trace($"Nueva contraseña creada correctamente para el usuario con email: {createNewPasswordRequest.UserEmail}");
                     return Ok(response);
                 }
 
@@ -162,7 +162,7 @@ namespace TFC.Service.WebApi.Controllers
                 ChangePasswordWithPasswordAndEmailResponse response = await _userApplication.ChangePasswordWithPasswordAndEmail(changePasswordWithPasswordAndEmailRequest);
                 if (response.IsSuccess)
                 {
-                    Log.Instance.Trace($"Contraseña cambiada correctamente para el usuario con email: {changePasswordWithPasswordAndEmailRequest.Email}");
+                    Log.Instance.Trace($"Contraseña cambiada correctamente para el usuario con email: {changePasswordWithPasswordAndEmailRequest.UserEmail}");
                     return Ok(response);
                 }
 
