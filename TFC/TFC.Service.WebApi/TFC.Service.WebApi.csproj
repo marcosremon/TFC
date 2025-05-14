@@ -21,6 +21,7 @@
     <ProjectReference Include="..\TFC.Domain.Model\TFC.Domain.Model.csproj" />
     <ProjectReference Include="..\TFC.Infraestructure.Persistence\TFC.Infraestructure.Persistence.csproj" />
     <ProjectReference Include="..\TFC.Transversal.Common\TFC.Transversal.Common.csproj" />
+    <ProjectReference Include="..\TFC.Transversal.Logs\TFC.Transversal.Logs.csproj" />
     <ProjectReference Include="..\TFC.Transversal.Mail\TFC.Transversal.Mail.csproj" />
     <ProjectReference Include="..\TFC.Transversal.Security\TFC.Transversal.Security.csproj" />
   </ItemGroup>

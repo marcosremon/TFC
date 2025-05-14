@@ -4,6 +4,7 @@ using TFC.Application.DTO.Routine.DeleteRoutine;
 using TFC.Application.DTO.Routine.GetRoutines;
 using TFC.Application.DTO.Routine.GetRoutinesByFriendCode;
 using TFC.Application.Interface.Application;
+using TFC.Transversal.Logs;
 
 namespace TFC.Service.WebApi.Controllers
 {
@@ -26,13 +27,16 @@ namespace TFC.Service.WebApi.Controllers
                 CreateRoutineResponse response = await _routineApplication.CreateRoutine(createRoutineRequest);
                 if (response.IsSuccess)
                 {
+                    Log.Instance.Trace($"Rutina añadida correctamente al usuario con DNI: {createRoutineRequest.UserDni}");
                     return Created(string.Empty, response);
                 }
 
+                Log.Instance.Trace($"Error al añadir la rutina: {response?.Message}");
                 return BadRequest(response?.Message);
             }
             catch (Exception ex)
             {
+                Log.Instance.Error($"CreateRoutine --> Error al añadir la rutina: {ex.Message}");
                 return BadRequest(ex.Message);
             }
         }
@@ -45,13 +49,16 @@ namespace TFC.Service.WebApi.Controllers
                 UpdateRoutineResponse response = await _routineApplication.UpdateUser(updateRoutineRequest);
                 if (response.IsSuccess)
                 {
+                    Log.Instance.Trace($"Rutina con nombre: {updateRoutineRequest.RoutineName} actualizada correctamente");
                     return Ok(response);
                 }
 
+                Log.Instance.Trace($"Error al actualizar la rutina: {response?.Message}");
                 return BadRequest(response?.Message);
             }
             catch (Exception ex)
             {
+                Log.Instance.Error($"UpdateRoutine --> Error al actualizar la rutina: {ex.Message}");
                 return BadRequest(ex.Message);
             }
         }
@@ -64,13 +71,16 @@ namespace TFC.Service.WebApi.Controllers
                 DeleteRoutineResponse response = await _routineApplication.DeleteRoutine(deleteRoutineRequest);
                 if (response.IsSuccess)
                 {
+                    Log.Instance.Trace($"Rutina con id: {deleteRoutineRequest.RoutineId} eliminada correctamente");
                     return NoContent();
                 }
 
+                Log.Instance.Trace($"Error al eliminar la rutina: {response?.Message}");
                 return BadRequest(response?.Message);
             }
             catch (Exception ex)
             {
+                Log.Instance.Error($"DeleteRoutine --> Error al eliminar la rutina: {ex.Message}");
                 return BadRequest(ex.Message);
             }
         }
@@ -80,16 +90,19 @@ namespace TFC.Service.WebApi.Controllers
         {
             try
             {
-                GetRoutinesByFriendCodeResponse getRoutinesByFriendCodeResponse = await _routineApplication.GetRoutinesByFriendCode(getRoutinesByFriendCodeRequest);
-                if (getRoutinesByFriendCodeResponse.IsSuccess)
+                GetRoutinesByFriendCodeResponse response = await _routineApplication.GetRoutinesByFriendCode(getRoutinesByFriendCodeRequest);
+                if (response.IsSuccess)
                 {
-                    return Ok(getRoutinesByFriendCodeResponse);
+                    Log.Instance.Trace($"Rutinas del amigo con codigo: {getRoutinesByFriendCodeRequest.FriendCode} obtenidas correctamente");
+                    return Ok(response);
                 }
 
-                return BadRequest(getRoutinesByFriendCodeResponse?.Message);
+                Log.Instance.Trace($"Error al obtener las rutinas: {response?.Message}");
+                return BadRequest(response?.Message);
             }
             catch (Exception ex)
             {
+                Log.Instance.Error($"GetRoutinesByFriendCode --> Error al obtener las rutinas: {ex.Message}");
                 return BadRequest(ex.Message);
             }
         }

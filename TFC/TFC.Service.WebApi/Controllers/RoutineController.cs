@@ -36,7 +36,7 @@ namespace TFC.Service.WebApi.Controllers
             }
             catch (Exception ex)
             {
-                Log.Instance.Error($"Error al añadir la rutina: {ex.Message}");
+                Log.Instance.Error($"CreateRoutine --> Error al añadir la rutina: {ex.Message}");
                 return BadRequest(ex.Message);
             }
         }
@@ -58,7 +58,7 @@ namespace TFC.Service.WebApi.Controllers
             }
             catch (Exception ex)
             {
-                Log.Instance.Error($"Error al actualizar la rutina: {ex.Message}");
+                Log.Instance.Error($"UpdateRoutine --> Error al actualizar la rutina: {ex.Message}");
                 return BadRequest(ex.Message);
             }
         }
@@ -80,7 +80,7 @@ namespace TFC.Service.WebApi.Controllers
             }
             catch (Exception ex)
             {
-                Log.Instance.Error($"Error al eliminar la rutina: {ex.Message}");
+                Log.Instance.Error($"DeleteRoutine --> Error al eliminar la rutina: {ex.Message}");
                 return BadRequest(ex.Message);
             }
         }
@@ -102,6 +102,7 @@ namespace TFC.Service.WebApi.Controllers
             }
             catch (Exception ex)
             {
+                Log.Instance.Error($"GetRoutinesByFriendCode --> Error al obtener las rutinas: {ex.Message}");
                 return BadRequest(ex.Message);
             }
         }

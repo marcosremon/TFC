@@ -7,6 +7,7 @@ using TFC.Application.DTO.User.GetUserByEmail;
 using TFC.Application.DTO.User.GetUsers;
 using TFC.Application.DTO.User.UpdateUser;
 using TFC.Application.Interface.Application;
+using TFC.Transversal.Logs;
 
 namespace TFC.Service.WebApi.Controllers
 {
@@ -29,13 +30,16 @@ namespace TFC.Service.WebApi.Controllers
                 GetUserByEmailResponse response = await _userApplication.GetUserByEmail(getUserByEmailRequest);
                 if (response.IsSuccess)
                 {
+                    Log.Instance.Trace($"Usuario encontrado con email: {getUserByEmailRequest.Email}");
                     return Ok(response);
                 }
 
+                Log.Instance.Trace($"Error al buscar el usuario por email: {response?.Message}");
                 return BadRequest(response?.Message);
             }
             catch (Exception ex)
             {
+                Log.Instance.Error($"GetUserByEmail --> Error al buscar el usuario por email: {ex.Message}");
                 return BadRequest(ex.Message);
             }
         }
@@ -48,13 +52,16 @@ namespace TFC.Service.WebApi.Controllers
                 GetUsersResponse response = await _userApplication.GetUsers();
                 if (response.IsSuccess)
                 {
+                    Log.Instance.Trace($"Usuarios encontrados: {response.Users?.Count}");
                     return Ok(response);
                 }
 
+                Log.Instance.Trace($"Error al buscar los usuarios: {response?.Message}");
                 return BadRequest(response?.Message);
             }
             catch (Exception ex)
             {
+                Log.Instance.Error($"GetUsers --> Error al buscar los usuarios: {ex.Message}");
                 return BadRequest(ex.Message);
             }
         }
@@ -67,13 +74,16 @@ namespace TFC.Service.WebApi.Controllers
                 CreateUserResponse response = await _userApplication.CreateUser(createUserRequst);
                 if (response.IsSuccess)
                 {
+                    Log.Instance.Trace($"Usuario creado correctamente con email: {createUserRequst.Email}");
                     return Created(string.Empty, response);
                 }
 
+                Log.Instance.Trace($"Error al crear el usuario: {response?.Message}");
                 return BadRequest(response?.Message);
             }
             catch (Exception ex)
             {
+                Log.Instance.Error($"CreateUser --> Error al crear el usuario: {ex.Message}");
                 return BadRequest(ex.Message);
             }
         }
@@ -86,13 +96,16 @@ namespace TFC.Service.WebApi.Controllers
                 UpdateUserResponse response = await _userApplication.UpdateUser(updateUserRequest);
                 if (response.IsSuccess)
                 {
+                    Log.Instance.Trace($"Usuario actualizado correctamente con email: {updateUserRequest.Email}");
                     return Ok(response);
                 }
 
+                Log.Instance.Trace($"Error al actualizar el usuario: {response?.Message}");
                 return BadRequest(response?.Message);
             }
             catch (Exception ex)
             {
+                Log.Instance.Error($"UpdateUser --> Error al actualizar el usuario: {ex.Message}");
                 return BadRequest(ex.Message);
             }
         }
@@ -105,13 +118,16 @@ namespace TFC.Service.WebApi.Controllers
                 DeleteUserResponse response = await _userApplication.DeleteUser(deleteUserRequest);
                 if (response.IsSuccess)
                 {
+                    Log.Instance.Trace($"Usuario eliminado correctamente con email: {deleteUserRequest.Email}");
                     return NoContent();
                 }
 
+                Log.Instance.Trace($"Error al eliminar el usuario: {response?.Message}");
                 return BadRequest(response?.Message);
             }
             catch (Exception ex)
             {
+                Log.Instance.Error($"DeleteUser --> Error al eliminar el usuario: {ex.Message}");
                 return BadRequest(ex.Message);
             }
         }
@@ -124,13 +140,16 @@ namespace TFC.Service.WebApi.Controllers
                 CreateNewPasswordResponse response = await _userApplication.CreateNewPassword(createNewPasswordRequest);
                 if (response.IsSuccess)
                 {
+                    Log.Instance.Trace($"Nueva contraseña creada correctamente para el usuario con email: {createNewPasswordRequest.Email}");
                     return Ok(response);
                 }
 
+                Log.Instance.Trace($"Error al crear la nueva contraseña: {response?.Message}");
                 return BadRequest(response?.Message);
             }
             catch (Exception ex)
             {
+                Log.Instance.Error($"CreateNewPassword --> Error al crear la nueva contraseña: {ex.Message}");
                 return BadRequest(ex.Message);
             }
         }
@@ -143,13 +162,16 @@ namespace TFC.Service.WebApi.Controllers
                 ChangePasswordWithPasswordAndEmailResponse response = await _userApplication.ChangePasswordWithPasswordAndEmail(changePasswordWithPasswordAndEmailRequest);
                 if (response.IsSuccess)
                 {
+                    Log.Instance.Trace($"Contraseña cambiada correctamente para el usuario con email: {changePasswordWithPasswordAndEmailRequest.Email}");
                     return Ok(response);
                 }
 
+                Log.Instance.Trace($"Error al cambiar la contraseña: {response?.Message}");
                 return BadRequest(response?.Message);
             }
             catch (Exception ex)
             {
+                Log.Instance.Error($"ChangePasswordWithPasswordAndEmail --> Error al cambiar la contraseña: {ex.Message}");
                 return BadRequest(ex.Message);
             }
         }
