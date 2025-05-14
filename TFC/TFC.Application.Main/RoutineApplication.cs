@@ -5,6 +5,7 @@ using TFC.Application.DTO.Routine.GetRoutines;
 using TFC.Application.DTO.Routine.GetRoutinesByFriendCode;
 using TFC.Application.Interface.Application;
 using TFC.Application.Interface.Persistence;
+using TFC.Transversal.Logs;
 
 namespace TFC.Application.Main
 {
@@ -21,6 +22,7 @@ namespace TFC.Application.Main
         {
             if (createRoutineRequest == null || string.IsNullOrEmpty(createRoutineRequest.RoutineName))
             {
+                Log.Instance.Trace($"Invalid request: el request esta vacio o tiene algun campo nulo o vacio");
                 return new CreateRoutineResponse
                 {
                     IsSuccess = false,
@@ -37,6 +39,7 @@ namespace TFC.Application.Main
                || string.IsNullOrEmpty(deleteRoutineRequest.UserDni)
                || deleteRoutineRequest.RoutineId == null)
             {
+                Log.Instance.Trace($"Invalid request: el request esta vacio o tiene algun campo nulo o vacio");
                 return new DeleteRoutineResponse
                 {
                     IsSuccess = false,
@@ -51,6 +54,7 @@ namespace TFC.Application.Main
         {
             if (getRoutinesByFriendCodeRequest == null || string.IsNullOrEmpty(getRoutinesByFriendCodeRequest.FriendCode))
             {
+                Log.Instance.Trace($"Invalid request: el request esta vacio o tiene algun campo nulo o vacio");
                 return new GetRoutinesByFriendCodeResponse
                 {
                     IsSuccess = false,
@@ -65,6 +69,7 @@ namespace TFC.Application.Main
         {
             if (updateRoutineRequest == null || updateRoutineRequest.RoutineId == 0)
             {
+                Log.Instance.Trace($"Invalid request: el request esta vacio o tiene algun campo nulo o vacio");
                 return new UpdateRoutineResponse
                 {
                     IsSuccess = false,

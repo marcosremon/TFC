@@ -3,6 +3,7 @@ using TFC.Application.DTO.Exercise.GetExercisesByDayName;
 using TFC.Application.DTO.Exercise.UpdateExercise;
 using TFC.Application.Interface.Application;
 using TFC.Application.Interface.Persistence;
+using TFC.Transversal.Logs;
 
 namespace TFC.Application.Main
 {
@@ -23,6 +24,7 @@ namespace TFC.Application.Main
                 || addExerciseRequest.DayName == null
                 || string.IsNullOrEmpty(addExerciseRequest.ExerciseName))
             {
+                Log.Instance.Trace($"Invalid request: el request esta vacio o tiene algun campo nulo o vacio");
                 return new AddExerciseResponse
                 {
                     IsSuccess = false,
@@ -41,6 +43,7 @@ namespace TFC.Application.Main
                 || deleteExerciseRequest.DayName == null
                 || string.IsNullOrEmpty(deleteExerciseRequest.ExerciseName))
             {
+                Log.Instance.Trace($"Invalid request: el request esta vacio o tiene algun campo nulo o vacio");
                 return new DeleteExerciseResponse
                 {
                     IsSuccess = false,
@@ -58,6 +61,7 @@ namespace TFC.Application.Main
                 || getExercisesByDayNameRequest.RoutineId == null
                 || getExercisesByDayNameRequest.DayName == null)
             {
+                Log.Instance.Trace($"Invalid request: el request esta vacio o tiene algun campo nulo o vacio");
                 return new GetExercisesByDayNameResponse
                 {
                     IsSuccess = false,
@@ -76,6 +80,7 @@ namespace TFC.Application.Main
                 || updateExerciseRequest.DayName == null
                 || string.IsNullOrEmpty(updateExerciseRequest.ExerciseName))
             {
+                Log.Instance.Trace($"Invalid request: el request esta vacio o tiene algun campo nulo o vacio");
                 return new UpdateExerciseResponse
                 {
                     IsSuccess = false,

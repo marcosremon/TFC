@@ -4,6 +4,7 @@ using TFC.Application.DTO.SplitDay.GetAllUserSplits;
 using TFC.Application.DTO.SplitDay.UpdateSplitDay;
 using TFC.Application.Interface.Application;
 using TFC.Application.Interface.Persistence;
+using TFC.Transversal.Logs;
 
 namespace TFC.Application.Main
 {
@@ -23,6 +24,7 @@ namespace TFC.Application.Main
                 || anyadirSplitDayRequest.UserId == null
                 || anyadirSplitDayRequest.RoutineId == null)
             {
+                Log.Instance.Trace($"Invalid request: el request esta vacio o tiene algun campo nulo o vacio");
                 return new AddSplitDayResponse
                 {
                     IsSuccess = false,
@@ -40,6 +42,7 @@ namespace TFC.Application.Main
                || deleteSplitDayRequest.UserId == null
                || deleteSplitDayRequest.RoutineId == null)
             {
+                Log.Instance.Trace($"Invalid request: el request esta vacio o tiene algun campo nulo o vacio");
                 return new DeleteSplitDayResponse
                 {
                     IsSuccess = false,
@@ -54,6 +57,7 @@ namespace TFC.Application.Main
         {
             if (getAllUserSplitsRequest == null || getAllUserSplitsRequest.UserId == null)
             {
+                Log.Instance.Trace($"Invalid request: el request esta vacio o tiene algun campo nulo o vacio");
                 return new GetAllUserSplitsResponse
                 {
                     IsSuccess = false,
@@ -71,6 +75,7 @@ namespace TFC.Application.Main
                || actualizarSplitDayRequest.UserId == null
                || actualizarSplitDayRequest.RoutineId == null)
             {
+                Log.Instance.Trace($"Invalid request: el request esta vacio o tiene algun campo nulo o vacio");
                 return new UpdateSplitDayResponse
                 {
                     IsSuccess = false,

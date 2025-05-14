@@ -7,6 +7,7 @@ using TFC.Application.DTO.User.GetUsers;
 using TFC.Application.DTO.User.UpdateUser;
 using TFC.Application.Interface.Application;
 using TFC.Application.Interface.Persistence;
+using TFC.Transversal.Logs;
 
 namespace TFC.Application.Main
 {
@@ -28,6 +29,7 @@ namespace TFC.Application.Main
                 || string.IsNullOrEmpty(changePasswordWithPasswordAndEmailRequest.ConfirmNewPassword)
                 || changePasswordWithPasswordAndEmailRequest.NewPassword != changePasswordWithPasswordAndEmailRequest.ConfirmNewPassword)
             {
+                Log.Instance.Trace($"Invalid request: el request esta vacio o tiene algun campo nulo o vacio");
                 return new ChangePasswordWithPasswordAndEmailResponse
                 {
                     IsSuccess = false,
@@ -42,6 +44,7 @@ namespace TFC.Application.Main
         {
             if (createNewPasswordRequest == null || string.IsNullOrEmpty(createNewPasswordRequest.UserEmail))
             {
+                Log.Instance.Trace($"Invalid request: el request esta vacio o tiene algun campo nulo o vacio");
                 return new CreateNewPasswordResponse
                 {
                     IsSuccess = false,
@@ -60,6 +63,7 @@ namespace TFC.Application.Main
                 || string.IsNullOrEmpty(createUserRequst.Username)
                 || string.IsNullOrEmpty(createUserRequst.Password))
             {
+                Log.Instance.Trace($"Invalid request: el request esta vacio o tiene algun campo nulo o vacio");
                 return new CreateUserResponse
                 {
                     IsSuccess = false,
@@ -74,6 +78,7 @@ namespace TFC.Application.Main
         {
             if (deleteUserRequest == null || string.IsNullOrEmpty(deleteUserRequest.Dni))
             {
+                Log.Instance.Trace($"Invalid request: el request esta vacio o tiene algun campo nulo o vacio");
                 return new DeleteUserResponse
                 {
                     IsSuccess = false,
@@ -88,6 +93,7 @@ namespace TFC.Application.Main
         {
             if (getUserByEmailRequest == null || string.IsNullOrEmpty(getUserByEmailRequest.Email))
             {
+                Log.Instance.Trace($"Invalid request: el request esta vacio o tiene algun campo nulo o vacio");
                 return new GetUserByEmailResponse
                 {
                     IsSuccess = false,
@@ -109,6 +115,7 @@ namespace TFC.Application.Main
                 || string.IsNullOrEmpty(updateUserRequest.DniToBeFound)
                 || string.IsNullOrEmpty(updateUserRequest.Email))
             {
+                Log.Instance.Trace($"Invalid request: el request esta vacio o tiene algun campo nulo o vacio");
                 return new UpdateUserResponse
                 {
                     IsSuccess = false,
