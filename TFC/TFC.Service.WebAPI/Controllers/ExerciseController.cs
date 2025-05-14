@@ -35,7 +35,7 @@ namespace TFC.Service.WebApi.Controllers
             }
             catch (Exception ex)
             {
-                Log.Instance.Error($"Error al añadir el ejercicio: {ex.Message}");
+                Log.Instance.Error($"AddExercise --> Error al añadir el ejercicio: {ex.Message}");
                 return BadRequest(ex.Message);
             }
         }
@@ -57,7 +57,7 @@ namespace TFC.Service.WebApi.Controllers
             }
             catch (Exception ex)
             {
-                Log.Instance.Error($"Error al actualizar el ejercicio: {ex.Message}");
+                Log.Instance.Error($"UpdateExercise --> Error al actualizar el ejercicio: {ex.Message}");
                 return BadRequest(ex.Message);
             }
         }
@@ -79,7 +79,7 @@ namespace TFC.Service.WebApi.Controllers
             }
             catch (Exception ex)
             {
-                Log.Instance.Error($"Error al eliminar el ejercicio: {ex.Message}");
+                Log.Instance.Error($"DeleteExercise --> Error al eliminar el ejercicio: {ex.Message}");
                 return BadRequest(ex.Message);
             }
         }
@@ -96,10 +96,12 @@ namespace TFC.Service.WebApi.Controllers
                     return Ok(response);
                 }
 
-                return BadRequest(response.Message);
+                Log.Instance.Trace($"Error al obtener los ejercicios: {response?.Message}");
+                return BadRequest(response?.Message);
             }
             catch (Exception ex)
             {
+                Log.Instance.Error($"GetExercisesByDayName --> Error al obtener los ejercicios: {ex.Message}");
                 return BadRequest(ex.Message);
             }
         }
