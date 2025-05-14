@@ -3,6 +3,7 @@ using TFC.Application.DTO.Exercise.AddExercise;
 using TFC.Application.DTO.Exercise.GetExercisesByDayName;
 using TFC.Application.DTO.Exercise.UpdateExercise;
 using TFC.Application.Interface.Application;
+using TFC.Transversal.Logs;
 
 namespace TFC.Service.WebApi.Controllers
 {
@@ -25,13 +26,16 @@ namespace TFC.Service.WebApi.Controllers
                 AddExerciseResponse response = await _exerciseApplication.AddExercise(addExerciseRequest);
                 if (response.IsSuccess)
                 {
+                    Log.Instance.Trace($"Ejercicio añadido correctamente al usuario con id: {response.UserDTO?.UserId}");
                     return Created(string.Empty, response);
                 }
 
+                Log.Instance.Trace($"Error al añadir el ejercicio: {response?.Message}");
                 return BadRequest(response?.Message);
             }
             catch (Exception ex)
             {
+                Log.Instance.Error($"Error al añadir el ejercicio: {ex.Message}");
                 return BadRequest(ex.Message);
             }
         }
@@ -44,13 +48,16 @@ namespace TFC.Service.WebApi.Controllers
                 UpdateExerciseResponse response = await _exerciseApplication.UpdateExercise(updateExerciseRequest);
                 if (response.IsSuccess)
                 {
+                    Log.Instance.Trace($"Ejercicio actualizado correctamente para el usuario con id: {response.UserDTO?.UserId}");
                     return Ok(response);
                 }
 
+                Log.Instance.Trace($"Error al actualizar el ejercicio: {response?.Message}");
                 return BadRequest(response?.Message);
             }
             catch (Exception ex)
             {
+                Log.Instance.Error($"Error al actualizar el ejercicio: {ex.Message}");
                 return BadRequest(ex.Message);
             }
         }
@@ -63,13 +70,16 @@ namespace TFC.Service.WebApi.Controllers
                 DeleteExerciseResponse response = await _exerciseApplication.DeleteExercise(deleteExerciseRequest);
                 if (response.IsSuccess)
                 {
+                    Log.Instance.Trace($"Ejercicio eliminado correctamente para el usuario con id: {response.UserDTO?.UserId}");
                     return NoContent();
                 }
 
-                return BadRequest(response?.Message);
+                Log.Instance.Trace($"Error al eliminar el ejercicio: {response?.Message}");
+                return BadRequest(response.Message);
             }
             catch (Exception ex)
             {
+                Log.Instance.Error($"Error al eliminar el ejercicio: {ex.Message}");
                 return BadRequest(ex.Message);
             }
         }
@@ -79,14 +89,14 @@ namespace TFC.Service.WebApi.Controllers
         {
             try
             {
-                GetExercisesByDayNameResponse getExercisesByDayNameResponse = await _exerciseApplication.GetExercisesByDayName(getExercisesByDayNameRequest);
-                if (getExercisesByDayNameResponse.IsSuccess)
+                GetExercisesByDayNameResponse response = await _exerciseApplication.GetExercisesByDayName(getExercisesByDayNameRequest);
+                if (response.IsSuccess)
                 {
-                    // 200 OK is appropriate for successful retrieval
-                    return Ok(getExercisesByDayNameResponse);
+                    Log.Instance.Trace($"Ejercicios obtenidos correctamente");
+                    return Ok(response);
                 }
 
-                return BadRequest(getExercisesByDayNameResponse.Message);
+                return BadRequest(response.Message);
             }
             catch (Exception ex)
             {
