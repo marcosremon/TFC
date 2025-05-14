@@ -36,8 +36,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentation", "{26A344EE-F436-429F-8A1F-3E0DCC803F99}"
 	ProjectSection(SolutionItems) = preProject
 		DatabaseSchema.txt = DatabaseSchema.txt
-		Endpoints Documentation.xlsx = Endpoints Documentation.xlsx
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TFC.Transversal.Log", "TFC.Transversal.Log\TFC.Transversal.Log.csproj", "{6DA023F8-5622-4981-AEB6-B2D866C6F930}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -81,6 +82,10 @@ Global
 		{2126EC26-F06C-4519-BE27-A58493E9EF4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2126EC26-F06C-4519-BE27-A58493E9EF4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2126EC26-F06C-4519-BE27-A58493E9EF4E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6DA023F8-5622-4981-AEB6-B2D866C6F930}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6DA023F8-5622-4981-AEB6-B2D866C6F930}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6DA023F8-5622-4981-AEB6-B2D866C6F930}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6DA023F8-5622-4981-AEB6-B2D866C6F930}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -95,6 +100,7 @@ Global
 		{1CE1CAD4-C7B6-4B86-AC11-ED3C59B4C60A} = {0CFB48AC-C783-496A-B548-9FACC89A6B13}
 		{F12A1D42-5820-4E98-94CA-CF5AC7658D0E} = {13AF2ED0-1578-4D6E-8449-961D1D41CB49}
 		{2126EC26-F06C-4519-BE27-A58493E9EF4E} = {6E43DE94-6E50-4A12-B8F4-0A56D08196DB}
+		{6DA023F8-5622-4981-AEB6-B2D866C6F930} = {68FF348A-E794-461D-9D2C-C1FA1A6C597B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A94BBF80-4824-4D32-A700-5561EBF45590}
