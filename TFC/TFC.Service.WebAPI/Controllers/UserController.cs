@@ -10,7 +10,9 @@ using TFC.Application.Interface.Application;
 
 namespace TFC.Service.WebApi.Controllers
 {
-    public class UserController : Controller
+    [ApiController]
+    [Route("api/[controller]")]
+    public class UserController : ControllerBase
     {
         private readonly IUserApplication _userApplication;
 

@@ -7,7 +7,9 @@ using TFC.Application.Interface.Application;
 
 namespace TFC.Service.WebApi.Controllers
 {
-    public class SplitDayController : Controller
+    [ApiController]
+    [Route("api/[controller]")]
+    public class SplitDayController : ControllerBase
     {
         private readonly ISplitDayApplication _splitDayApplication;
 

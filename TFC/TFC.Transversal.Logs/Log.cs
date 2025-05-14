@@ -2,7 +2,6 @@
 
 namespace TFC.Transversal.Logs
 {
-
     public class Log
     {
         #region FileName
@@ -214,8 +213,5 @@ namespace TFC.Transversal.Logs
         #region IsDebugEnabled
         public bool IsDebugEnabled { get { return _logger == null ? false : _logger.IsDebugEnabled; } }
         #endregion
-
     }
-
 }
-

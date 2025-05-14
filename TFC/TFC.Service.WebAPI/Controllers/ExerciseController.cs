@@ -6,7 +6,9 @@ using TFC.Application.Interface.Application;
 
 namespace TFC.Service.WebApi.Controllers
 {
-    public class ExerciseController : Controller
+    [ApiController]
+    [Route("api/[controller]")]
+    public class ExerciseController : ControllerBase
     {
         private readonly IExerciseApplication _exerciseApplication;
 

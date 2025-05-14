@@ -7,7 +7,9 @@ using TFC.Application.Interface.Application;
 
 namespace TFC.Service.WebApi.Controllers
 {
-    public class RoutineController : Controller
+    [ApiController]
+    [Route("api/[controller]")]
+    public class RoutineController : ControllerBase
     {
         private readonly IRoutineApplication _routineApplication;
 
