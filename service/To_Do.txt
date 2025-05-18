@@ -1,0 +1,2 @@
+- probar metodos de SplitUpdate
+- probar metodos de ExerciseRepository

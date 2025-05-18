@@ -1,0 +1,2 @@
+- Android emulator no reconoce la palabra localhost -> pero si 10.0.2.2
+- Dio a la hora de llamar al endpoint si devuelve algo que no se un ResponseCode:200 daba excepción y no podía controlar los mensajes de error
