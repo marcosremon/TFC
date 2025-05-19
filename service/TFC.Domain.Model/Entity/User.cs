@@ -23,6 +23,7 @@ namespace TFC.Domain.Model.Entity
 
         [JsonIgnore]
         public string? FriendCode { get; set; }
+        public List<UserFriend> Friends { get; set; } = new List<UserFriend>();
         public byte[]? Password { get; set; }
         public Role Role { get; set; } 
         public DateTime InscriptionDate { get; set; } = DateTime.UtcNow;
