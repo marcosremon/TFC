@@ -1,13 +1,14 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using TFC.Infraestructure.Persistence.Context;
 using TFC.Infrastructure.Persistence.Dependencies;
-using TFC.Service.WebApi;
+using TFC.Transversal.Logs;
 
 var builder = WebApplication.CreateBuilder(args);
+
+Log.SetLogFileName(builder.Configuration["Options:LogFile"]);
 
 // Configuración mínima
 builder.Services.AddControllers();
