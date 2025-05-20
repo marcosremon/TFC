@@ -1,11 +1,8 @@
-﻿using TFC.Application.DTO.User.AddNewUserFriend;
-using TFC.Application.DTO.User.ChangePasswordWithPasswordAndEmail;
+﻿using TFC.Application.DTO.User.ChangePasswordWithPasswordAndEmail;
 using TFC.Application.DTO.User.CreateGenericUser;
 using TFC.Application.DTO.User.CreateNewPassword;
 using TFC.Application.DTO.User.CreateUser;
 using TFC.Application.DTO.User.DeleteUser;
-using TFC.Application.DTO.User.GetAllUserFriens;
-using TFC.Application.DTO.User.GetFriendByFriendCode;
 using TFC.Application.DTO.User.GetUserByEmail;
 using TFC.Application.DTO.User.GetUsers;
 using TFC.Application.DTO.User.UpdateUser;
@@ -22,23 +19,6 @@ namespace TFC.Application.Main
         public UserApplication(IUserRepository userRepository)
         {
             _userRepository = userRepository;
-        }
-
-        public async Task<AddNewUserFriendResponse> AddNewUserFriend(AddNewUserFriendRequest addNewUserFriendRequest)
-        {
-            if (addNewUserFriendRequest == null 
-                || string.IsNullOrEmpty(addNewUserFriendRequest.UserEmail) 
-                || string.IsNullOrEmpty(addNewUserFriendRequest.FriendCode))
-            {
-                Log.Instance.Trace($"Invalid request: el request esta vacio o tiene algun campo nulo o vacio");
-                return new AddNewUserFriendResponse
-                {
-                    IsSuccess = false,
-                    Message = "Invalid request: AddNewUserFriendRequest is null or required fields are missing."
-                };
-            } 
-
-            return await _userRepository.AddNewUserFriend(addNewUserFriendRequest);
         }
 
         public async Task<ChangePasswordWithPasswordAndEmailResponse> ChangePasswordWithPasswordAndEmail(ChangePasswordWithPasswordAndEmailRequest changePasswordWithPasswordAndEmailRequest)
@@ -109,37 +89,6 @@ namespace TFC.Application.Main
             }
 
             return await _userRepository.DeleteUser(deleteUserRequest);
-        }
-
-        public async Task<GetAllUserFriendsResponse> GetAllUserFriends(GetAllUserFriendsRequest getAllUserFriendsRequest)
-        {
-            if (getAllUserFriendsRequest == null || string.IsNullOrEmpty(getAllUserFriendsRequest.UserEmail))
-            {
-                Log.Instance.Trace($"Invalid request: el request esta vacio o tiene algun campo nulo o vacio");
-                return new GetAllUserFriendsResponse
-                {
-                    IsSuccess = false,
-                    Message = "Invalid request: GetAllUserFriendsRequest is null or UserEmail is missing."
-                };
-            }
-
-            return await _userRepository.GetAllUserFriends(getAllUserFriendsRequest);
-        }
-
-        public async Task<GetFriendByFriendCodeResponse> GetFriendByFriendCode(GetFriendByFriendCodeRequest getFriendByFriendCodeRequest)
-        {
-            if (getFriendByFriendCodeRequest == null 
-                || string.IsNullOrEmpty(getFriendByFriendCodeRequest.FriendCode))
-            {
-                Log.Instance.Trace($"Invalid request: el request esta vacio o tiene algun campo nulo o vacio");
-                return new GetFriendByFriendCodeResponse
-                {
-                    IsSuccess = false,
-                    Message = "Invalid request: friendCode is null or empty."
-                };
-            }
-
-            return await _userRepository.GetFriendByFriendCode(getFriendByFriendCodeRequest);
         }
 
         public async Task<GetUserByEmailResponse> GetUserByEmail(GetUserByEmailRequest getUserByEmailRequest)
