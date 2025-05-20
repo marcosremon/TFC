@@ -174,12 +174,22 @@ namespace TFC.Infraestructure.Persistence.Repository
                         return response;
                     }
 
+                    String friendCode = PasswordUtils.CreatePassword(8);
+                    while (true)
+                    {
+                        if (await _context.Users.FirstOrDefaultAsync(u => u.FriendCode == friendCode) == null)
+                        {
+                            break;
+                        }
+                        friendCode = PasswordUtils.CreatePassword(8);
+                    }
+
                     User user = new User()
                     {
                         Dni = createGenericUserRequest.Dni,
                         Username = createGenericUserRequest.Username,
                         Surname = createGenericUserRequest.Surname,
-                        FriendCode = PasswordUtils.CreatePassword(8),
+                        FriendCode = friendCode,
                         Password = PasswordUtils.PasswordEncoder(createGenericUserRequest.Password),
                         Email = createGenericUserRequest.Email,
                         Role = createGenericUserRequest.Role,

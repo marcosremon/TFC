@@ -36,6 +36,7 @@ namespace TFC.Infraestructure.Persistence.Repository
                     return response;
                 }
 
+                response.IsAdmin = user.Role == Domain.Model.Enum.Role.Admin;
                 response.IsSuccess = true;
                 response.Message = "Login successful.";
                 Log.Instance.Trace($"Login successful");

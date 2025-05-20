@@ -25,9 +25,10 @@ namespace TFC.Service.WebApi.Controllers
                 LoginResponse response = await _authApplication.Login(loginRequest);
                 if (response.IsSuccess)
                 {
-                    string bearerToken = JwtUtils.GenerateUserJwtToken(loginRequest.UserEmail);
-                    response.BearerToken = bearerToken;
-
+                    response.BearerToken = response.IsAdmin
+                        ? JwtUtils.GenerateAdminJwtToken(loginRequest.UserEmail)
+                        : JwtUtils.GenerateUserJwtToken(loginRequest.UserEmail);
+                    
                     Log.Instance.Trace($"Login successful del usuario con email: {loginRequest.UserEmail}");
                     return Ok(response);
                 }
