@@ -19,7 +19,6 @@ namespace TFC.Service.WebApi.Controllers
             _friendApplication = friendApplication;
         }
 
-
         [HttpPost("get-all-user-friends")]
         public async Task<ActionResult<GetAllUserFriendsResponse>> GetAllUserFriends([FromBody] GetAllUserFriendsRequest getAllUserFriendsRequest)
         {

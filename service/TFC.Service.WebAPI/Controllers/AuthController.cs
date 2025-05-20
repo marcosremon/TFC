@@ -44,7 +44,7 @@ namespace TFC.Service.WebApi.Controllers
         }
 
         [HttpPost("check-token-status")]
-        public async Task<IActionResult> CheckTokenStatus([FromBody] CheckTokenStatusRequest checkTokenStatusRequest)
+        public async Task<ActionResult> CheckTokenStatus([FromBody] CheckTokenStatusRequest checkTokenStatusRequest)
         {
             try
             {
