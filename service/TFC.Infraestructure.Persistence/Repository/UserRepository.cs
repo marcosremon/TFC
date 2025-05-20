@@ -273,6 +273,7 @@ namespace TFC.Infraestructure.Persistence.Repository
 
                 UserDTO userDTO = new UserDTO()
                 {
+                    UserId = user.UserId,
                     Dni = user.Dni,
                     Username = user.Username,
                     Surname = user.Surname,
@@ -334,12 +335,14 @@ namespace TFC.Infraestructure.Persistence.Repository
 
                 List<UserDTO> userDTOs = users.Select(user => new UserDTO()
                 {
+
                     Dni = user.Dni,
                     Username = user.Username,
                     Surname = user.Surname,
                     Password = "********",
                     FriendCode = user.FriendCode,
                     Email = user.Email,
+                    Role = user.Role,
                     Routines = user.Routines?.Select(r => new RoutineDTO 
                     {
                         RoutineId = r.RoutineId,
