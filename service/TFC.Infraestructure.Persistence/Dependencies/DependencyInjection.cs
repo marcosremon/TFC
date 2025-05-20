@@ -16,6 +16,7 @@ namespace TFC.Infrastructure.Persistence.Dependencies
             services.AddScoped<ISplitDayApplication, SplitDayApplication>();
             services.AddScoped<IExerciseApplication, ExerciseApplication>();
             services.AddScoped<IAuthApplication, AuthApplication>();
+            services.AddScoped<IFriendApplication, FriendApplication>();
 
             // Repository
             services.AddScoped<IUserRepository, UserRepository>();
@@ -23,6 +24,7 @@ namespace TFC.Infrastructure.Persistence.Dependencies
             services.AddScoped<ISplitDayRepository, SplitDayRepository>();
             services.AddScoped<IExerciseRepository, ExerciseRepository>();
             services.AddScoped<IAuthRepository, AuthRepository>();
+            services.AddScoped<IFriendRepository, FriendRepository>();
 
             return services;
         }
