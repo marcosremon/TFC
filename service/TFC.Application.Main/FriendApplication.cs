@@ -1,6 +1,7 @@
-﻿using TFC.Application.DTO.User.AddNewUserFriend;
-using TFC.Application.DTO.User.GetAllUserFriens;
-using TFC.Application.DTO.User.GetFriendByFriendCode;
+﻿using TFC.Application.DTO.Friend.AddNewUserFriend;
+using TFC.Application.DTO.Friend.DeleteFriend;
+using TFC.Application.DTO.Friend.GetAllUserFriens;
+using TFC.Application.DTO.Friend.GetFriendByFriendCode;
 using TFC.Application.Interface.Application;
 using TFC.Application.Interface.Persistence;
 using TFC.Transversal.Logs;
@@ -61,6 +62,23 @@ namespace TFC.Application.Main
             }
 
             return await _friendRepository.AddNewUserFriend(addNewUserFriendRequest);
+        }
+
+        public async Task<DeleteFriendResponse> DeleteFriend(DeleteFriendRequest deleteFriendRequest)
+        {
+            if (deleteFriendRequest == null
+                || string.IsNullOrEmpty(deleteFriendRequest.UserEmail)
+                || string.IsNullOrEmpty(deleteFriendRequest.FriendCode))
+            {
+                Log.Instance.Trace($"Invalid request: el request esta vacio o tiene algun campo nulo o vacio");
+                return new DeleteFriendResponse
+                {
+                    IsSuccess = false,
+                    Message = "Invalid request: DeleteFriendRequest is null or required fields are missing."
+                };
+            }
+
+            return await _friendRepository.DeleteFriend(deleteFriendRequest);
         }
     }
 }

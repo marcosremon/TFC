@@ -23,79 +23,73 @@ namespace TFC.Infraestructure.Persistence.Repository
         public async Task<AddSplitDayResponse> CreateSplitDay(AddSplitDayRequest addSplitDayRequest)
         {
             AddSplitDayResponse response = new AddSplitDayResponse();
-            using (ApplicationDbContext context = _context)
+            try
             {
-                IDbContextTransaction dbContextTransaction = context.Database.BeginTransaction();
-                try
-                {
-                    User? user = await context.Users
-                        .Include(u => u.Routines)
-                        .ThenInclude(r => r.SplitDays)
-                        .FirstOrDefaultAsync(u => u.UserId == addSplitDayRequest.UserId);
+                User? user = await _context.Users
+                    .Include(u => u.Routines)
+                    .ThenInclude(r => r.SplitDays)
+                    .FirstOrDefaultAsync(u => u.UserId == addSplitDayRequest.UserId);
 
-                    if (user == null)
-                    {
-                        response.IsSuccess = false;
-                        response.Message = "User not found.";
-                    }
-
-                    Routine? routine = user.Routines.FirstOrDefault(r => r.RoutineId == addSplitDayRequest.RoutineId);
-                    if (routine == null)
-                    {
-                        response.IsSuccess = false;
-                        response.Message = "Routine not found.";
-                    }
-
-                    SplitDay splitDay = new SplitDay
-                    {
-                        DayName = addSplitDayRequest.DayName,
-                        Exercises = addSplitDayRequest.Exercises.Select(e => new Exercise
-                        {
-                            ExerciseId = e.ExerciseId,
-                            ExerciseName = e.ExerciseName,
-                            Reps = e.Reps,
-                            Sets = e.Sets
-                        }).ToList()
-                    };
-
-                    routine.SplitDays.Add(splitDay);
-                    await context.SaveChangesAsync();
-
-                    await dbContextTransaction.CommitAsync();
-
-                    UserDTO userDTO = new UserDTO
-                    {
-                        UserId = user.UserId,
-                        Username = user.Username,
-                        FriendCode = user.FriendCode,
-                        Email = user.Email,
-                        Routines = user.Routines.Select(r => new RoutineDTO
-                        {
-                            RoutineId = r.RoutineId,
-                            RoutineName = r.RoutineName,
-                            SplitDays = r.SplitDays.Select(sd => new SplitDayDTO
-                            {
-                                DayName = sd.DayName,
-                                Exercises = sd.Exercises.Select(e => new ExerciseDTO
-                                {
-                                    ExerciseId = e.ExerciseId,
-                                    ExerciseName = e.ExerciseName,
-                                    Reps = e.Reps,
-                                    Sets = e.Sets
-                                }).ToList()
-                            }).ToList()
-                        }).ToList()
-                    };
-
-                    response.IsSuccess = true;
-                    response.Message = "Split day created successfully.";
-                    response.UserDTO = userDTO;
-                }
-                catch (Exception ex)
+                if (user == null)
                 {
                     response.IsSuccess = false;
-                    response.Message = ex.Message;
+                    response.Message = "User not found.";
                 }
+
+                Routine? routine = user.Routines.FirstOrDefault(r => r.RoutineId == addSplitDayRequest.RoutineId);
+                if (routine == null)
+                {
+                    response.IsSuccess = false;
+                    response.Message = "Routine not found.";
+                }
+
+                SplitDay splitDay = new SplitDay
+                {
+                    DayName = addSplitDayRequest.DayName,
+                    Exercises = addSplitDayRequest.Exercises.Select(e => new Exercise
+                    {
+                        ExerciseId = e.ExerciseId,
+                        ExerciseName = e.ExerciseName,
+                        Reps = e.Reps,
+                        Sets = e.Sets
+                    }).ToList()
+                };
+
+                routine.SplitDays.Add(splitDay);
+                await _context.SaveChangesAsync();
+
+                UserDTO userDTO = new UserDTO
+                {
+                    UserId = user.UserId,
+                    Username = user.Username,
+                    FriendCode = user.FriendCode,
+                    Email = user.Email,
+                    Routines = user.Routines.Select(r => new RoutineDTO
+                    {
+                        RoutineId = r.RoutineId,
+                        RoutineName = r.RoutineName,
+                        SplitDays = r.SplitDays.Select(sd => new SplitDayDTO
+                        {
+                            DayName = sd.DayName,
+                            Exercises = sd.Exercises.Select(e => new ExerciseDTO
+                            {
+                                ExerciseId = e.ExerciseId,
+                                ExerciseName = e.ExerciseName,
+                                Reps = e.Reps,
+                                Sets = e.Sets
+                            }).ToList()
+                        }).ToList()
+                    }).ToList()
+                };
+
+                response.IsSuccess = true;
+                response.Message = "Split day created successfully.";
+                response.UserDTO = userDTO;
+            }
+            catch (Exception ex)
+            {
+                response.IsSuccess = false;
+                response.Message = ex.Message;
             }
 
             return response;
@@ -147,6 +141,7 @@ namespace TFC.Infraestructure.Persistence.Repository
                 {
                     response.IsSuccess = false;
                     response.Message = ex.Message;
+                    await dbContextTransaction.RollbackAsync();
                 }
             }
 

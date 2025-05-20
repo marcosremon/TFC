@@ -1,4 +1,4 @@
-﻿namespace TFC.Application.DTO.User.GetAllUserFriens
+﻿namespace TFC.Application.DTO.Friend.GetAllUserFriens
 {
     public class GetAllUserFriendsRequest 
     {

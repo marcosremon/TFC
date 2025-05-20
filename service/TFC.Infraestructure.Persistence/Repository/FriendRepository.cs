@@ -1,8 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TFC.Application.DTO.EntityDTO;
-using TFC.Application.DTO.User.AddNewUserFriend;
-using TFC.Application.DTO.User.GetAllUserFriens;
-using TFC.Application.DTO.User.GetFriendByFriendCode;
+using TFC.Application.DTO.Friend.AddNewUserFriend;
+using TFC.Application.DTO.Friend.DeleteFriend;
+using TFC.Application.DTO.Friend.GetAllUserFriens;
+using TFC.Application.DTO.Friend.GetFriendByFriendCode;
 using TFC.Application.Interface.Persistence;
 using TFC.Domain.Model.Entity;
 using TFC.Infraestructure.Persistence.Context;
@@ -67,15 +68,57 @@ namespace TFC.Infraestructure.Persistence.Repository
             return response;
         }
 
+        public async Task<DeleteFriendResponse> DeleteFriend(DeleteFriendRequest deleteFriendRequest)
+        {
+            DeleteFriendResponse response = new DeleteFriendResponse();
+            try
+            {
+                User? user = await _context.Users.FirstOrDefaultAsync(u => u.Email == deleteFriendRequest.UserEmail);
+                if (user == null)
+                {
+                    response.IsSuccess = false;
+                    response.Message = "No se encontró el usuario con ese email";
+                    return response;
+                }
+
+                User? friend = await _context.Users.FirstOrDefaultAsync(u => u.FriendCode == deleteFriendRequest.FriendCode);
+                if (friend == null)
+                {
+                    response.IsSuccess = false;
+                    response.Message = "No se encontró el amigo con ese codigo";
+                    return response;
+                }
+
+                UserFriend? userFriend = await _context.UserFriends.FirstOrDefaultAsync(uf => uf.UserId == user.UserId && uf.FriendId == friend.UserId);
+                if (userFriend == null)
+                {
+                    response.IsSuccess = false;
+                    response.Message = "No se encontró la relación de amistad";
+                    return response;
+                }
+
+                _context.UserFriends.Remove(userFriend);
+                await _context.SaveChangesAsync();
+            
+                response.IsSuccess = true;
+                response.Message = "Amigo eliminado correctamente";
+            }
+            catch (Exception ex)
+            {
+                response.IsSuccess = false;
+                response.Message = ex.Message;
+            }
+
+            return response;
+        }
+
         public async Task<GetAllUserFriendsResponse> GetAllUserFriends(GetAllUserFriendsRequest getAllUserFriendsRequest)
         {
             GetAllUserFriendsResponse response = new GetAllUserFriendsResponse();
 
             try
             {
-                User? user = await _context.Users
-                    .FirstOrDefaultAsync(u => u.Email == getAllUserFriendsRequest.UserEmail);
-
+                User? user = await _context.Users.FirstOrDefaultAsync(u => u.Email == getAllUserFriendsRequest.UserEmail);
                 if (user == null)
                 {
                     response.IsSuccess = false;
@@ -107,8 +150,7 @@ namespace TFC.Infraestructure.Persistence.Repository
                         FriendCode = u.FriendCode,
                         Email = u.Email,
                         Password = "*************"
-                    })
-                    .ToListAsync();
+                    }).ToListAsync();
 
                 response.Friends = friends;
                 response.IsSuccess = true;
@@ -137,9 +179,7 @@ namespace TFC.Infraestructure.Persistence.Repository
                     return response;
                 }
 
-                response.IsSuccess = true;
-                response.Message = "Consulta correcta";
-                response.UserDTO = new UserDTO()
+                UserDTO userDTO = new UserDTO()
                 {
                     Dni = user.Dni,
                     Username = user.Username,
@@ -147,7 +187,11 @@ namespace TFC.Infraestructure.Persistence.Repository
                     FriendCode = user.FriendCode,
                     Password = "********",
                     Email = user.Email
-                }; ;
+                };
+
+                response.IsSuccess = true;
+                response.Message = "Consulta correcta";
+                response.UserDTO = userDTO; 
             }
             catch (Exception ex)
             {

@@ -125,148 +125,134 @@ namespace TFC.Infraestructure.Persistence.Repository
         public async Task<CreateUserResponse> CreateUser(CreateGenericUserRequest createGenericUserRequest)
         {
             CreateUserResponse response = new CreateUserResponse();
-            using (ApplicationDbContext context = _context)
+            try
             {
-                IDbContextTransaction dbContextTransaction = context.Database.BeginTransaction();
-                try
-                {
-                    if (!MailUtils.IsEmailValid(createGenericUserRequest.Email))
-                    {
-                        response.IsSuccess = false;
-                        response.Message = "El email no es valido";
-                        return response;
-                    }
-
-                    if (createGenericUserRequest.Dni.Length != 9
-                      || !createGenericUserRequest.Dni.Substring(0, 8).All(char.IsDigit)
-                      || !char.IsUpper(createGenericUserRequest.Dni[8]))
-                    {
-                        response.IsSuccess = false;
-                        response.Message = "El DNI debe tener 8 números seguidos de 1 letra mayúscula";
-                        return response;
-                    }
-                    
-                    if (await _context.Users.FirstOrDefaultAsync(u => u.Dni == createGenericUserRequest.Dni) != null)
-                    {
-                        response.IsSuccess = false;
-                        response.Message = "Ya existe un usuario con ese DNI";
-                        return response;
-                    }
-
-                    if (await _context.Users.FirstOrDefaultAsync(u => u.Email == createGenericUserRequest.Email) != null)
-                    {
-                        response.IsSuccess = false;
-                        response.Message = "Ya existe un usuario con ese email";
-                        return response;
-                    }
-
-                    if (!PasswordUtils.IsPasswordValid(createGenericUserRequest.Password))
-                    {
-                        response.IsSuccess = false;
-                        response.Message = "La contraseña no es valida debe tener ocho o mas caracteres, mayusculas, minusculas y al menos un simbolo";
-                        return response;
-                    }
-
-                    if (createGenericUserRequest.Password != createGenericUserRequest.ConfirmPassword)
-                    {
-                        response.IsSuccess = false;
-                        response.Message = "Las contraseñas no coinciden";
-                        return response;
-                    }
-
-                    String friendCode = PasswordUtils.CreatePassword(8);
-                    while (true)
-                    {
-                        if (await _context.Users.FirstOrDefaultAsync(u => u.FriendCode == friendCode) == null)
-                        {
-                            break;
-                        }
-                        friendCode = PasswordUtils.CreatePassword(8);
-                    }
-
-                    User user = new User()
-                    {
-                        Dni = createGenericUserRequest.Dni,
-                        Username = createGenericUserRequest.Username,
-                        Surname = createGenericUserRequest.Surname,
-                        FriendCode = friendCode,
-                        Password = PasswordUtils.PasswordEncoder(createGenericUserRequest.Password),
-                        Email = createGenericUserRequest.Email,
-                        Role = createGenericUserRequest.Role,
-                    };
-
-                    await _context.Users.AddAsync(user);
-                    await _context.SaveChangesAsync();
-
-                    UserDTO userDTO = new UserDTO()
-                    {
-                        Dni = user.Dni,
-                        Username = user.Username,
-                        FriendCode = user.FriendCode,
-                        Surname = user.Surname,
-                        Password = "********",
-                        Email = user.Email,
-                        Role = user.Role
-                    };
-
-                    dbContextTransaction.Commit();
-
-                    response.IsSuccess = true;
-                    response.Message = "Usuario creado correctametne";
-                    response.UserDTO = userDTO;
-                }
-                catch (Exception ex)
+                if (!MailUtils.IsEmailValid(createGenericUserRequest.Email))
                 {
                     response.IsSuccess = false;
-                    response.Message = ex.Message;
-                    dbContextTransaction.Rollback();
+                    response.Message = "El email no es valido";
+                    return response;
                 }
 
-                return response;
+                if (createGenericUserRequest.Dni.Length != 9
+                  || !createGenericUserRequest.Dni.Substring(0, 8).All(char.IsDigit)
+                  || !char.IsUpper(createGenericUserRequest.Dni[8]))
+                {
+                    response.IsSuccess = false;
+                    response.Message = "El DNI debe tener 8 números seguidos de 1 letra mayúscula";
+                    return response;
+                }
+
+                if (await _context.Users.FirstOrDefaultAsync(u => u.Dni == createGenericUserRequest.Dni) != null)
+                {
+                    response.IsSuccess = false;
+                    response.Message = "Ya existe un usuario con ese DNI";
+                    return response;
+                }
+
+                if (await _context.Users.FirstOrDefaultAsync(u => u.Email == createGenericUserRequest.Email) != null)
+                {
+                    response.IsSuccess = false;
+                    response.Message = "Ya existe un usuario con ese email";
+                    return response;
+                }
+
+                if (!PasswordUtils.IsPasswordValid(createGenericUserRequest.Password))
+                {
+                    response.IsSuccess = false;
+                    response.Message = "La contraseña no es valida debe tener ocho o mas caracteres, mayusculas, minusculas y al menos un simbolo";
+                    return response;
+                }
+
+                if (createGenericUserRequest.Password != createGenericUserRequest.ConfirmPassword)
+                {
+                    response.IsSuccess = false;
+                    response.Message = "Las contraseñas no coinciden";
+                    return response;
+                }
+
+                String friendCode = PasswordUtils.CreatePassword(8);
+                while (true)
+                {
+                    if (await _context.Users.FirstOrDefaultAsync(u => u.FriendCode == friendCode) == null)
+                    {
+                        break;
+                    }
+                    friendCode = PasswordUtils.CreatePassword(8);
+                }
+
+                User user = new User()
+                {
+                    Dni = createGenericUserRequest.Dni,
+                    Username = createGenericUserRequest.Username,
+                    Surname = createGenericUserRequest.Surname,
+                    FriendCode = friendCode,
+                    Password = PasswordUtils.PasswordEncoder(createGenericUserRequest.Password),
+                    Email = createGenericUserRequest.Email,
+                    Role = createGenericUserRequest.Role,
+                };
+
+                await _context.Users.AddAsync(user);
+                await _context.SaveChangesAsync();
+
+                UserDTO userDTO = new UserDTO()
+                {
+                    Dni = user.Dni,
+                    Username = user.Username,
+                    FriendCode = user.FriendCode,
+                    Surname = user.Surname,
+                    Password = "********",
+                    Email = user.Email,
+                    Role = user.Role
+                };
+
+                response.IsSuccess = true;
+                response.Message = "Usuario creado correctametne";
+                response.UserDTO = userDTO;
             }
+            catch (Exception ex)
+            {
+                response.IsSuccess = false;
+                response.Message = ex.Message;
+            }
+
+            return response;
         }
 
         public async Task<DeleteUserResponse> DeleteUser(DeleteUserRequest deleteUserRequest)
         {
             DeleteUserResponse response = new DeleteUserResponse();
-            using (ApplicationDbContext context = _context)
+            try
             {
-                IDbContextTransaction dbContextTransaction = context.Database.BeginTransaction();
-                try
-                {
-                    User? user = await _context.Users.FirstOrDefaultAsync(u => u.Dni == deleteUserRequest.Dni);
-                    if (user == null)
-                    {
-                        response.IsSuccess = false;
-                        response.Message = "No se encontró el usuario con ese dni";
-                        return response;
-                    }
-
-                    _context.Users.Remove(user);
-                    int affectedRows = await _context.SaveChangesAsync();
-
-                    if (affectedRows == 0)
-                    {
-                        response.IsSuccess = false;
-                        response.Message = "No se pudo eliminar el usuario";
-                        return response;
-                    }
-
-                    dbContextTransaction.Commit();
-
-                    response.IsSuccess = true;
-                    response.Message = "Usuario eliminado correctamente";
-                    response.UserId = user.UserId;
-                }
-                catch (Exception ex)
+                User? user = await _context.Users.FirstOrDefaultAsync(u => u.Dni == deleteUserRequest.Dni);
+                if (user == null)
                 {
                     response.IsSuccess = false;
-                    response.Message = ex.Message;
-                    dbContextTransaction.Rollback();
+                    response.Message = "No se encontró el usuario con ese dni";
+                    return response;
                 }
 
-                return response;
+                _context.Users.Remove(user);
+                int affectedRows = await _context.SaveChangesAsync();
+
+                if (affectedRows == 0)
+                {
+                    response.IsSuccess = false;
+                    response.Message = "No se pudo eliminar el usuario";
+                    return response;
+                }
+
+                response.IsSuccess = true;
+                response.Message = "Usuario eliminado correctamente";
+                response.UserId = user.UserId;
             }
+            catch (Exception ex)
+            {
+                response.IsSuccess = false;
+                response.Message = ex.Message;
+            }
+
+            return response;
         }
 
         public async Task<GetUserByEmailResponse> GetUserByEmail(GetUserByEmailRequest getUserByEmailRequest)
@@ -391,41 +377,34 @@ namespace TFC.Infraestructure.Persistence.Repository
         public async Task<UpdateUserResponse> UpdateUser(UpdateUserRequst updateUserRequest)
         {
             UpdateUserResponse response = new UpdateUserResponse();
-            using (ApplicationDbContext context = _context)
+            try
             {
-                IDbContextTransaction dbContextTransaction = context.Database.BeginTransaction();
-                try
-                {
-                    User? user = await _context.Users.FirstOrDefaultAsync(u => u.Dni == updateUserRequest.DniToBeFound);
-                    if (user == null)
-                    {
-                        response.IsSuccess = false;
-                        response.Message = "No se encontró el usuario con ese dni";
-                        return response;
-                    }
-
-                    user.Username = updateUserRequest.Username;
-                    user.Surname = updateUserRequest.Surname;
-                    user.Password = PasswordUtils.PasswordEncoder(updateUserRequest.Password);
-                    user.Email = updateUserRequest.Email;
-                    
-                    await _context.SaveChangesAsync();
-
-                    dbContextTransaction.Commit();
-
-                    response.IsSuccess = true;
-                    response.Message = "Usuario actualizado correctamente";
-                    response.UserId = user.UserId;
-                }
-                catch (Exception ex)
+                User? user = await _context.Users.FirstOrDefaultAsync(u => u.Dni == updateUserRequest.DniToBeFound);
+                if (user == null)
                 {
                     response.IsSuccess = false;
-                    response.Message = ex.Message;
-                    dbContextTransaction.Rollback();
+                    response.Message = "No se encontró el usuario con ese dni";
+                    return response;
                 }
 
-                return response;
+                user.Username = updateUserRequest.Username;
+                user.Surname = updateUserRequest.Surname;
+                user.Password = PasswordUtils.PasswordEncoder(updateUserRequest.Password);
+                user.Email = updateUserRequest.Email;
+
+                await _context.SaveChangesAsync();
+
+                response.IsSuccess = true;
+                response.Message = "Usuario actualizado correctamente";
+                response.UserId = user.UserId;
             }
+            catch (Exception ex)
+            {
+                response.IsSuccess = false;
+                response.Message = ex.Message;
+            }
+
+            return response;
         }
     }
 }

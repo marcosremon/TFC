@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using TFC.Application.DTO.User.AddNewUserFriend;
-using TFC.Application.DTO.User.GetAllUserFriens;
-using TFC.Application.DTO.User.GetFriendByFriendCode;
+using TFC.Application.DTO.Friend.AddNewUserFriend;
+using TFC.Application.DTO.Friend.DeleteFriend;
+using TFC.Application.DTO.Friend.GetAllUserFriens;
+using TFC.Application.DTO.Friend.GetFriendByFriendCode;
 using TFC.Application.Interface.Application;
-using TFC.Application.Main;
 using TFC.Transversal.Logs;
 
 namespace TFC.Service.WebApi.Controllers
@@ -68,10 +68,9 @@ namespace TFC.Service.WebApi.Controllers
         [HttpPost("get-friend-by-friend-code")]
         public async Task<ActionResult<GetFriendByFriendCodeResponse>> GetFriendByFriendCode([FromQuery] GetFriendByFriendCodeRequest getFriendByFriendCodeRequest)
         {
-            GetFriendByFriendCodeResponse response = new GetFriendByFriendCodeResponse();
             try
             {
-                response = await _friendApplication.GetFriendByFriendCode(getFriendByFriendCodeRequest);
+                GetFriendByFriendCodeResponse response = await _friendApplication.GetFriendByFriendCode(getFriendByFriendCodeRequest);
                 if (response.IsSuccess)
                 {
                     Log.Instance.Trace($"Amigo encontrado con código: {getFriendByFriendCodeRequest.FriendCode}");
@@ -85,6 +84,28 @@ namespace TFC.Service.WebApi.Controllers
             {
                 Log.Instance.Error($"GetFriendByFriendCode --> Error al buscar amigo con código {getFriendByFriendCodeRequest.FriendCode}: {ex.Message}");
                 return BadRequest();
+            }
+        }
+
+        [HttpDelete("delete-friend")]
+        public async Task<ActionResult<DeleteFriendResponse>> DeleteFriend([FromBody] DeleteFriendRequest deleteFriendRequest)
+        {
+            try
+            {
+                DeleteFriendResponse response = await _friendApplication.DeleteFriend(deleteFriendRequest);
+                if (response.IsSuccess)
+                {
+                    Log.Instance.Trace($"Amigo eliminado con friendCode: {deleteFriendRequest.FriendCode}");
+                    return Ok(response);
+                }
+
+                Log.Instance.Trace($"Error al eliminar el amigo con friendCode: {deleteFriendRequest.FriendCode}");
+                return BadRequest(response.IsSuccess);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance.Error($"DeleteFriend --> Error al eliminar el amigo con friendCode: {deleteFriendRequest.FriendCode}: {ex.Message}");
+                return BadRequest(ex.Message);
             }
         }
     }
