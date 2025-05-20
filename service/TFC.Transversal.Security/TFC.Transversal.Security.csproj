@@ -10,4 +10,8 @@
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.15" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\TFC.Domain.Model\TFC.Domain.Model.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -1,8 +1,10 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using TFC.Domain.Model.Enum;
 
 namespace TFC.Service.WebApi
 {
@@ -41,7 +43,7 @@ namespace TFC.Service.WebApi
             {
                 new Claim(JwtRegisteredClaimNames.Sub, username),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(ClaimTypes.Role, "USER")
+                new Claim(ClaimTypes.Role, Role.User.ToString())
             };
 
             return GenerateJwtToken(claims);
@@ -53,7 +55,7 @@ namespace TFC.Service.WebApi
             {
                 new Claim(JwtRegisteredClaimNames.Sub, username),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(ClaimTypes.Role, "ADMIN")
+                new Claim(ClaimTypes.Role, Role.Admin.ToString())
             };
 
             return GenerateJwtToken(claims);

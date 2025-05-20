@@ -9,6 +9,7 @@ using TFC.Application.DTO.User.DeleteUser;
 using TFC.Application.DTO.User.GetUsers;
 using TFC.Application.DTO.User.UpdateUser;
 using TFC.Application.Interface.Application;
+using TFC.Domain.Model.Enum;
 using TFC.Transversal.Logs;
 
 namespace TFC.Service.WebApi.Controllers
@@ -25,7 +26,7 @@ namespace TFC.Service.WebApi.Controllers
         }
 
         [HttpGet("get-users")]
-        //[Authorize(Roles = "ADMIN")]
+        [Authorize(Roles = nameof(Role.Admin))]
         public async Task<ActionResult<GetUsersResponse>> GetUsers()
         {
             try
@@ -81,7 +82,7 @@ namespace TFC.Service.WebApi.Controllers
         }
 
         [HttpPost("create-admin")]
-        [Authorize(Roles = "ADMIN")]
+        [Authorize(Roles = nameof(Role.Admin))]
         public async Task<ActionResult<CreateAdminResponse>> CreateAdmin([FromBody] CreateAdminRequest createAdminRequst)
         {
             try
@@ -94,7 +95,7 @@ namespace TFC.Service.WebApi.Controllers
                     Email = createAdminRequst.Email,
                     Password = createAdminRequst.Password,
                     ConfirmPassword = createAdminRequst.ConfirmPassword,
-                    Role = Domain.Model.Enum.Role.Admin
+                    Role = Role.Admin
                 };
 
                 CreateUserResponse response = await _userApplication.CreateUser(createGenericUserRequest);
