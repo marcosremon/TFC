@@ -17,14 +17,19 @@ namespace TFC.Service.WebApi
 
         public static string GenerateJwtToken(Claim[] claims)
         {
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["jwt:Key"]));
+            var jwtKey = _configuration["JWT:Key"];
+            var issuer = _configuration["JWT:Issuer"];
+            var audience = _configuration["JWT:Audience"]; 
+            var expInMinutes = _configuration["JWT:ExpInMinutes"]; 
+    
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
-                issuer: _configuration["jwt:Issuer"],
-                audience: _configuration["jwt:Audience"],
+                issuer: issuer,
+                audience: audience,
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(30),
+                expires: DateTime.UtcNow.AddMinutes(int.Parse(expInMinutes)), 
                 signingCredentials: creds);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
@@ -32,7 +37,7 @@ namespace TFC.Service.WebApi
 
         public static string GenerateUserJwtToken(string username)
         {
-            var claims = new[]  
+            var claims = new Claim[]  
             {
                 new Claim(JwtRegisteredClaimNames.Sub, username),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
@@ -44,11 +49,10 @@ namespace TFC.Service.WebApi
 
         public static string GenerateAdminJwtToken(string username)
         {
-            var claims = new[]
+            var claims = new Claim[]
             {
                 new Claim(JwtRegisteredClaimNames.Sub, username),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(ClaimTypes.Role, "USER"),
                 new Claim(ClaimTypes.Role, "ADMIN")
             };
 
