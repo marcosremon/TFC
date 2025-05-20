@@ -6,6 +6,7 @@ using TFC.Application.DTO.User.CreateGenericUser;
 using TFC.Application.DTO.User.CreateNewPassword;
 using TFC.Application.DTO.User.CreateUser;
 using TFC.Application.DTO.User.DeleteUser;
+using TFC.Application.DTO.User.GetUserByEmail;
 using TFC.Application.DTO.User.GetUsers;
 using TFC.Application.DTO.User.UpdateUser;
 using TFC.Application.Interface.Application;
@@ -44,6 +45,27 @@ namespace TFC.Service.WebApi.Controllers
             catch (Exception ex)
             {
                 Log.Instance.Error($"GetUsers --> Error al buscar los usuarios: {ex.Message}");
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("get-user-by-email")]
+        public async Task<ActionResult<GetUserByEmailResponse>> GetUserByEmail([FromBody] GetUserByEmailRequest getUserByEmailRequest)
+        {
+            try
+            {
+                GetUserByEmailResponse response = await _userApplication.GetUserByEmail(getUserByEmailRequest);
+                if (response.IsSuccess)
+                {
+                    Log.Instance.Trace($"Usuario encontrado: {response.UserDTO?.Email}");
+                    return Ok(response);
+                }
+                Log.Instance.Trace($"Error al buscar el usuario: {response?.Message}");
+                return BadRequest(response?.Message);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance.Error($"GetUserByEmail --> Error al buscar el usuario: {ex.Message}");
                 return BadRequest(ex.Message);
             }
         }

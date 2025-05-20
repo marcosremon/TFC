@@ -54,6 +54,7 @@ namespace TFC.Infraestructure.Persistence.Repository
                 };
 
                 await _context.UserFriends.AddAsync(userFriend);
+                await _context.SaveChangesAsync();
 
                 response.IsSuccess = true;
                 response.Message = "Amigo agregado correctamente";

@@ -51,11 +51,11 @@ namespace TFC.Service.WebApi.Controllers
                 if (response.IsSuccess)
                 {
                     Log.Instance.Trace($"se añadio al amigo con id {response.FriendId}");
-                    return Ok(response.IsSuccess);
+                    return Ok(response);
                 }
 
                 Log.Instance.Trace($"Error al añadir al amigo con id: {response.IsSuccess}");
-                return BadRequest(response.IsSuccess);
+                return Ok(response);
             }
             catch (Exception ex)
             {

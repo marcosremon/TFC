@@ -304,6 +304,8 @@ namespace TFC.Infraestructure.Persistence.Repository
                 response.IsSuccess = true;
                 response.Message = "Consulta correcta";
                 response.UserDTO = userDTO;
+                response.routinesCount = userDTO.Routines.Count;
+                response.friendsCount = await _context.UserFriends.CountAsync(u => u.UserId == userDTO.UserId);
             }
             catch (Exception ex)
             {
