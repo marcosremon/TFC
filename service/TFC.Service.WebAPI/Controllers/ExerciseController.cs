@@ -8,7 +8,7 @@ using TFC.Transversal.Logs;
 namespace TFC.Service.WebApi.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/exercise")]
     public class ExerciseController : ControllerBase
     {
         private readonly IExerciseApplication _exerciseApplication;
@@ -18,7 +18,7 @@ namespace TFC.Service.WebApi.Controllers
             _exerciseApplication = exerciseApplication;
         }
 
-        [HttpPost("AddExercise")]
+        [HttpPost("add-exercise")]
         public async Task<ActionResult<AddExerciseResponse>> AddExercise([FromBody] AddExerciseRequest addExerciseRequest)
         {
             try
@@ -40,7 +40,7 @@ namespace TFC.Service.WebApi.Controllers
             }
         }
 
-        [HttpPut("UpdateExercise")]
+        [HttpPut("update-exercise")]
         public async Task<ActionResult<UpdateExerciseResponse>> UpdateExercise([FromBody] UpdateExerciseRequest updateExerciseRequest)
         {
             try
@@ -62,7 +62,7 @@ namespace TFC.Service.WebApi.Controllers
             }
         }
 
-        [HttpDelete("DeleteExercise")]
+        [HttpDelete("delete-exercise")]
         public async Task<ActionResult<DeleteExerciseResponse>> DeleteExercise([FromBody] DeleteExerciseRequest deleteExerciseRequest)
         {
             try
@@ -84,7 +84,7 @@ namespace TFC.Service.WebApi.Controllers
             }
         }
 
-        [HttpPost("GetExercisesByDayName")]
+        [HttpPost("get-exercises-by-day-name")]
         public async Task<ActionResult<GetExercisesByDayNameResponse>> GetExercisesByDayName([FromBody] GetExercisesByDayNameRequest getExercisesByDayNameRequest)
         {
             try

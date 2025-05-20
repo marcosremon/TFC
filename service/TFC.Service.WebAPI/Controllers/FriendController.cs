@@ -9,7 +9,7 @@ using TFC.Transversal.Logs;
 namespace TFC.Service.WebApi.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/friend")]
     public class FriendController : ControllerBase
     {
         private readonly IFriendApplication _friendApplication;
@@ -20,7 +20,7 @@ namespace TFC.Service.WebApi.Controllers
         }
 
 
-        [HttpPost("GetAllUserFriends")]
+        [HttpPost("get-all-user-friends")]
         public async Task<ActionResult<GetAllUserFriendsResponse>> GetAllUserFriends([FromBody] GetAllUserFriendsRequest getAllUserFriendsRequest)
         {
             try
@@ -42,7 +42,7 @@ namespace TFC.Service.WebApi.Controllers
             }
         }
 
-        [HttpPost("AddNewUserFriend")]
+        [HttpPost("add-new-user-friend")]
         public async Task<ActionResult<AddNewUserFriendResponse>> AddNewUserFriend([FromBody] AddNewUserFriendRequest addNewUserFriendRequest)
         {
             AddNewUserFriendResponse response = new AddNewUserFriendResponse();
@@ -65,8 +65,7 @@ namespace TFC.Service.WebApi.Controllers
             }
         }
 
-
-        [HttpPost("GetFriendByFriendCode")]
+        [HttpPost("get-friend-by-friend-code")]
         public async Task<ActionResult<GetFriendByFriendCodeResponse>> GetFriendByFriendCode([FromQuery] GetFriendByFriendCodeRequest getFriendByFriendCodeRequest)
         {
             GetFriendByFriendCodeResponse response = new GetFriendByFriendCodeResponse();

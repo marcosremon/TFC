@@ -7,7 +7,7 @@ using TFC.Transversal.Logs;
 namespace TFC.Service.WebApi.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/auth")]
     public class AuthController : ControllerBase
     {
         private readonly IAuthApplication _authApplication;
@@ -17,7 +17,7 @@ namespace TFC.Service.WebApi.Controllers
             _authApplication = authApplication;
         }
 
-        [HttpPost("Login")]
+        [HttpPost("login")]
         public async Task<ActionResult<LoginResponse>> Login([FromBody] LoginRequest loginRequest)
         {
             try
@@ -43,7 +43,7 @@ namespace TFC.Service.WebApi.Controllers
             }
         }
 
-        [HttpPost("CheckTokenStatus")]
+        [HttpPost("check-token-status")]
         public async Task<IActionResult> CheckTokenStatus([FromBody] CheckTokenStatusRequest checkTokenStatusRequest)
         {
             try

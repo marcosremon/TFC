@@ -9,7 +9,7 @@ using TFC.Transversal.Logs;
 namespace TFC.Service.WebApi.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/routine")]
     public class RoutineController : ControllerBase
     {
         private readonly IRoutineApplication _routineApplication;
@@ -19,7 +19,7 @@ namespace TFC.Service.WebApi.Controllers
             _routineApplication = routineApplication;
         }
 
-        [HttpPost("CreateRoutine")]
+        [HttpPost("create-routine")]
         public async Task<ActionResult<CreateRoutineResponse>> CreateRoutine([FromBody] CreateRoutineRequest createRoutineRequest)
         {
             try
@@ -41,7 +41,7 @@ namespace TFC.Service.WebApi.Controllers
             }
         }
 
-        [HttpPut("UpdateRoutine")]
+        [HttpPut("update-routine")]
         public async Task<ActionResult<UpdateRoutineResponse>> UpdateRoutine([FromBody] UpdateRoutineRequest updateRoutineRequest)
         {
             try
@@ -63,7 +63,7 @@ namespace TFC.Service.WebApi.Controllers
             }
         }
 
-        [HttpDelete("DeleteRoutine")]
+        [HttpDelete("delete-routine")]
         public async Task<ActionResult<DeleteRoutineResponse>> DeleteRoutine([FromBody] DeleteRoutineRequest deleteRoutineRequest)
         {
             try
@@ -85,7 +85,7 @@ namespace TFC.Service.WebApi.Controllers
             }
         }
 
-        [HttpPost("GetRoutinesByFriendCode")]
+        [HttpPost("get-routines-by-friend-code")]
         public async Task<ActionResult<GetRoutinesByFriendCodeResponse>> GetRoutinesByFriendCode([FromBody] GetRoutinesByFriendCodeRequest getRoutinesByFriendCodeRequest)
         {
             try

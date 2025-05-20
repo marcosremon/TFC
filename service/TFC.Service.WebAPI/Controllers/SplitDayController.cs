@@ -9,7 +9,7 @@ using TFC.Transversal.Logs;
 namespace TFC.Service.WebApi.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/split-day")]
     public class SplitDayController : ControllerBase
     {
         private readonly ISplitDayApplication _splitDayApplication;
@@ -19,7 +19,7 @@ namespace TFC.Service.WebApi.Controllers
             _splitDayApplication = splitDayApplication;
         }
 
-        [HttpPost("CreateSplitDay")]
+        [HttpPost("create-split-day")]
         public async Task<ActionResult<AddSplitDayResponse>> CreateSplitDay([FromBody] AddSplitDayRequest anyadirSplitDayRequest)
         {
             try
@@ -41,7 +41,7 @@ namespace TFC.Service.WebApi.Controllers
             }
         }
 
-        [HttpPut("UpdateSplitDay")]
+        [HttpPut("update-split-day")]
         public async Task<ActionResult<UpdateSplitDayResponse>> UpdateSplitDay([FromBody] UpdateSplitDayRequest actualizarSplitDayRequest)
         {
             try
@@ -63,7 +63,7 @@ namespace TFC.Service.WebApi.Controllers
             }
         }
 
-        [HttpDelete("DeleteSplitDay")]
+        [HttpDelete("delete-split-day")]
         public async Task<ActionResult<DeleteSplitDayResponse>> DeleteSplitDay([FromBody] DeleteSplitDayRequest deleteSplitDayRequest)
         {
             try
@@ -85,7 +85,7 @@ namespace TFC.Service.WebApi.Controllers
             }
         }
 
-        [HttpPost("GetSplitsDay")]
+        [HttpPost("get-splits-day")]
         public async Task<ActionResult<GetAllUserSplitsResponse>> GetAllUserSplits([FromBody] GetAllUserSplitsRequest getAllUserSplitsRequest)
         {
             try

@@ -14,7 +14,7 @@ using TFC.Transversal.Logs;
 namespace TFC.Service.WebApi.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/users")]
     public class UserController : ControllerBase
     {
         private readonly IUserApplication _userApplication;
@@ -24,7 +24,7 @@ namespace TFC.Service.WebApi.Controllers
             _userApplication = userApplication;
         }
 
-        [HttpGet("GetUsers")]
+        [HttpGet("get-users")]
         //[Authorize(Roles = "ADMIN")]
         public async Task<ActionResult<GetUsersResponse>> GetUsers()
         {
@@ -47,7 +47,7 @@ namespace TFC.Service.WebApi.Controllers
             }
         }
 
-        [HttpPost("CreateUser")]
+        [HttpPost("create-user")]
         public async Task<ActionResult<CreateUserResponse>> CreateUser([FromBody] CreateUserRequst createUserRequst)
         {
             try
@@ -80,7 +80,7 @@ namespace TFC.Service.WebApi.Controllers
             }
         }
 
-        [HttpPost("CreateAdmin")]
+        [HttpPost("create-admin")]
         [Authorize(Roles = "ADMIN")]
         public async Task<ActionResult<CreateAdminResponse>> CreateAdmin([FromBody] CreateAdminRequest createAdminRequst)
         {
@@ -114,7 +114,7 @@ namespace TFC.Service.WebApi.Controllers
             }
         }
 
-        [HttpPut("UpdateUser")]
+        [HttpPut("update-user")]
         public async Task<ActionResult<UpdateUserResponse>> UpdateUser([FromBody] UpdateUserRequst updateUserRequest)
         {
             try
@@ -136,7 +136,7 @@ namespace TFC.Service.WebApi.Controllers
             }
         }
 
-        [HttpDelete("DeleteUser")]
+        [HttpDelete("delete-user")]
         public async Task<ActionResult<DeleteUserResponse>> DeleteUser([FromBody] DeleteUserRequest deleteUserRequest)
         {
             try
@@ -158,7 +158,7 @@ namespace TFC.Service.WebApi.Controllers
             }
         }
 
-        [HttpPost("CreateNewPassword")]
+        [HttpPost("create-new-password")]
         public async Task<ActionResult<CreateNewPasswordResponse>> CreateNewPassword([FromBody] CreateNewPasswordRequest createNewPasswordRequest)
         {
             try
@@ -180,7 +180,7 @@ namespace TFC.Service.WebApi.Controllers
             }
         }
 
-        [HttpPost("ChangePasswordWithPasswordAndEmail")]
+        [HttpPost("change-password-with-password-and-email")]
         public async Task<ActionResult<ChangePasswordWithPasswordAndEmailResponse>> ChangePasswordWithPasswordAndEmail([FromBody] ChangePasswordWithPasswordAndEmailRequest changePasswordWithPasswordAndEmailRequest)
         {
             try
