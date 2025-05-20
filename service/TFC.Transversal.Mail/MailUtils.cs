@@ -2,7 +2,7 @@
 using MimeKit;
 using System.Net.Mail;
 
-public static class MailUtilities
+public static class MailUtils
 {
     private static IConfiguration? _configuration;
 

@@ -60,7 +60,7 @@ namespace TFC.Infraestructure.Persistence.Repository
 
                     dbContextTransaction.Commit();
 
-                    MailUtilities.SendEmail(user.Username, user.Email, changePasswordRequest.NewPassword);
+                    MailUtils.SendEmail(user.Username, user.Email, changePasswordRequest.NewPassword);
                     response.IsSuccess = true;
                     response.Message = "Contraseña cambiada correctamente";
                     response.UserId = user.UserId;
@@ -106,7 +106,7 @@ namespace TFC.Infraestructure.Persistence.Repository
 
                     dbContextTransaction.Commit();
 
-                    MailUtilities.SendEmail(user.Username, user.Email, newPassword);
+                    MailUtils.SendEmail(user.Username, user.Email, newPassword);
                     response.IsSuccess = true;
                     response.Message = "Contraseña cambiada correctamente";
                     response.UserId = user.UserId;
@@ -130,7 +130,7 @@ namespace TFC.Infraestructure.Persistence.Repository
                 IDbContextTransaction dbContextTransaction = context.Database.BeginTransaction();
                 try
                 {
-                    if (!MailUtilities.IsEmailValid(createGenericUserRequest.Email))
+                    if (!MailUtils.IsEmailValid(createGenericUserRequest.Email))
                     {
                         response.IsSuccess = false;
                         response.Message = "El email no es valido";
