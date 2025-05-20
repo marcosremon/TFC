@@ -55,7 +55,7 @@ namespace TFC.Service.WebApi
             {
                 new Claim(JwtRegisteredClaimNames.Sub, username),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(ClaimTypes.Role, Role.Admin.ToString())
+                new Claim("role", Role.Admin.ToString())
             };
 
             return GenerateJwtToken(claims);
