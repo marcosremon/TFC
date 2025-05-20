@@ -15,15 +15,8 @@ namespace TFC.Service.WebApi
             _configuration = configuration;
         }
 
-        public static string GenerateUserJwtToken(string username)
+        public static string GenerateJwtToken(Claim[] claims)
         {
-            var claims = new[]
-            {
-                new Claim(JwtRegisteredClaimNames.Sub, username),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(ClaimTypes.Role, "USER")
-            };
-
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["jwt:Key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
@@ -37,6 +30,18 @@ namespace TFC.Service.WebApi
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
+        public static string GenerateUserJwtToken(string username)
+        {
+            var claims = new[]  
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, username),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(ClaimTypes.Role, "USER")
+            };
+
+            return GenerateJwtToken(claims);
+        }
+
         public static string GenerateAdminJwtToken(string username)
         {
             var claims = new[]
@@ -47,17 +52,7 @@ namespace TFC.Service.WebApi
                 new Claim(ClaimTypes.Role, "ADMIN")
             };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["jwt:Key"]));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-            var token = new JwtSecurityToken(
-                issuer: _configuration["jwt:Issuer"],
-                audience: _configuration["jwt:Audience"],
-                claims: claims,
-                expires: DateTime.Now.AddMinutes(30),
-                signingCredentials: creds);
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            return GenerateJwtToken(claims);
         }
 
         public static bool IsValidToken(string token)
@@ -78,7 +73,7 @@ namespace TFC.Service.WebApi
                     ValidateAudience = true,
                     ValidAudience = _configuration["jwt:Audience"],
                     ValidateLifetime = true,
-                    ClockSkew = TimeSpan.Zero // Opcional: sin tolerancia de tiempo
+                    ClockSkew = TimeSpan.Zero 
                 }, out SecurityToken validatedToken);
 
                 return true;
