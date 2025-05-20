@@ -129,7 +129,7 @@ namespace TFC.Infraestructure.Persistence.Repository
                     user.Routines.Remove(routine);
                     await _context.SaveChangesAsync();
 
-                    dbContextTransaction.Commit();
+                    await dbContextTransaction.CommitAsync();
 
                     response.IsSuccess = true;
                     response.Message = "Routine deleted successfully";
@@ -138,7 +138,7 @@ namespace TFC.Infraestructure.Persistence.Repository
                 {
                     response.IsSuccess = false;
                     response.Message = ex.Message;
-                    dbContextTransaction.Rollback();
+                    await dbContextTransaction.RollbackAsync();
                 }
 
                 return response;
