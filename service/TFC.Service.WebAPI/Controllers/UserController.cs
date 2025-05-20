@@ -14,7 +14,7 @@ using TFC.Transversal.Logs;
 namespace TFC.Service.WebApi.Controllers
 {
     [ApiController]
-    [Route("api/users")]
+    [Route("api/user")]
     public class UserController : ControllerBase
     {
         private readonly IUserApplication _userApplication;
