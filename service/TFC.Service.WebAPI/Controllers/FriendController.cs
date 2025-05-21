@@ -86,7 +86,7 @@ namespace TFC.Service.WebApi.Controllers
             }
         }
 
-        [HttpDelete("delete-friend")]
+        [HttpPost("delete-friend")]
         public async Task<ActionResult<DeleteFriendResponse>> DeleteFriend([FromBody] DeleteFriendRequest deleteFriendRequest)
         {
             try
@@ -94,16 +94,16 @@ namespace TFC.Service.WebApi.Controllers
                 DeleteFriendResponse response = await _friendApplication.DeleteFriend(deleteFriendRequest);
                 if (response.IsSuccess)
                 {
-                    Log.Instance.Trace($"Amigo eliminado con friendCode: {deleteFriendRequest.FriendCode}");
+                    Log.Instance.Trace($"Amigo eliminado con friendCode: {deleteFriendRequest.FriendEmail}");
                     return Ok(response);
                 }
 
-                Log.Instance.Trace($"Error al eliminar el amigo con friendCode: {deleteFriendRequest.FriendCode}");
+                Log.Instance.Trace($"Error al eliminar el amigo con friendCode: {deleteFriendRequest.FriendEmail}");
                 return BadRequest(response.IsSuccess);
             }
             catch (Exception ex)
             {
-                Log.Instance.Error($"DeleteFriend --> Error al eliminar el amigo con friendCode: {deleteFriendRequest.FriendCode}: {ex.Message}");
+                Log.Instance.Error($"DeleteFriend --> Error al eliminar el amigo con friendCode: {deleteFriendRequest.FriendEmail}: {ex.Message}");
                 return BadRequest(ex.Message);
             }
         }

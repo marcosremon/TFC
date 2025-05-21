@@ -82,11 +82,11 @@ namespace TFC.Infraestructure.Persistence.Repository
                     return response;
                 }
 
-                User? friend = await _context.Users.FirstOrDefaultAsync(u => u.FriendCode == deleteFriendRequest.FriendCode);
+                User? friend = await _context.Users.FirstOrDefaultAsync(u => u.Email == deleteFriendRequest.FriendEmail);
                 if (friend == null)
                 {
                     response.IsSuccess = false;
-                    response.Message = "No se encontró el amigo con ese codigo";
+                    response.Message = "No se encontró el amigo con ese email";
                     return response;
                 }
 

@@ -21,8 +21,31 @@ namespace TFC.Infraestructure.Persistence.Context
             modelBuilder.Entity<User>(entity =>
             {
                 entity.HasKey(u => u.UserId);
-                entity.Property(u => u.Dni).IsRequired().HasMaxLength(20);
-                entity.Property(u => u.Email).IsRequired().HasMaxLength(255);
+
+                entity.Property(u => u.Dni)
+                    .IsRequired()
+                    .HasMaxLength(9); // El DNI en España tiene 9 caracteres
+
+                entity.Property(u => u.Email)
+                    .IsRequired()
+                    .HasMaxLength(255);
+
+                entity.Property(u => u.Username)
+                    .HasMaxLength(100);
+
+                entity.Property(u => u.Surname)
+                    .HasMaxLength(100);
+
+                entity.Property(u => u.FriendCode)
+                    .HasMaxLength(255);
+
+                entity.Property(u => u.Password);
+
+                entity.Property(u => u.Role)
+                    .HasConversion<string>();
+
+                entity.Property(u => u.InscriptionDate)
+                    .IsRequired();
 
                 entity.HasIndex(u => u.Dni).IsUnique();
                 entity.HasIndex(u => u.Email).IsUnique();

@@ -68,7 +68,7 @@ namespace TFC.Application.Main
         {
             if (deleteFriendRequest == null
                 || string.IsNullOrEmpty(deleteFriendRequest.UserEmail)
-                || string.IsNullOrEmpty(deleteFriendRequest.FriendCode))
+                || string.IsNullOrEmpty(deleteFriendRequest.FriendEmail))
             {
                 Log.Instance.Trace($"Invalid request: el request esta vacio o tiene algun campo nulo o vacio");
                 return new DeleteFriendResponse
