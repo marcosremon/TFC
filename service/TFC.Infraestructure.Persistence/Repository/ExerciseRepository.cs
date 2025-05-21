@@ -189,7 +189,7 @@ namespace TFC.Infraestructure.Persistence.Repository
             GetExercisesByDayNameResponse response = new GetExercisesByDayNameResponse();
             try
             {
-                User? user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == getExercisesByDayNameRequest.UserId);
+                User? user = await _context.Users.FirstOrDefaultAsync(u => u.Email == getExercisesByDayNameRequest.UserEmail);
                 if (user == null)
                 {
                     response.IsSuccess = false;

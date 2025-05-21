@@ -57,7 +57,7 @@ namespace TFC.Application.Main
         public async Task<GetExercisesByDayNameResponse> GetExercisesByDayName(GetExercisesByDayNameRequest getExercisesByDayNameRequest)
         {
             if (getExercisesByDayNameRequest == null
-                || getExercisesByDayNameRequest.UserId == null
+                || getExercisesByDayNameRequest.UserEmail == null
                 || getExercisesByDayNameRequest.RoutineId == null
                 || getExercisesByDayNameRequest.DayName == null)
             {

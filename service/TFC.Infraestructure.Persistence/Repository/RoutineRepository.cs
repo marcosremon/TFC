@@ -1,9 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using MongoDB.Driver;
-using TFC.Application.DTO;
 using TFC.Application.DTO.Entity;
-using TFC.Application.DTO.EntityDTO;
 using TFC.Application.DTO.Routine.CreateRoutine;
 using TFC.Application.DTO.Routine.DeleteRoutine;
 using TFC.Application.DTO.Routine.GetAllUserRoutines;
@@ -156,7 +154,7 @@ namespace TFC.Infraestructure.Persistence.Repository
                     .Include(u => u.Routines)
                     .ThenInclude(r => r.SplitDays)
                     .ThenInclude(sd => sd.Exercises)
-                    .FirstOrDefaultAsync(u => u.Dni == getAllUserRoutinesRequest.UserEmail);
+                    .FirstOrDefaultAsync(u => u.Email == getAllUserRoutinesRequest.UserEmail);
                 if (user == null)
                 {
                     response.IsSuccess = false;

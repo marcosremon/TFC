@@ -1,5 +1,4 @@
-﻿using TFC.Application.DTO.EntityDTO;
-using TFC.Application.DTO.Routine.CreateRoutine;
+﻿using TFC.Application.DTO.Routine.CreateRoutine;
 using TFC.Application.DTO.Routine.DeleteRoutine;
 using TFC.Application.DTO.Routine.GetAllUserRoutines;
 using TFC.Application.DTO.Routine.GetRoutines;
