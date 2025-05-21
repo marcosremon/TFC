@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
-using TFC.Application.DTO.EntityDTO;
+using TFC.Application.DTO.Entity;
 using TFC.Application.DTO.Exercise.AddExercise;
 using TFC.Application.DTO.Exercise.GetExercisesByDayName;
 using TFC.Application.DTO.Exercise.UpdateExercise;

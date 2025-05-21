@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
-using TFC.Application.DTO.EntityDTO;
+using TFC.Application.DTO.Entity;
 using TFC.Application.DTO.User.ChangePasswordWithPasswordAndEmail;
 using TFC.Application.DTO.User.CreateGenericUser;
 using TFC.Application.DTO.User.CreateNewPassword;

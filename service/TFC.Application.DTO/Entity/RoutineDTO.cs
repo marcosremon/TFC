@@ -1,4 +1,4 @@
-﻿namespace TFC.Application.DTO.EntityDTO
+﻿namespace TFC.Application.DTO.Entity
 {
     public class RoutineDTO
     {

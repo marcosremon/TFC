@@ -1,4 +1,4 @@
-﻿using TFC.Application.DTO.EntityDTO;
+﻿using TFC.Application.DTO.Entity;
 
 namespace TFC.Application.DTO.Routine.CreateRoutine
 {

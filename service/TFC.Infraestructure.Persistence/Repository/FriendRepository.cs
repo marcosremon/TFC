@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using TFC.Application.DTO.EntityDTO;
+using TFC.Application.DTO.Entity;
 using TFC.Application.DTO.Friend.AddNewUserFriend;
 using TFC.Application.DTO.Friend.DeleteFriend;
 using TFC.Application.DTO.Friend.GetAllUserFriens;

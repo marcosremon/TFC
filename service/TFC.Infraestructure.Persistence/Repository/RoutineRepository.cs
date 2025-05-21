@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using MongoDB.Driver;
+using TFC.Application.DTO;
+using TFC.Application.DTO.Entity;
 using TFC.Application.DTO.EntityDTO;
 using TFC.Application.DTO.Routine.CreateRoutine;
 using TFC.Application.DTO.Routine.DeleteRoutine;
@@ -80,7 +82,6 @@ namespace TFC.Infraestructure.Persistence.Repository
                         }).ToList()
                     }).ToList()
                 };
-
 
                 response.IsSuccess = true;
                 response.RoutineDTO = routineDTO;
