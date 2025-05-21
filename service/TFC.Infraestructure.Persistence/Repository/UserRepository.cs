@@ -190,6 +190,7 @@ namespace TFC.Infraestructure.Persistence.Repository
                     Password = PasswordUtils.PasswordEncoder(createGenericUserRequest.Password),
                     Email = createGenericUserRequest.Email,
                     Role = createGenericUserRequest.Role,
+                    InscriptionDate = DateTime.UtcNow
                 };
 
                 await _context.Users.AddAsync(user);
@@ -280,6 +281,7 @@ namespace TFC.Infraestructure.Persistence.Repository
                     FriendCode = user.FriendCode,
                     Password = "********",
                     Email = user.Email,
+                    InscriptionDate = user.InscriptionDate,
                     Routines = user.Routines.Select(r => new RoutineDTO
                     {
                         RoutineId = r.RoutineId,
