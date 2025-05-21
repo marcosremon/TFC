@@ -1,6 +1,7 @@
 ﻿using TFC.Application.DTO.EntityDTO;
 using TFC.Application.DTO.Routine.CreateRoutine;
 using TFC.Application.DTO.Routine.DeleteRoutine;
+using TFC.Application.DTO.Routine.GetAllUserRoutines;
 using TFC.Application.DTO.Routine.GetRoutines;
 using TFC.Application.DTO.Routine.GetRoutinesByFriendCode;
 using TFC.Application.Interface.Application;
@@ -48,6 +49,21 @@ namespace TFC.Application.Main
             }
 
             return await _routineRepository.DeleteRoutine(deleteRoutineRequest);
+        }
+
+        public async Task<GetAllUserRoutinesResponse> GetAllUserRoutines(GetAllUserRoutinesRequest getAllUserRoutinesRequest)
+        {
+            if (getAllUserRoutinesRequest == null || string.IsNullOrEmpty(getAllUserRoutinesRequest.UserEmail))
+            {
+                Log.Instance.Trace($"Invalid request: el request esta vacio o tiene algun campo nulo o vacio");
+                return new GetAllUserRoutinesResponse
+                {
+                    IsSuccess = false,
+                    Message = "Invalid request: GetAllUserRoutinesRequest is null or UserEmail is missing."
+                };
+            }
+
+            return await _routineRepository.GetAllUserRoutines(getAllUserRoutinesRequest);
         }
 
         public async Task<GetRoutinesByFriendCodeResponse> GetRoutinesByFriendCode(GetRoutinesByFriendCodeRequest getRoutinesByFriendCodeRequest)

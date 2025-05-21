@@ -5,6 +5,6 @@ namespace TFC.Application.DTO.Routine.GetRoutinesByFriendCode
 {
     public class GetRoutinesByFriendCodeResponse : BaseResponse
     {
-        public List<RoutineDTO>? FriendRoutines { get; set; }
+        public List<RoutineDTO> FriendRoutines { get; set; } = new List<RoutineDTO>();
     }
 }
