@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TFC.Application.DTO.Routine.CreateRoutine;
 using TFC.Application.DTO.Routine.DeleteRoutine;
+using TFC.Application.DTO.Routine.GetAllUserRoutines;
 using TFC.Application.DTO.Routine.GetRoutines;
 using TFC.Application.DTO.Routine.GetRoutinesByFriendCode;
 using TFC.Application.Interface.Application;
@@ -103,6 +104,28 @@ namespace TFC.Service.WebApi.Controllers
             catch (Exception ex)
             {
                 Log.Instance.Error($"GetRoutinesByFriendCode --> Error al obtener las rutinas: {ex.Message}");
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("get-all-user-routines")]
+        public async Task<ActionResult<GetAllUserRoutinesResponse>> GetAllUserRoutines([FromBody] GetAllUserRoutinesRequest getAllUserRoutinesRequest)
+        {
+            try
+            {
+                GetAllUserRoutinesResponse response = await _routineApplication.GetAllUserRoutines(getAllUserRoutinesRequest);
+                if (response.IsSuccess)
+                {
+                    Log.Instance.Trace($"Rutinas del usuario obtenidas correctamente");
+                    return Ok(response);
+                }
+
+                Log.Instance.Trace($"Error al obtener las rutinas: {response?.Message}");
+                return BadRequest(response?.Message);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance.Error($"GetAllUserRoutines --> Error al obtener las rutinas: {ex.Message}");
                 return BadRequest(ex.Message);
             }
         }

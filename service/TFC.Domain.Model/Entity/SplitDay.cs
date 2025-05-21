@@ -6,6 +6,7 @@ namespace TFC.Domain.Model.Entity
     public class SplitDay
     {
         public WeekDay? DayName { get; set; }
+        public string DayExercisesDescription { get; set; } = string.Empty; // Pecho, Espalda, Torso...
 
         [ForeignKey("RoutineId")]
         public long RoutineId { get; set; }

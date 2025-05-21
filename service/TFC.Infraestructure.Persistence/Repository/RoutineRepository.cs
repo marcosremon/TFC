@@ -1,9 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using MongoDB.Driver;
+using TFC.Application.DTO;
+using TFC.Application.DTO.Entity;
 using TFC.Application.DTO.EntityDTO;
 using TFC.Application.DTO.Routine.CreateRoutine;
 using TFC.Application.DTO.Routine.DeleteRoutine;
+using TFC.Application.DTO.Routine.GetAllUserRoutines;
 using TFC.Application.DTO.Routine.GetRoutines;
 using TFC.Application.DTO.Routine.GetRoutinesByFriendCode;
 using TFC.Application.Interface.Persistence;
@@ -80,7 +83,6 @@ namespace TFC.Infraestructure.Persistence.Repository
                     }).ToList()
                 };
 
-
                 response.IsSuccess = true;
                 response.RoutineDTO = routineDTO;
                 response.Message = "Routine created successfully";
@@ -143,6 +145,54 @@ namespace TFC.Infraestructure.Persistence.Repository
 
                 return response;
             }
+        }
+
+        public async Task<GetAllUserRoutinesResponse> GetAllUserRoutines(GetAllUserRoutinesRequest getAllUserRoutinesRequest)
+        {
+            GetAllUserRoutinesResponse response = new GetAllUserRoutinesResponse();
+            try
+            {
+                User? user = await _context.Users
+                    .Include(u => u.Routines)
+                    .ThenInclude(r => r.SplitDays)
+                    .ThenInclude(sd => sd.Exercises)
+                    .FirstOrDefaultAsync(u => u.Dni == getAllUserRoutinesRequest.UserEmail);
+                if (user == null)
+                {
+                    response.IsSuccess = false;
+                    response.Message = "User not found";
+                    return response;
+                }
+
+                List<RoutineDTO> routines = user.Routines.Select(r => new RoutineDTO
+                {
+                    RoutineId = r.RoutineId,
+                    RoutineName = r.RoutineName,
+                    RoutineDescription = r.RoutineDescription,
+                    SplitDays = r.SplitDays.Select(sd => new SplitDayDTO
+                    {
+                        DayName = sd.DayName,
+                        Exercises = sd.Exercises.Select(e => new ExerciseDTO
+                        {
+                            ExerciseName = e.ExerciseName,
+                            Sets = e.Sets,
+                            Reps = e.Reps,
+                            Weight = e.Weight
+                        }).ToList()
+                    }).ToList()
+                }).ToList();
+
+                response.IsSuccess = true;
+                response.Message = "Routines retrieved successfully";
+                response.Routines = routines;
+            }
+            catch (Exception ex)
+            {
+                response.IsSuccess = false;
+                response.Message = ex.Message;
+            }
+
+            return response;
         }
 
         public async Task<GetRoutinesByFriendCodeResponse> GetRoutinesByFriendCode(GetRoutinesByFriendCodeRequest getRoutinesByFriendCodeRequest)

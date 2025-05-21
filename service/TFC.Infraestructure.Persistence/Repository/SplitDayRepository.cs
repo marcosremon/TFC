@@ -1,9 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
-using TFC.Application.DTO.EntityDTO;
+using TFC.Application.DTO.Entity;
 using TFC.Application.DTO.SplitDay.AnyadirSplitDay;
 using TFC.Application.DTO.SplitDay.DeleteSplitDay;
 using TFC.Application.DTO.SplitDay.GetAllUserSplits;
+using TFC.Application.DTO.SplitDay.GetRoutineSplits;
 using TFC.Application.DTO.SplitDay.UpdateSplitDay;
 using TFC.Application.Interface.Persistence;
 using TFC.Domain.Model.Entity;
@@ -181,6 +182,45 @@ namespace TFC.Infraestructure.Persistence.Repository
                 response.IsSuccess = true;
                 response.Message = "User routines retrieved successfully.";
                 response.SplitDays = routinesDTO;
+            }
+            catch (Exception ex)
+            {
+                response.IsSuccess = false;
+                response.Message = ex.Message;
+            }
+
+            return response;
+        }
+
+        public async Task<GetRoutineSplitsResponse> GetRoutineSplits(GetRoutineSplitsRequest getRoutineSplitsRequest)
+        {
+            GetRoutineSplitsResponse response = new GetRoutineSplitsResponse();
+            try
+            {
+                Routine? routine = await _context.Routines.FirstOrDefaultAsync(r => r.RoutineId == getRoutineSplitsRequest.RoutineId);
+                if (routine == null)
+                {
+                    response.IsSuccess = false;
+                    response.Message = "Routine not found.";
+                    return response;
+                }
+
+                if (!routine.SplitDays.Any())
+                {
+                    response.IsSuccess = false;
+                    response.Message = "No split days found for this routine.";
+                    return response;
+                }
+
+                List<DayInfoDTO> dayInfo = routine.SplitDays.Select(sd => new DayInfoDTO
+                {
+                    WeekDay = sd.DayName,
+                    DayExercisesDescription = sd.DayExercisesDescription
+                }).ToList();
+
+                response.IsSuccess = true;
+                response.Message = "Routine split days retrieved successfully.";
+                response.DayInfo = dayInfo;
             }
             catch (Exception ex)
             {

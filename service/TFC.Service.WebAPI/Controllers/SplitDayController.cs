@@ -2,6 +2,7 @@
 using TFC.Application.DTO.SplitDay.AnyadirSplitDay;
 using TFC.Application.DTO.SplitDay.DeleteSplitDay;
 using TFC.Application.DTO.SplitDay.GetAllUserSplits;
+using TFC.Application.DTO.SplitDay.GetRoutineSplits;
 using TFC.Application.DTO.SplitDay.UpdateSplitDay;
 using TFC.Application.Interface.Application;
 using TFC.Transversal.Logs;
@@ -91,6 +92,28 @@ namespace TFC.Service.WebApi.Controllers
             try
             {
                 GetAllUserSplitsResponse response = await _splitDayApplication.GetAllUserSplits(getAllUserSplitsRequest);
+                if (response.IsSuccess)
+                {
+                    Log.Instance.Trace($"SplitDay obtenidos correctamente");
+                    return Ok(response);
+                }
+
+                Log.Instance.Trace($"Error al obtener los SplitDay: {response?.Message}");
+                return BadRequest(response?.Message);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance.Error($"GetAllUserSplits --> Error al obtener los SplitDay: {ex.Message}");
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("get-routine-splits")]
+        public async Task<ActionResult<GetRoutineSplitsResponse>> GetRoutineSplits([FromBody] GetRoutineSplitsRequest getRoutineSplitsRequest)
+        {
+            try
+            {
+                GetRoutineSplitsResponse response = await _splitDayApplication.GetRoutineSplits(getRoutineSplitsRequest);
                 if (response.IsSuccess)
                 {
                     Log.Instance.Trace($"SplitDay obtenidos correctamente");
