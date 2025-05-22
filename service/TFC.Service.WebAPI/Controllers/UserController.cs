@@ -159,7 +159,7 @@ namespace TFC.Service.WebApi.Controllers
             }
         }
 
-        [HttpDelete("delete-user")]
+        [HttpPost("delete-user")]
         public async Task<ActionResult<DeleteUserResponse>> DeleteUser([FromBody] DeleteUserRequest deleteUserRequest)
         {
             try
@@ -167,8 +167,8 @@ namespace TFC.Service.WebApi.Controllers
                 DeleteUserResponse response = await _userApplication.DeleteUser(deleteUserRequest);
                 if (response.IsSuccess)
                 {
-                    Log.Instance.Trace($"Usuario eliminado correctamente con DNI: {deleteUserRequest.Dni}");
-                    return NoContent();
+                    Log.Instance.Trace($"Usuario eliminado correctamente con email: {deleteUserRequest.Email}");
+                    return Ok(response);
                 }
 
                 Log.Instance.Trace($"Error al eliminar el usuario: {response?.Message}");

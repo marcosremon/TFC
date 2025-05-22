@@ -78,7 +78,7 @@ namespace TFC.Application.Main
 
         public async Task<DeleteUserResponse> DeleteUser(DeleteUserRequest deleteUserRequest)
         {
-            if (deleteUserRequest == null || string.IsNullOrEmpty(deleteUserRequest.Dni))
+            if (deleteUserRequest == null || string.IsNullOrEmpty(deleteUserRequest.Email))
             {
                 Log.Instance.Trace($"Invalid request: el request esta vacio o tiene algun campo nulo o vacio");
                 return new DeleteUserResponse

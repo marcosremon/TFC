@@ -225,23 +225,16 @@ namespace TFC.Infraestructure.Persistence.Repository
             DeleteUserResponse response = new DeleteUserResponse();
             try
             {
-                User? user = await _context.Users.FirstOrDefaultAsync(u => u.Dni == deleteUserRequest.Dni);
+                User? user = await _context.Users.FirstOrDefaultAsync(u => u.Email == deleteUserRequest.Email);
                 if (user == null)
                 {
                     response.IsSuccess = false;
-                    response.Message = "No se encontró el usuario con ese dni";
+                    response.Message = "No se encontró el usuario con ese email";
                     return response;
                 }
 
                 _context.Users.Remove(user);
-                int affectedRows = await _context.SaveChangesAsync();
-
-                if (affectedRows == 0)
-                {
-                    response.IsSuccess = false;
-                    response.Message = "No se pudo eliminar el usuario";
-                    return response;
-                }
+                await _context.SaveChangesAsync();
 
                 response.IsSuccess = true;
                 response.Message = "Usuario eliminado correctamente";
