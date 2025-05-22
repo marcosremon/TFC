@@ -2,6 +2,6 @@
 {
     public class CreateNewPasswordRequest
     {
-        public string? UserEmail { get; set; }
+        public string UserEmail { get; set; } = string.Empty;
     }
 }

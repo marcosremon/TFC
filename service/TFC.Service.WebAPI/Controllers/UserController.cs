@@ -104,7 +104,7 @@ namespace TFC.Service.WebApi.Controllers
         }
 
         [HttpPost("create-admin")]
-        //[Authorize(Roles = nameof(Role.Admin))]
+        [Authorize(Roles = nameof(Role.Admin))]
         public async Task<ActionResult<CreateAdminResponse>> CreateAdmin([FromBody] CreateAdminRequest createAdminRequst)
         {
             try
@@ -137,7 +137,7 @@ namespace TFC.Service.WebApi.Controllers
             }
         }
 
-        [HttpPut("update-user")]
+        [HttpPost("update-user")]
         public async Task<ActionResult<UpdateUserResponse>> UpdateUser([FromBody] UpdateUserRequst updateUserRequest)
         {
             try
