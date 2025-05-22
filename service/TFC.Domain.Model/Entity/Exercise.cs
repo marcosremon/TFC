@@ -18,6 +18,7 @@ namespace TFC.Domain.Model.Entity
         [ForeignKey("RoutineId,DayName")]
         public long RoutineId { get; set; }
         public WeekDay DayName { get; set; }
+        public virtual Routine? Routine { get; set; }
         public virtual SplitDay? SplitDay { get; set; }
     }
 }

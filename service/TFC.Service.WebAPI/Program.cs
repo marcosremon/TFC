@@ -20,15 +20,20 @@ builder.Services.AddSwaggerGen();
 // Configuracion Mails
 MailUtils.Initialize(builder.Configuration);
 
+
 // Configuración de SQL Server con Entity Framework Core
 //builder.Services.AddDbContext<ApplicationDbContext>(options =>
 //    options.UseSqlServer(
-//        builder.Configuration.GetConnectionString("DefaultConnection"),
+//        builder.Configuration.GetConnectionString("SqlServerConnection"),
 //        sqlOptions => sqlOptions.EnableRetryOnFailure(0)));
 
 // Configuración de SQLite con Entity Framework Core
+//builder.Services.AddDbContext<ApplicationDbContext>(options =>
+//    options.UseSqlite(builder.Configuration.GetConnectionString("SqliteConnection")));
+
+// Configuración de PostgreSQL con Entity Framework Core
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+        options.UseNpgsql(builder.Configuration.GetConnectionString("PostgreSQLConnection")));
 
 // Registrar aplicaciones services
 builder.Services.AddInfrastructureServices();

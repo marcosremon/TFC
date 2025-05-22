@@ -36,6 +36,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentation", "{26A344EE-F436-429F-8A1F-3E0DCC803F99}"
 	ProjectSection(SolutionItems) = preProject
 		DatabaseSchema.txt = DatabaseSchema.txt
+		PostgresDatabaseSchema.txt = PostgresDatabaseSchema.txt
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TFC.Transversal.Logs", "TFC.Transversal.Logs\TFC.Transversal.Logs.csproj", "{FD7D96DF-0611-4D01-A690-059AE3AA0008}"
