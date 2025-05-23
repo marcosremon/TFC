@@ -8,9 +8,6 @@ BEGIN
    END IF;
 END$$;
 
--- Conectar a la base de datos
-\connect ignasioo
-
 -- Crear ENUM weekday
 DO $$
 BEGIN

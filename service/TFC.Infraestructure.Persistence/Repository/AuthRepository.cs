@@ -27,7 +27,7 @@ namespace TFC.Infraestructure.Persistence.Repository
             {
                 User? user = await _context.Users.FirstOrDefaultAsync(u =>
                     u.Email == loginRequest.UserEmail &&
-                    u.Password.Equals(PasswordUtils.PasswordEncoder(loginRequest.UserPassword)));
+                    u.Password == PasswordUtils.PasswordEncoder(loginRequest.UserPassword));
                 if (user == null)
                 {
                     response.IsSuccess = false;
