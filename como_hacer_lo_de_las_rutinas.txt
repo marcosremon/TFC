@@ -1,5 +1,0 @@
-tendre una rutina que si presiono sobre ella me mandara a un menú 
-donde en la parte superior aparecerán los días de la semana 
-según el nº de splits que tenga en la lista de splits la rutina seleccionada 
-aparecerán mas o menos días en el menú, cuando se seleccione un dia en la misma pantalla 
-ya que los días ocuparan un porcenaje de la pantalla aparecerá el progreso de ese dia del ultimo mes

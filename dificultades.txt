@@ -2,4 +2,8 @@
 - Dio a la hora de llamar al endpoint si devuelve algo que no se un ResponseCode:200 daba excepción y no podía controlar los mensajes de error
 - al entrar en el perfil de mi amigo se cargaban mis rutinas por que en el getrutinas sacaba las rutinas del email del shardepreferences
 - cuando se usaba sqlite no habia huevos a añadir un admin por guardaba el role como text y no dejaba meter un Role role
-- al pulsar en el boton de mi codigo saltaba el pop up bien pero si le volvia a dar no salia
+- al pulsar en el boton de mi codigo saltaba el pop up bien pero si le volvia a dar no salía
+- LOGIN CON GOOGLE tenia otra cuenta de firebase logueada en mi terminal y no me detectaba el google-json
+  a demás cuando loguaba con Google como el usuario de Google no estaba en mi bbdd no funcionaban los getUser de mi api
+  a si que solo user lo necesario de firebase para sacar la interfaz de Loguin con Google y luego saque los datos que 
+  venían de ahí para llamar a mis endpoints con esos datos
