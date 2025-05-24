@@ -1,5 +1,6 @@
 ﻿using TFC.Application.DTO.User.ChangePasswordWithPasswordAndEmail;
 using TFC.Application.DTO.User.CreateGenericUser;
+using TFC.Application.DTO.User.CreateGoogleUser;
 using TFC.Application.DTO.User.CreateNewPassword;
 using TFC.Application.DTO.User.CreateUser;
 using TFC.Application.DTO.User.DeleteUser;
@@ -18,5 +19,6 @@ namespace TFC.Application.Interface.Persistence
         Task<DeleteUserResponse> DeleteUser(DeleteUserRequest deleteUserRequest);
         Task<CreateNewPasswordResponse> CreateNewPassword(CreateNewPasswordRequest createNewPasswordRequest);
         Task<ChangePasswordWithPasswordAndEmailResponse> ChangePasswordWithPasswordAndEmail(ChangePasswordWithPasswordAndEmailRequest changePasswordWithPasswordAndEmailRequest);
+        Task<CreateGoogleUserResponse> CreateGoogleUser(CreateGenericUserRequest createGenericUserRequest);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using TFC.Application.DTO.User.ChangePasswordWithPasswordAndEmail;
 using TFC.Application.DTO.User.CreateGenericUser;
+using TFC.Application.DTO.User.CreateGoogleUser;
 using TFC.Application.DTO.User.CreateNewPassword;
 using TFC.Application.DTO.User.CreateUser;
 using TFC.Application.DTO.User.DeleteUser;
@@ -41,6 +42,11 @@ namespace TFC.Application.Main
             return await _userRepository.ChangePasswordWithPasswordAndEmail(changePasswordWithPasswordAndEmailRequest);
         }
 
+        public async Task<CreateGoogleUserResponse> CreateGoogleUser(CreateGenericUserRequest createGenericUserRequest)
+        {
+            return await _userRepository.CreateGoogleUser(createGenericUserRequest);
+        }
+
         public async Task<CreateNewPasswordResponse> CreateNewPassword(CreateNewPasswordRequest createNewPasswordRequest)
         {
             if (createNewPasswordRequest == null || string.IsNullOrEmpty(createNewPasswordRequest.UserEmail))
@@ -58,18 +64,17 @@ namespace TFC.Application.Main
 
         public async Task<CreateUserResponse> CreateUser(CreateGenericUserRequest createGenericUserRequest)
         {
-            if (createGenericUserRequest == null
-                || string.IsNullOrEmpty(createGenericUserRequest.Email)
+            if (createGenericUserRequest == null 
                 || string.IsNullOrEmpty(createGenericUserRequest.Dni)
                 || string.IsNullOrEmpty(createGenericUserRequest.Username)
+                || string.IsNullOrEmpty(createGenericUserRequest.Email)
                 || string.IsNullOrEmpty(createGenericUserRequest.Password)
                 || string.IsNullOrEmpty(createGenericUserRequest.ConfirmPassword))
             {
-                Log.Instance.Trace($"Invalid request: el request esta vacio o tiene algun campo nulo o vacio");
                 return new CreateUserResponse
                 {
                     IsSuccess = false,
-                    Message = "Invalid request: Missing fields in CreateUserRequst."
+                    Message = "Invalid request: CreateNewPasswordRequest is null or UserEmail is missing."
                 };
             }
 

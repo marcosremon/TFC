@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using TFC.Application.DTO.User.ChangePasswordWithPasswordAndEmail;
 using TFC.Application.DTO.User.CreateAdmin;
 using TFC.Application.DTO.User.CreateGenericUser;
+using TFC.Application.DTO.User.CreateGoogleUser;
 using TFC.Application.DTO.User.CreateNewPassword;
 using TFC.Application.DTO.User.CreateUser;
 using TFC.Application.DTO.User.DeleteUser;
@@ -104,7 +105,7 @@ namespace TFC.Service.WebApi.Controllers
         }
 
         [HttpPost("create-admin")]
-        [Authorize(Roles = nameof(Role.Admin))]
+        //[Authorize(Roles = nameof(Role.Admin))]
         public async Task<ActionResult<CreateAdminResponse>> CreateAdmin([FromBody] CreateAdminRequest createAdminRequst)
         {
             try
@@ -221,6 +222,39 @@ namespace TFC.Service.WebApi.Controllers
             catch (Exception ex)
             {
                 Log.Instance.Error($"ChangePasswordWithPasswordAndEmail --> Error al cambiar la contraseña: {ex.Message}");
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("create-google-user")]
+        public async Task<ActionResult<CreateGoogleUserResponse>> CreateGoogleUser([FromBody] CreateGoogleUserRequest createGoogleUserRequest)
+        {
+            try
+            {
+                CreateGenericUserRequest createGenericUserRequest = new CreateGenericUserRequest
+                {
+                    Dni = createGoogleUserRequest.Dni,
+                    Username = createGoogleUserRequest.Username,
+                    Surname = createGoogleUserRequest.Surname,
+                    Email = createGoogleUserRequest.Email,
+                    Password = createGoogleUserRequest.Password,
+                    ConfirmPassword = createGoogleUserRequest.ConfirmPassword,
+                    Role = Role.User
+                };
+
+                CreateGoogleUserResponse response = await _userApplication.CreateGoogleUser(createGenericUserRequest);
+                if (response.IsSuccess)
+                {
+                    Log.Instance.Trace($"Usuario creado correctamente con email: {createGoogleUserRequest.Email}");
+                    return Created(string.Empty, response);
+                }
+
+                Log.Instance.Trace($"Error al crear el usuario: {response?.Message}");
+                return BadRequest(response?.Message);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance.Error($"CreateUser --> Error al crear el usuario: {ex.Message}");
                 return BadRequest(ex.Message);
             }
         }

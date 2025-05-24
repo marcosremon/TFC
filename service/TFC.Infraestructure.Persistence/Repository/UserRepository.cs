@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore.Storage;
 using TFC.Application.DTO.Entity;
 using TFC.Application.DTO.User.ChangePasswordWithPasswordAndEmail;
 using TFC.Application.DTO.User.CreateGenericUser;
+using TFC.Application.DTO.User.CreateGoogleUser;
 using TFC.Application.DTO.User.CreateNewPassword;
 using TFC.Application.DTO.User.CreateUser;
 using TFC.Application.DTO.User.DeleteUser;
@@ -74,6 +75,67 @@ namespace TFC.Infraestructure.Persistence.Repository
 
                 return response;
             }
+        }
+
+        public async Task<CreateGoogleUserResponse> CreateGoogleUser(CreateGenericUserRequest createGenericUserRequest)
+        {
+            CreateGoogleUserResponse response = new CreateGoogleUserResponse();
+            try
+            {
+                if (!MailUtils.IsEmailValid(createGenericUserRequest.Email))
+                {
+                    response.IsSuccess = false;
+                    response.Message = "El email no es valido";
+                    return response;
+                }
+
+                String friendCode = PasswordUtils.CreatePassword(8);
+                while (true)
+                {
+                    if (await _context.Users.FirstOrDefaultAsync(u => u.FriendCode == friendCode) == null)
+                    {
+                        break;
+                    }
+                    friendCode = PasswordUtils.CreatePassword(8);
+                }
+
+                User user = new User()
+                {
+                    Dni = createGenericUserRequest.Dni,
+                    Username = createGenericUserRequest.Username,
+                    Surname = createGenericUserRequest.Surname,
+                    FriendCode = friendCode,
+                    Password = PasswordUtils.PasswordEncoder(createGenericUserRequest.Password),
+                    Email = createGenericUserRequest.Email,
+                    Role = createGenericUserRequest.Role,
+                    InscriptionDate = DateTime.UtcNow
+                };
+
+                await _context.Users.AddAsync(user);
+                await _context.SaveChangesAsync();
+
+                UserDTO userDTO = new UserDTO()
+                {
+                    Dni = user.Dni,
+                    Username = user.Username,
+                    FriendCode = user.FriendCode,
+                    Surname = user.Surname,
+                    Password = "********",
+                    Email = user.Email,
+                    Role = user.Role
+                };
+
+                response.IsSuccess = true;
+                response.Message = "Usuario creado correctametne";
+                response.UserDTO = userDTO;
+            }
+            catch (Exception ex)
+            {
+                response.IsSuccess = false;
+                response.Message = ex.Message;
+            }
+
+            return response;
         }
 
         public async Task<CreateNewPasswordResponse> CreateNewPassword(CreateNewPasswordRequest createNewPasswordRequest)
