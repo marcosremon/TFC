@@ -441,7 +441,7 @@ namespace TFC.Infraestructure.Persistence.Repository
             UpdateUserResponse response = new UpdateUserResponse();
             try
             {
-                User? user = await _context.Users.FirstOrDefaultAsync(u => u.Dni == updateUserRequest.DniToBeFound);
+                User? user = await _context.Users.FirstOrDefaultAsync(u => u.Email == updateUserRequest.OriginalEmail);
                 if (user == null)
                 {
                     response.IsSuccess = false;
@@ -451,8 +451,8 @@ namespace TFC.Infraestructure.Persistence.Repository
 
                 user.Username = updateUserRequest.Username;
                 user.Surname = updateUserRequest.Surname;
-                user.Password = PasswordUtils.PasswordEncoder(updateUserRequest.Password);
                 user.Email = updateUserRequest.Email;
+                user.Dni = updateUserRequest.DniToBeFound;
 
                 await _context.SaveChangesAsync();
 

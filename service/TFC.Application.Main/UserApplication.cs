@@ -118,18 +118,6 @@ namespace TFC.Application.Main
 
         public async Task<UpdateUserResponse> UpdateUser(UpdateUserRequst updateUserRequest)
         {
-            if (updateUserRequest == null
-                || string.IsNullOrEmpty(updateUserRequest.DniToBeFound)
-                || string.IsNullOrEmpty(updateUserRequest.Email))
-            {
-                Log.Instance.Trace($"Invalid request: el request esta vacio o tiene algun campo nulo o vacio");
-                return new UpdateUserResponse
-                {
-                    IsSuccess = false,
-                    Message = "Invalid request: Missing fields in UpdateUserRequst."
-                };
-            }
-
             return await _userRepository.UpdateUser(updateUserRequest);
         }
     }
