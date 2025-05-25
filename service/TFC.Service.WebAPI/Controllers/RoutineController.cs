@@ -28,7 +28,7 @@ namespace TFC.Service.WebApi.Controllers
                 CreateRoutineResponse response = await _routineApplication.CreateRoutine(createRoutineRequest);
                 if (response.IsSuccess)
                 {
-                    Log.Instance.Trace($"Rutina añadida correctamente al usuario con DNI: {createRoutineRequest.UserDni}");
+                    Log.Instance.Trace($"Rutina añadida correctamente al usuario con email: {createRoutineRequest.UserEmail}");
                     return Created(string.Empty, response);
                 }
 

@@ -24,17 +24,21 @@ namespace TFC.Infraestructure.Persistence.Repository
         public async Task<AddSplitDayResponse> CreateSplitDay(AddSplitDayRequest addSplitDayRequest)
         {
             AddSplitDayResponse response = new AddSplitDayResponse();
+
             try
             {
+                // Obtener usuario con sus rutinas y split days (cargar también ejercicios si quieres)
                 User? user = await _context.Users
                     .Include(u => u.Routines)
-                    .ThenInclude(r => r.SplitDays)
+                        .ThenInclude(r => r.SplitDays)
+                            .ThenInclude(sd => sd.Exercises)
                     .FirstOrDefaultAsync(u => u.UserId == addSplitDayRequest.UserId);
 
                 if (user == null)
                 {
                     response.IsSuccess = false;
                     response.Message = "User not found.";
+                    return response;  // Salir temprano
                 }
 
                 Routine? routine = user.Routines.FirstOrDefault(r => r.RoutineId == addSplitDayRequest.RoutineId);
@@ -42,22 +46,44 @@ namespace TFC.Infraestructure.Persistence.Repository
                 {
                     response.IsSuccess = false;
                     response.Message = "Routine not found.";
+                    return response; // Salir temprano
                 }
 
+                // Validar que el SplitDay no exista ya para esa rutina y día (opcional)
+                bool splitDayExists = routine.SplitDays.Any(sd => sd.DayName == addSplitDayRequest.DayName);
+                if (splitDayExists)
+                {
+                    response.IsSuccess = false;
+                    response.Message = "SplitDay for this day already exists in the routine.";
+                    return response;
+                }
+
+                // Crear nuevo SplitDay
                 SplitDay splitDay = new SplitDay
                 {
+                    RoutineId = routine.RoutineId,
                     DayName = addSplitDayRequest.DayName,
+
                     Exercises = addSplitDayRequest.Exercises.Select(e => new Exercise
                     {
-                        ExerciseId = e.ExerciseId,
+                        // ExerciseId no se asigna si es autogenerado por DB
                         ExerciseName = e.ExerciseName,
                         Reps = e.Reps,
-                        Sets = e.Sets
+                        Sets = e.Sets,
+                        Weight = e.Weight, // si tienes peso
+                        RoutineId = routine.RoutineId,
+                        DayName = addSplitDayRequest.DayName
                     }).ToList()
                 };
 
+                // Añadir el nuevo SplitDay a la rutina
                 routine.SplitDays.Add(splitDay);
+
+                // Guardar cambios
                 await _context.SaveChangesAsync();
+
+                // Preparar DTO para la respuesta (recarga user para incluir las nuevas relaciones si quieres)
+                // Podrías recargar o usar el objeto ya cargado, asumiendo que EF actualizó todo.
 
                 UserDTO userDTO = new UserDTO
                 {
@@ -72,12 +98,13 @@ namespace TFC.Infraestructure.Persistence.Repository
                         SplitDays = r.SplitDays.Select(sd => new SplitDayDTO
                         {
                             DayName = sd.DayName,
-                            Exercises = sd.Exercises.Select(e => new ExerciseDTO
+                            Exercises = sd.Exercises.Select(ex => new ExerciseDTO
                             {
-                                ExerciseId = e.ExerciseId,
-                                ExerciseName = e.ExerciseName,
-                                Reps = e.Reps,
-                                Sets = e.Sets
+                                ExerciseId = ex.ExerciseId,
+                                ExerciseName = ex.ExerciseName,
+                                Reps = ex.Reps,
+                                Sets = ex.Sets,
+                                Weight = ex.Weight
                             }).ToList()
                         }).ToList()
                     }).ToList()
@@ -95,6 +122,7 @@ namespace TFC.Infraestructure.Persistence.Repository
 
             return response;
         }
+
 
         public async Task<DeleteSplitDayResponse> DeleteSplitDay(DeleteSplitDayRequest deleteSplitDayRequest)
         {

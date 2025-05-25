@@ -9,6 +9,6 @@ namespace TFC.Application.DTO.Entity
         public int? Sets { get; set; }
         public int? Reps { get; set; }
         public double? Weight { get; set; }
-        public WeekDay DayName { get; set; }
+        public WeekDay? DayName { get; set; }
     }
 }

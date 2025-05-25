@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using MongoDB.Driver;
+using Org.BouncyCastle.Asn1.Ocsp;
 using TFC.Application.DTO.Entity;
 using TFC.Application.DTO.Routine.CreateRoutine;
 using TFC.Application.DTO.Routine.DeleteRoutine;
@@ -25,74 +26,96 @@ namespace TFC.Infraestructure.Persistence.Repository
         public async Task<CreateRoutineResponse> CreateRoutine(CreateRoutineRequest createRoutineRequest)
         {
             CreateRoutineResponse response = new CreateRoutineResponse();
-            try
-            {
-                User? user = await _context.Users
-                    .Include(u => u.Routines)
-                    .FirstOrDefaultAsync(u => u.Dni == createRoutineRequest.UserDni);
 
-                if (user == null)
+            using (ApplicationDbContext context = _context)
+            {
+                IDbContextTransaction dbContextTransaction = context.Database.BeginTransaction();
+
+                try
                 {
-                    response.IsSuccess = false;
-                    response.Message = "User not found";
-                    return response;
+                    User? user = await _context.Users
+                        .Include(u => u.Routines)
+                        .FirstOrDefaultAsync(u => u.Email == createRoutineRequest.UserEmail);
+
+                    if (user == null)
+                    {
+                        response.IsSuccess = false;
+                        response.Message = "User not found";
+                        return response;
+                    }
+
+                    Routine routine = new Routine
+                    {
+                        RoutineName = createRoutineRequest.RoutineName ?? "New Routine",
+                        RoutineDescription = createRoutineRequest.RoutineDescription ?? "Rutina sin descripcion",
+                        UserId = user.UserId,
+                        SplitDays = new List<SplitDay>()
+                    };
+
+                    _context.Routines.Add(routine);
+                    await _context.SaveChangesAsync();
+
+                    routine.SplitDays = createRoutineRequest.SplitDays.Select(sdRequest =>
+                    {
+                        SplitDay splitDay = new SplitDay
+                        {
+                            DayName = sdRequest.DayName.Value,
+                            DayExercisesDescription = "Default description",
+                            RoutineId = routine.RoutineId,
+                            Exercises = sdRequest.Exercises?.Select(exRequest =>
+                            {
+                                Exercise exercise = new Exercise
+                                {
+                                    ExerciseName = exRequest.ExerciseName ?? "Unnamed Exercise",
+                                    Sets = exRequest.Sets ?? 0,
+                                    Reps = exRequest.Reps ?? 0,
+                                    Weight = exRequest.Weight ?? 0,
+                                    RoutineId = routine.RoutineId,
+                                    DayName = sdRequest.DayName.Value
+                                };
+                                return exercise;
+                            }).ToList() ?? new List<Exercise>()
+                        };
+
+                        return splitDay;
+                    }).ToList();
+
+                    await _context.SaveChangesAsync();
+                    await dbContextTransaction.CommitAsync();
+
+                    response.IsSuccess = true;
+                    response.Message = "Routine created successfully";
+                    response.RoutineDTO = new RoutineDTO
+                    {
+                        RoutineId = routine.RoutineId,
+                        RoutineName = routine.RoutineName,
+                        RoutineDescription = routine.RoutineDescription,
+                        SplitDays = routine.SplitDays.Select(sd => new SplitDayDTO
+                        {
+                            DayName = sd.DayName,
+                            Exercises = sd.Exercises.Select(e => new ExerciseDTO
+                            {
+                                ExerciseName = e.ExerciseName,
+                                Sets = e.Sets,
+                                Reps = e.Reps,
+                                Weight = e.Weight
+                            }).ToList()
+                        }).ToList()
+                    };
                 }
-
-                Routine routine = new Routine
+                catch (Exception ex)
                 {
-                    RoutineName = createRoutineRequest.RoutineName,
-                    RoutineDescription = createRoutineRequest.RoutineDescription,
-                    UserId = user.UserId,
-                    User = user,
-                    SplitDays = createRoutineRequest.SplitDays.Select(sd => new SplitDay
-                    {
-                        DayName = sd.DayName,
-                        Exercises = sd.Exercises.Select(e => new Exercise
-                        {
-                            ExerciseName = e.ExerciseName,
-                            Sets = e.Sets,
-                            Reps = e.Reps,
-                            Weight = e.Weight
-                        }).ToList()
-                    }).ToList()
-                };
-
-                user.Routines ??= new List<Routine>();
-                user.Routines.Add(routine);
-
-                await _context.Routines.AddAsync(routine);
-                await _context.SaveChangesAsync();
-
-                RoutineDTO routineDTO = new RoutineDTO
-                {
-                    RoutineId = routine.RoutineId,
-                    RoutineName = routine.RoutineName,
-                    RoutineDescription = routine.RoutineDescription,
-                    SplitDays = routine.SplitDays.Select(sd => new SplitDayDTO
-                    {
-                        DayName = sd.DayName,
-                        Exercises = sd.Exercises.Select(e => new ExerciseDTO
-                        {
-                            ExerciseName = e.ExerciseName,
-                            Sets = e.Sets,
-                            Reps = e.Reps,
-                            Weight = e.Weight
-                        }).ToList()
-                    }).ToList()
-                };
-
-                response.IsSuccess = true;
-                response.RoutineDTO = routineDTO;
-                response.Message = "Routine created successfully";
+                    await dbContextTransaction.RollbackAsync();
+                    response.IsSuccess = false;
+                    response.Message = $"Error creating routine: {ex.Message}";
+                }
             }
-            catch (Exception ex)
-            {
-                response.IsSuccess = false;
-                response.Message = $"Error creating routine: {ex.Message}";
-            }
-
             return response;
         }
+
+
+
+
 
         public async Task<DeleteRoutineResponse> DeleteRoutine(DeleteRoutineRequest deleteRoutineRequest)
         {
