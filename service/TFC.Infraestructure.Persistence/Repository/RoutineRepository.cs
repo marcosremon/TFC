@@ -47,10 +47,13 @@ namespace TFC.Infraestructure.Persistence.Repository
                     Routine routine = new Routine
                     {
                         RoutineName = createRoutineRequest.RoutineName ?? "New Routine",
-                        RoutineDescription = createRoutineRequest.RoutineDescription ?? "Rutina sin descripcion",
+                        RoutineDescription = createRoutineRequest.RoutineDescription,
                         UserId = user.UserId,
                         SplitDays = new List<SplitDay>()
                     };
+
+                    if (string.IsNullOrEmpty(routine.RoutineDescription))
+                        routine.RoutineDescription = "Rutina sin descripcion";
 
                     _context.Routines.Add(routine);
                     await _context.SaveChangesAsync();

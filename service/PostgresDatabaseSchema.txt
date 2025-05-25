@@ -1,74 +1,117 @@
--- Crear base de datos si no existe
-DO $$
-BEGIN
-   IF NOT EXISTS (
-      SELECT FROM pg_database WHERE datname = 'ignasioo'
-   ) THEN
-      CREATE DATABASE ignasioo;
-   END IF;
-END$$;
+-- Table: public.users
 
--- Crear ENUM weekday
-DO $$
-BEGIN
-   IF NOT EXISTS (
-      SELECT 1 FROM pg_type WHERE typname = 'weekday'
-   ) THEN
-      CREATE TYPE weekday AS ENUM (
-         'Monday', 'Tuesday', 'Wednesday', 'Thursday',
-         'Friday', 'Saturday', 'Sunday'
-      );
-   END IF;
-END$$;
+-- DROP TABLE IF EXISTS public.users;
 
--- Tabla users
-CREATE TABLE IF NOT EXISTS users (
-    user_id BIGSERIAL PRIMARY KEY,
-    dni VARCHAR(9),
-    username VARCHAR(100),
-    surname VARCHAR(100),
-    email VARCHAR(255),
-    friend_code TEXT,
-    password BYTEA,
-    role VARCHAR(20) NOT NULL,
-    inscription_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+CREATE TABLE IF NOT EXISTS public.users
+(
+    user_id bigint NOT NULL DEFAULT nextval('users_user_id_seq'::regclass),
+    dni character varying(9) COLLATE pg_catalog."default",
+    username character varying(100) COLLATE pg_catalog."default",
+    surname character varying(100) COLLATE pg_catalog."default",
+    email character varying(255) COLLATE pg_catalog."default",
+    friend_code text COLLATE pg_catalog."default",
+    password bytea,
+    role character varying(20) COLLATE pg_catalog."default" NOT NULL,
+    inscription_date timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT users_pkey PRIMARY KEY (user_id)
+)
 
--- Tabla routines
-CREATE TABLE IF NOT EXISTS routines (
-    routine_id BIGSERIAL PRIMARY KEY,
-    routine_name VARCHAR(100),
-    routine_description VARCHAR(500),
-    user_id BIGINT NOT NULL,
-    CONSTRAINT fk_routines_user FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
-);
+TABLESPACE pg_default;
 
--- Tabla split_days
-CREATE TABLE IF NOT EXISTS split_days (
-    day_name weekday NOT NULL,
-    day_exercises_description TEXT NOT NULL,
-    routine_id BIGINT NOT NULL,
-    CONSTRAINT fk_split_days_routine FOREIGN KEY (routine_id) REFERENCES routines(routine_id) ON DELETE CASCADE,
-    PRIMARY KEY (routine_id, day_name)
-);
+ALTER TABLE IF EXISTS public.users
+    OWNER to postgres;
 
--- Tabla exercises
-CREATE TABLE IF NOT EXISTS exercises (
-    exercise_id BIGSERIAL PRIMARY KEY,
-    exercise_name VARCHAR(100),
-    sets INTEGER,
-    reps INTEGER,
-    weight DOUBLE PRECISION,
-    routine_id BIGINT NOT NULL,
-    day_name weekday NOT NULL,
-    CONSTRAINT fk_exercises_split_day FOREIGN KEY (routine_id, day_name) REFERENCES split_days(routine_id, day_name) ON DELETE CASCADE
-);
+-- Table: public.user_friends
 
--- Tabla user_friends
-CREATE TABLE IF NOT EXISTS user_friends (
-    id BIGSERIAL PRIMARY KEY,
-    user_id BIGINT NOT NULL,
-    friend_id BIGINT NOT NULL,
-    CONSTRAINT fk_user_friend_user FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
-    CONSTRAINT fk_user_friend_friend FOREIGN KEY (friend_id) REFERENCES users(user_id) ON DELETE CASCADE
-);
+-- DROP TABLE IF EXISTS public.user_friends;
+
+CREATE TABLE IF NOT EXISTS public.user_friends
+(
+    id bigint NOT NULL DEFAULT nextval('user_friends_id_seq'::regclass),
+    user_id bigint NOT NULL,
+    friend_id bigint NOT NULL,
+    CONSTRAINT user_friends_pkey PRIMARY KEY (id),
+    CONSTRAINT fk_user_friend_friend FOREIGN KEY (friend_id)
+        REFERENCES public.users (user_id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE CASCADE,
+    CONSTRAINT fk_user_friend_user FOREIGN KEY (user_id)
+        REFERENCES public.users (user_id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE CASCADE
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.user_friends
+    OWNER to postgres;
+
+
+-- Table: public.routines
+
+-- DROP TABLE IF EXISTS public.routines;
+
+CREATE TABLE IF NOT EXISTS public.routines
+(
+    routine_id bigint NOT NULL DEFAULT nextval('routines_routine_id_seq'::regclass),
+    routine_name character varying(100) COLLATE pg_catalog."default",
+    routine_description character varying(500) COLLATE pg_catalog."default",
+    user_id bigint NOT NULL,
+    CONSTRAINT routines_pkey PRIMARY KEY (routine_id),
+    CONSTRAINT fk_routines_user FOREIGN KEY (user_id)
+        REFERENCES public.users (user_id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE CASCADE
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.routines
+    OWNER to postgres;
+
+
+-- Table: public.split_days
+
+-- DROP TABLE IF EXISTS public.split_days;
+
+CREATE TABLE IF NOT EXISTS public.split_days
+(
+    routine_id bigint NOT NULL,
+    day_name character varying(20) COLLATE pg_catalog."default" NOT NULL,
+    day_exercises_description text COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT split_days_pkey PRIMARY KEY (routine_id, day_name),
+    CONSTRAINT fk_split_days_routine FOREIGN KEY (routine_id)
+        REFERENCES public.routines (routine_id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE CASCADE
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.split_days
+    OWNER to postgres;
+
+    -- Table: public.exercises
+
+-- DROP TABLE IF EXISTS public.exercises;
+
+CREATE TABLE IF NOT EXISTS public.exercises
+(
+    exercise_id bigint NOT NULL DEFAULT nextval('exercises_exercise_id_seq'::regclass),
+    exercise_name character varying(100) COLLATE pg_catalog."default",
+    sets integer,
+    reps integer,
+    weight double precision,
+    routine_id bigint NOT NULL,
+    day_name character varying(20) COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT exercises_pkey PRIMARY KEY (exercise_id),
+    CONSTRAINT fk_exercises_split_day FOREIGN KEY (routine_id, day_name)
+        REFERENCES public.split_days (routine_id, day_name) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE CASCADE
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.exercises
+    OWNER to postgres;
