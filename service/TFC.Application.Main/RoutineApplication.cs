@@ -3,6 +3,7 @@ using TFC.Application.DTO.Routine.DeleteRoutine;
 using TFC.Application.DTO.Routine.GetAllUserRoutines;
 using TFC.Application.DTO.Routine.GetRoutines;
 using TFC.Application.DTO.Routine.GetRoutinesByFriendCode;
+using TFC.Application.DTO.Routine.GetRoutineStats;
 using TFC.Application.Interface.Application;
 using TFC.Application.Interface.Persistence;
 using TFC.Transversal.Logs;
@@ -78,6 +79,11 @@ namespace TFC.Application.Main
             }
 
             return await _routineRepository.GetRoutinesByFriendCode(getRoutinesByFriendCodeRequest);
+        }
+
+        public async Task<GetRoutineStatsResponse> GetRoutineStats(GetRoutineStatsRequest getRoutineStatsRequest)
+        {
+            return await _routineRepository.GetRoutineStats(getRoutineStatsRequest);
         }
 
         public async Task<UpdateRoutineResponse> UpdateUser(UpdateRoutineRequest updateRoutineRequest)

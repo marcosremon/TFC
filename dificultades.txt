@@ -7,3 +7,5 @@
   a demás cuando loguaba con Google como el usuario de Google no estaba en mi bbdd no funcionaban los getUser de mi api
   a si que solo user lo necesario de firebase para sacar la interfaz de Loguin con Google y luego saque los datos que 
   venían de ahí para llamar a mis endpoints con esos datos
+- implentar el créate routine, me estaba dando fallo al insertar un enum en bbdd por que me decía que estaba intentando insertar un
+  int pero estaba metiendo un string a si que al final modifique la bbdd borre el enum y puse un string

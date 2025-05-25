@@ -8,6 +8,7 @@ using TFC.Application.DTO.Routine.DeleteRoutine;
 using TFC.Application.DTO.Routine.GetAllUserRoutines;
 using TFC.Application.DTO.Routine.GetRoutines;
 using TFC.Application.DTO.Routine.GetRoutinesByFriendCode;
+using TFC.Application.DTO.Routine.GetRoutineStats;
 using TFC.Application.Interface.Persistence;
 using TFC.Domain.Model.Entity;
 using TFC.Infraestructure.Persistence.Context;
@@ -115,10 +116,6 @@ namespace TFC.Infraestructure.Persistence.Repository
             }
             return response;
         }
-
-
-
-
 
         public async Task<DeleteRoutineResponse> DeleteRoutine(DeleteRoutineRequest deleteRoutineRequest)
         {
@@ -257,6 +254,71 @@ namespace TFC.Infraestructure.Persistence.Repository
                 response.IsSuccess = true;
                 response.Message = "Routines retrieved successfully";
                 response.FriendRoutines = routines;
+            }
+            catch (Exception ex)
+            {
+                response.IsSuccess = false;
+                response.Message = ex.Message;
+            }
+
+            return response;
+        }
+
+        public async Task<GetRoutineStatsResponse> GetRoutineStats(GetRoutineStatsRequest getRoutineStatsRequest)
+        {
+            GetRoutineStatsResponse response = new GetRoutineStatsResponse();
+            try
+            {
+                User? user = _context.Users
+                    .Include(u => u.Routines)
+                    .ThenInclude(r => r.SplitDays)
+                    .ThenInclude(sd => sd.Exercises)
+                    .FirstOrDefault(u => u.Email == getRoutineStatsRequest.UserEmail);
+                if (user == null)
+                {
+                    response.IsSuccess = false;
+                    response.Message = "User not found";
+                    return response;
+                }
+
+                List<Routine> routines = user.Routines.ToList();
+                if (!routines.Any())
+                {
+                    response.routinesCount = 0;
+                    response.splitsCount = 0;
+                    response.exercisesCount = 0;
+                    response.IsSuccess = true;
+                    response.Message = "No routines found for the user";
+                    return response;
+                }
+
+                List<SplitDay> splitDays = routines.SelectMany(r => r.SplitDays).ToList();
+                if (!splitDays.Any())
+                {
+                    response.routinesCount = routines.Count;
+                    response.splitsCount = 0;
+                    response.exercisesCount = 0;
+                    response.IsSuccess = true;
+                    response.Message = "No split days found for the user's routines";
+                    return response;
+                }
+
+                List<Exercise> exercises = splitDays.SelectMany(sd => sd.Exercises).ToList();
+                if (!exercises.Any())
+                {
+                    response.routinesCount = routines.Count;
+                    response.splitsCount = splitDays.Count;
+                    response.exercisesCount = 0;
+                    response.IsSuccess = true;
+                    response.Message = "No exercises found for the user's split days";
+                    return response;
+                }
+
+                response.routinesCount = routines.Count;
+                response.splitsCount = splitDays.Count;
+                response.exercisesCount = exercises.Count;
+                response.IsSuccess = true;
+                response.Message = "Routine stats retrieved successfully";
             }
             catch (Exception ex)
             {
