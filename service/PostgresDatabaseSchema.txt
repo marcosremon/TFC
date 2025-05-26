@@ -3,6 +3,7 @@ CREATE SEQUENCE IF NOT EXISTS exercises_exercise_id_seq;
 CREATE SEQUENCE IF NOT EXISTS routines_routine_id_seq;
 CREATE SEQUENCE IF NOT EXISTS user_friends_id_seq;
 CREATE SEQUENCE IF NOT EXISTS users_user_id_seq;
+CREATE SEQUENCE IF NOT EXISTS exercise_progress;
 
 -- Crear tabla users (porque otras dependen de ella)
 CREATE TABLE IF NOT EXISTS public.users (
@@ -64,3 +65,24 @@ CREATE TABLE IF NOT EXISTS public.user_friends (
     CONSTRAINT fk_user_friend_friend FOREIGN KEY (friend_id)
         REFERENCES public.users (user_id) ON UPDATE NO ACTION ON DELETE CASCADE
 );
+
+-- O alternativamente, cambiar la definición de la tabla para usar la secuencia existente:
+CREATE TABLE IF NOT EXISTS public.exercise_progress
+(
+    progress_id integer NOT NULL DEFAULT nextval('exercise_progress'::regclass),  -- Usando la secuencia existente
+    exercise_id bigint,
+    routine_id bigint,
+    day_name character varying(20) COLLATE pg_catalog."default",
+    sets integer,
+    reps integer,
+    weight double precision,
+    performed_at timestamp without time zone NOT NULL DEFAULT now(),
+    CONSTRAINT exercise_progress_pkey PRIMARY KEY (progress_id),
+    CONSTRAINT exercise_progress_exercise_id_fkey FOREIGN KEY (exercise_id)
+        REFERENCES public.exercises (exercise_id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+);
+
+ALTER TABLE IF EXISTS public.exercise_progress
+    OWNER to postgres;
