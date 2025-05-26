@@ -102,7 +102,8 @@ namespace TFC.Infraestructure.Persistence.Repository
                                 ExerciseName = e.ExerciseName,
                                 Sets = e.Sets,
                                 Reps = e.Reps,
-                                Weight = e.Weight
+                                Weight = e.Weight,
+                                DayName = e.DayName
                             }).ToList()
                         }).ToList()
                     };
@@ -216,24 +217,25 @@ namespace TFC.Infraestructure.Persistence.Repository
             return response;
         }
 
-        public async Task<GetRoutinesByFriendCodeResponse> GetRoutinesByFriendCode(GetRoutinesByFriendCodeRequest getRoutinesByFriendCodeRequest)
+        public async Task<GetRoutinesByFriendCodeResponse> GetRoutinesByEmail(GetRoutinesByFriendCodeRequest getRoutinesByFriendCodeRequest)
         {
             GetRoutinesByFriendCodeResponse response = new GetRoutinesByFriendCodeResponse();
             try
             {
-                User? friend = _context.Users.Include(u => u.Routines)
+                User? user = _context.Users.Include(u => u.Routines)
                     .ThenInclude(r => r.SplitDays)
                     .ThenInclude(sd => sd.Exercises)
-                    .FirstOrDefault(u => u.FriendCode == getRoutinesByFriendCodeRequest.FriendCode);
-
-                if (friend == null)
+                    .FirstOrDefault(u => u.Email == getRoutinesByFriendCodeRequest.UserEmail);
+                if (user == null)
                 {
                     response.IsSuccess = false;
                     response.Message = "User not found";
                     return response;
                 }
 
-                List<RoutineDTO> routines = friend.Routines.Select(r => new RoutineDTO
+
+
+                List<RoutineDTO> routines = user.Routines.Select(r => new RoutineDTO
                 {
                     RoutineId = r.RoutineId,
                     RoutineName = r.RoutineName,
@@ -246,7 +248,8 @@ namespace TFC.Infraestructure.Persistence.Repository
                             ExerciseName = e.ExerciseName,
                             Sets = e.Sets,
                             Reps = e.Reps,
-                            Weight = e.Weight
+                            Weight = e.Weight,
+                            DayName = e.DayName
                         }).ToList()
                     }).ToList()
                 }).ToList();

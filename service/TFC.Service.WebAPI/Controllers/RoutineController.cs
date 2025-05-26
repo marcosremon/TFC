@@ -87,15 +87,15 @@ namespace TFC.Service.WebApi.Controllers
             }
         }
 
-        [HttpPost("get-routines-by-friend-code")]
+        [HttpPost("get-routine-by-email")]
         public async Task<ActionResult<GetRoutinesByFriendCodeResponse>> GetRoutinesByFriendCode([FromBody] GetRoutinesByFriendCodeRequest getRoutinesByFriendCodeRequest)
         {
             try
             {
-                GetRoutinesByFriendCodeResponse response = await _routineApplication.GetRoutinesByFriendCode(getRoutinesByFriendCodeRequest);
+                GetRoutinesByFriendCodeResponse response = await _routineApplication.GetRoutinesByEmail(getRoutinesByFriendCodeRequest);
                 if (response.IsSuccess)
                 {
-                    Log.Instance.Trace($"Rutinas del amigo con codigo: {getRoutinesByFriendCodeRequest.FriendCode} obtenidas correctamente");
+                    Log.Instance.Trace($"Rutinas del usuario cone email: {getRoutinesByFriendCodeRequest.UserEmail} obtenidas correctamente");
                     return Ok(response);
                 }
 
@@ -104,7 +104,7 @@ namespace TFC.Service.WebApi.Controllers
             }
             catch (Exception ex)
             {
-                Log.Instance.Error($"GetRoutinesByFriendCode --> Error al obtener las rutinas: {ex.Message}");
+                Log.Instance.Error($"GetRoutinesByEmail --> Error al obtener las rutinas: {ex.Message}");
                 return BadRequest(ex.Message);
             }
         }

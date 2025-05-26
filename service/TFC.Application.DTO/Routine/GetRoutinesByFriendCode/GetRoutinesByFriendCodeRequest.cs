@@ -2,6 +2,6 @@
 {
     public class GetRoutinesByFriendCodeRequest
     {
-        public string? FriendCode { get; set; }
+        public string? UserEmail { get; set; }
     }
 }

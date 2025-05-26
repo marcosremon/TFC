@@ -66,9 +66,9 @@ namespace TFC.Application.Main
             return await _routineRepository.GetAllUserRoutines(getAllUserRoutinesRequest);
         }
 
-        public async Task<GetRoutinesByFriendCodeResponse> GetRoutinesByFriendCode(GetRoutinesByFriendCodeRequest getRoutinesByFriendCodeRequest)
+        public async Task<GetRoutinesByFriendCodeResponse> GetRoutinesByEmail(GetRoutinesByFriendCodeRequest getRoutinesByFriendCodeRequest)
         {
-            if (getRoutinesByFriendCodeRequest == null || string.IsNullOrEmpty(getRoutinesByFriendCodeRequest.FriendCode))
+            if (getRoutinesByFriendCodeRequest == null || string.IsNullOrEmpty(getRoutinesByFriendCodeRequest.UserEmail))
             {
                 Log.Instance.Trace($"Invalid request: el request esta vacio o tiene algun campo nulo o vacio");
                 return new GetRoutinesByFriendCodeResponse
@@ -78,7 +78,7 @@ namespace TFC.Application.Main
                 };
             }
 
-            return await _routineRepository.GetRoutinesByFriendCode(getRoutinesByFriendCodeRequest);
+            return await _routineRepository.GetRoutinesByEmail(getRoutinesByFriendCodeRequest);
         }
 
         public async Task<GetRoutineStatsResponse> GetRoutineStats(GetRoutineStatsRequest getRoutineStatsRequest)

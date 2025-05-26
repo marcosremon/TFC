@@ -12,7 +12,7 @@ namespace TFC.Application.Interface.Persistence
         Task<CreateRoutineResponse> CreateRoutine(CreateRoutineRequest createRoutineRequest);
         Task<DeleteRoutineResponse> DeleteRoutine(DeleteRoutineRequest deleteRoutineRequest);
         Task<GetAllUserRoutinesResponse> GetAllUserRoutines(GetAllUserRoutinesRequest getAllUserRoutinesRequest);
-        Task<GetRoutinesByFriendCodeResponse> GetRoutinesByFriendCode(GetRoutinesByFriendCodeRequest getRoutinesByFriendCodeRequest);
+        Task<GetRoutinesByFriendCodeResponse> GetRoutinesByEmail(GetRoutinesByFriendCodeRequest getRoutinesByFriendCodeRequest);
         Task<GetRoutineStatsResponse> GetRoutineStats(GetRoutineStatsRequest getRoutineStatsRequest);
         Task<UpdateRoutineResponse> UpdateRoutine(UpdateRoutineRequest updateRoutineRequest);
     }
