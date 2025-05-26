@@ -27,8 +27,7 @@ namespace TFC.Infraestructure.Persistence.Repository
                     .Include(u => u.Routines)
                         .ThenInclude(r => r.SplitDays)
                             .ThenInclude(sd => sd.Exercises)
-                    .FirstOrDefaultAsync(u => u.UserId == addExerciseRequest.UserId);
-
+                    .FirstOrDefaultAsync(u => u.Email == addExerciseRequest.UserEmail);
                 if (user == null)
                 {
                     response.IsSuccess = false;
@@ -44,7 +43,7 @@ namespace TFC.Infraestructure.Persistence.Repository
                     return response;
                 }
 
-                SplitDay? splitDay = routine.SplitDays.FirstOrDefault(sd => sd.DayName == addExerciseRequest.DayName);
+                SplitDay? splitDay = routine.SplitDays.FirstOrDefault(sd => sd.DayName.ToString() == addExerciseRequest.DayName);
                 if (splitDay == null)
                 {
                     response.IsSuccess = false;
@@ -185,18 +184,11 @@ namespace TFC.Infraestructure.Persistence.Repository
 
         public async Task<GetExercisesByDayNameResponse> GetExercisesByDayName(GetExercisesByDayNameRequest getExercisesByDayNameRequest)
         {
-            GetExercisesByDayNameResponse response = new GetExercisesByDayNameResponse();
+            var response = new GetExercisesByDayNameResponse();
             try
             {
-                User? user = await _context.Users.FirstOrDefaultAsync(u => u.Email == getExercisesByDayNameRequest.UserEmail);
-                if (user == null)
-                {
-                    response.IsSuccess = false;
-                    response.Message = "User not found.";
-                    return response;
-                }
-
-                Routine? routine = await _context.Routines.FirstOrDefaultAsync(r => r.RoutineId == getExercisesByDayNameRequest.RoutineId && r.UserId == user.UserId);
+                Routine? routine = await _context.Routines
+                    .FirstOrDefaultAsync(r => r.RoutineId == getExercisesByDayNameRequest.RoutineId);
                 if (routine == null)
                 {
                     response.IsSuccess = false;
@@ -204,7 +196,21 @@ namespace TFC.Infraestructure.Persistence.Repository
                     return response;
                 }
 
-                SplitDay? splitDay = await _context.SplitDays.FirstOrDefaultAsync(sd => sd.DayName == getExercisesByDayNameRequest.DayName && sd.RoutineId == routine.RoutineId);
+                // Traducción de día
+                switch (getExercisesByDayNameRequest.DayName)
+                {
+                    case "Lunes": getExercisesByDayNameRequest.DayName = "Monday"; break;
+                    case "Martes": getExercisesByDayNameRequest.DayName = "Tuesday"; break;
+                    case "Miércoles": getExercisesByDayNameRequest.DayName = "Wednesday"; break;
+                    case "Jueves": getExercisesByDayNameRequest.DayName = "Thursday"; break;
+                    case "Viernes": getExercisesByDayNameRequest.DayName = "Friday"; break;
+                    case "Sábado": getExercisesByDayNameRequest.DayName = "Saturday"; break;
+                    case "Domingo": getExercisesByDayNameRequest.DayName = "Sunday"; break;
+                    default: getExercisesByDayNameRequest.DayName = "Day"; break;
+                }
+
+                SplitDay? splitDay = await _context.SplitDays
+                    .FirstOrDefaultAsync(sd => sd.DayName.ToString() == getExercisesByDayNameRequest.DayName && sd.RoutineId == routine.RoutineId);
                 if (splitDay == null)
                 {
                     response.IsSuccess = false;
@@ -212,29 +218,56 @@ namespace TFC.Infraestructure.Persistence.Repository
                     return response;
                 }
 
-                List<ExerciseDTO> exercises = splitDay.Exercises.Select(e => new ExerciseDTO
+                var exercises = await _context.Exercises
+                    .Where(e => e.DayName == splitDay.DayName && e.RoutineId == splitDay.RoutineId)
+                    .ToListAsync();
+
+                var exercisesDTO = new List<ExerciseDTO>();
+                var pastProgressDict = new Dictionary<long, List<string>>();
+
+                // Convierte el DayName a string una vez fuera del bucle
+                var dayNameString = splitDay.DayName.ToString();
+
+                foreach (var exercise in exercises)
                 {
-                    ExerciseId = e.ExerciseId,
-                    ExerciseName = e.ExerciseName,
-                    Sets = e.Sets,
-                    Reps = e.Reps,
-                    Weight = e.Weight,
-                    DayName = e.DayName
-                }).ToList();
+                    // Busca los 3 últimos progresos de este ejercicio, ese día y rutina SIN usar .ToString() en la consulta
+                    var last3Progress = await _context.ExerciseProgress
+                        .Where(p => p.ExerciseId == exercise.ExerciseId
+                                 && p.RoutineId == splitDay.RoutineId
+                                 && p.DayName == dayNameString)
+                        .OrderByDescending(p => p.PerformedAt)
+                        .Take(3)
+                        .ToListAsync();
+
+                    var pastProgress = last3Progress
+                        .Select(p => $"{p.Sets}x{p.Reps}@{p.Weight}kg")
+                        .ToList();
+
+                    pastProgressDict[exercise.ExerciseId] = pastProgress;
+
+                    exercisesDTO.Add(new ExerciseDTO
+                    {
+                        ExerciseId = exercise.ExerciseId,
+                        ExerciseName = exercise.ExerciseName,
+                        Sets = exercise.Sets,
+                        Reps = exercise.Reps,
+                        Weight = exercise.Weight,
+                        DayName = exercise.DayName
+                    });
+                }
 
                 response.IsSuccess = true;
                 response.Message = "Exercises retrieved successfully";
-                response.Exercises = exercises;
+                response.Exercises = exercisesDTO;
+                response.PastProgress = pastProgressDict;
             }
             catch (Exception ex)
             {
                 response.IsSuccess = false;
                 response.Message = $"Error: {ex.Message}";
             }
-
             return response;
         }
-
         public async Task<UpdateExerciseResponse> UpdateExercise(UpdateExerciseRequest updateExerciseRequest)
         {
             UpdateExerciseResponse response = new UpdateExerciseResponse();

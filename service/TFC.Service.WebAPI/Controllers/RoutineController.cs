@@ -87,27 +87,27 @@ namespace TFC.Service.WebApi.Controllers
             }
         }
 
-        [HttpPost("get-routine-by-email")]
-        public async Task<ActionResult<GetRoutinesByFriendCodeResponse>> GetRoutinesByFriendCode([FromBody] GetRoutinesByFriendCodeRequest getRoutinesByFriendCodeRequest)
-        {
-            try
-            {
-                GetRoutinesByFriendCodeResponse response = await _routineApplication.GetRoutinesByEmail(getRoutinesByFriendCodeRequest);
-                if (response.IsSuccess)
-                {
-                    Log.Instance.Trace($"Rutinas del usuario cone email: {getRoutinesByFriendCodeRequest.UserEmail} obtenidas correctamente");
-                    return Ok(response);
-                }
+        //[HttpPost("get-routine-by-email")]
+        //public async Task<ActionResult<GetRoutinesByFriendCodeResponse>> GetRoutinesByFriendCode([FromBody] GetRoutinesByFriendCodeRequest getRoutinesByFriendCodeRequest)
+        //{
+        //    try
+        //    {
+        //        GetRoutinesByFriendCodeResponse response = await _routineApplication.GetRoutinesByEmail(getRoutinesByFriendCodeRequest);
+        //        if (response.IsSuccess)
+        //        {
+        //            Log.Instance.Trace($"Rutinas del usuario cone email: {getRoutinesByFriendCodeRequest.UserEmail} obtenidas correctamente");
+        //            return Ok(response);
+        //        }
 
-                Log.Instance.Trace($"Error al obtener las rutinas: {response?.Message}");
-                return BadRequest(response?.Message);
-            }
-            catch (Exception ex)
-            {
-                Log.Instance.Error($"GetRoutinesByEmail --> Error al obtener las rutinas: {ex.Message}");
-                return BadRequest(ex.Message);
-            }
-        }
+        //        Log.Instance.Trace($"Error al obtener las rutinas: {response?.Message}");
+        //        return BadRequest(response?.Message);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Log.Instance.Error($"GetRoutinesByEmail --> Error al obtener las rutinas: {ex.Message}");
+        //        return BadRequest(ex.Message);
+        //    }
+        //}
 
         [HttpPost("get-all-user-routines")]
         public async Task<ActionResult<GetAllUserRoutinesResponse>> GetAllUserRoutines([FromBody] GetAllUserRoutinesRequest getAllUserRoutinesRequest)

@@ -29,6 +29,7 @@ namespace TFC.Domain.Model.Entity
         [Column("day_name")]
         public WeekDay? DayName { get; set; }
 
+
         // Navegaciones
         [ForeignKey("RoutineId,DayName")]
         public virtual SplitDay? SplitDay { get; set; }

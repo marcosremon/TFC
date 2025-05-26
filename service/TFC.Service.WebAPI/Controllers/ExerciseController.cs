@@ -84,7 +84,7 @@ namespace TFC.Service.WebApi.Controllers
             }
         }
 
-        [HttpPost("get-exercises-by-day-name")]
+        [HttpPost("get-exercises-by-day-and-routine-id")]
         public async Task<ActionResult<GetExercisesByDayNameResponse>> GetExercisesByDayName([FromBody] GetExercisesByDayNameRequest getExercisesByDayNameRequest)
         {
             try

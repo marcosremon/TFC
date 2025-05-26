@@ -1,16 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using TFC.Domain.Model.Enum;
-
-namespace TFC.Application.DTO.Exercise.AddExercise
+﻿namespace TFC.Application.DTO.Exercise.AddExercise
 {
     public class AddExerciseRequest
     {
-        public long? UserId { get; set; }
-        public long? RoutineId { get; set; }
-        public WeekDay? DayName { get; set; }
-        public string? ExerciseName { get; set; }
-        public int? Sets { get; set; }
-        public int? Reps { get; set; }
-        public double? Weight { get; set; }
+        public List<string> ExercisesProgres { get; set; } = new List<string>();
+        public string UserEmail { get; set; } = string.Empty;
+        public int RoutineId { get; set; }
+        public string DayName { get; set; } = string.Empty;
     }
 }

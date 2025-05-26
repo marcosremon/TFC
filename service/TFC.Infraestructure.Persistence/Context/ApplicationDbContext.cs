@@ -15,6 +15,8 @@ namespace TFC.Infraestructure.Persistence.Context
         public DbSet<SplitDay> SplitDays { get; set; }
         public DbSet<Exercise> Exercises { get; set; }
         public DbSet<UserFriend> UserFriends { get; set; }
+        public DbSet<ExerciseProgress> ExerciseProgress { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -202,8 +204,45 @@ namespace TFC.Infraestructure.Persistence.Context
                     .HasConstraintName("fk_user_friend_friend")
                     .OnDelete(DeleteBehavior.Cascade);
             });
-        }
 
-        // Ya no es necesario configurar convenciones para WeekDay
+            modelBuilder.Entity<ExerciseProgress>(entity =>
+            {
+                entity.ToTable("exercise_progress");
+                entity.HasKey(ep => ep.ProgressId).HasName("pk_exercise_progress");
+
+                entity.Property(ep => ep.ProgressId)
+                    .HasColumnName("progress_id")
+                    .ValueGeneratedOnAdd();
+
+                entity.Property(ep => ep.ExerciseId)
+                    .HasColumnName("exercise_id");
+
+                entity.Property(ep => ep.RoutineId)
+                    .HasColumnName("routine_id");
+
+                entity.Property(ep => ep.DayName)
+                    .HasColumnName("day_name")
+                    .HasMaxLength(20);
+
+                entity.Property(ep => ep.Sets)
+                    .HasColumnName("sets");
+
+                entity.Property(ep => ep.Reps)
+                    .HasColumnName("reps");
+
+                entity.Property(ep => ep.Weight)
+                    .HasColumnName("weight");
+
+                entity.Property(ep => ep.PerformedAt)
+                    .HasColumnName("performed_at")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                entity.HasOne<Exercise>()
+                    .WithMany()
+                    .HasForeignKey(ep => ep.ExerciseId)
+                    .HasConstraintName("fk_exercise_progress_exercise")
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+        }
     }
 }

@@ -4,8 +4,7 @@ namespace TFC.Application.DTO.Exercise.GetExercisesByDayName
 {
     public class GetExercisesByDayNameRequest
     {
-        public string? UserEmail { get; set; }
-        public long? RoutineId { get; set; }
-        public WeekDay? DayName { get; set; }
+        public int? RoutineId { get; set; }
+        public string? DayName { get; set; }
     }
 }

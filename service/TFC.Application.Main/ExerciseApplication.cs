@@ -19,10 +19,7 @@ namespace TFC.Application.Main
         public async Task<AddExerciseResponse> AddExercise(AddExerciseRequest addExerciseRequest)
         {
             if (addExerciseRequest == null
-                || addExerciseRequest.UserId == null
-                || addExerciseRequest.RoutineId == null
-                || addExerciseRequest.DayName == null
-                || string.IsNullOrEmpty(addExerciseRequest.ExerciseName))
+                || addExerciseRequest.ExercisesProgres.Count == 0)
             {
                 Log.Instance.Trace($"Invalid request: el request esta vacio o tiene algun campo nulo o vacio");
                 return new AddExerciseResponse
@@ -57,7 +54,6 @@ namespace TFC.Application.Main
         public async Task<GetExercisesByDayNameResponse> GetExercisesByDayName(GetExercisesByDayNameRequest getExercisesByDayNameRequest)
         {
             if (getExercisesByDayNameRequest == null
-                || getExercisesByDayNameRequest.UserEmail == null
                 || getExercisesByDayNameRequest.RoutineId == null
                 || getExercisesByDayNameRequest.DayName == null)
             {
