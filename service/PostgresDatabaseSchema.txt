@@ -1,11 +1,11 @@
--- Crear secuencias necesarias
+-- Crear secuencias necesarias (solo si no existen)
 CREATE SEQUENCE IF NOT EXISTS exercises_exercise_id_seq;
 CREATE SEQUENCE IF NOT EXISTS routines_routine_id_seq;
 CREATE SEQUENCE IF NOT EXISTS user_friends_id_seq;
 CREATE SEQUENCE IF NOT EXISTS users_user_id_seq;
-CREATE SEQUENCE IF NOT EXISTS exercise_progress;
+CREATE SEQUENCE IF NOT EXISTS exercise_progress_id_seq;  -- Nombre modificado
 
--- Crear tabla users (porque otras dependen de ella)
+-- Crear tabla users
 CREATE TABLE IF NOT EXISTS public.users (
     user_id bigint NOT NULL DEFAULT nextval('users_user_id_seq'::regclass),
     dni character varying(9) COLLATE pg_catalog."default",
@@ -66,10 +66,10 @@ CREATE TABLE IF NOT EXISTS public.user_friends (
         REFERENCES public.users (user_id) ON UPDATE NO ACTION ON DELETE CASCADE
 );
 
--- O alternativamente, cambiar la definición de la tabla para usar la secuencia existente:
+-- Crear tabla exercise_progress con la nueva secuencia
 CREATE TABLE IF NOT EXISTS public.exercise_progress
 (
-    progress_id integer NOT NULL DEFAULT nextval('exercise_progress'::regclass),  -- Usando la secuencia existente
+    progress_id integer NOT NULL DEFAULT nextval('exercise_progress_id_seq'::regclass),
     exercise_id bigint,
     routine_id bigint,
     day_name character varying(20) COLLATE pg_catalog."default",
@@ -81,7 +81,9 @@ CREATE TABLE IF NOT EXISTS public.exercise_progress
     CONSTRAINT exercise_progress_exercise_id_fkey FOREIGN KEY (exercise_id)
         REFERENCES public.exercises (exercise_id) MATCH SIMPLE
         ON UPDATE NO ACTION
-        ON DELETE NO ACTION
+        ON DELETE CASCADE,  -- Cambiado a CASCADE para borrar progresos si se borra el ejercicio
+    CONSTRAINT exercise_progress_routine_day_fkey FOREIGN KEY (routine_id, day_name)
+        REFERENCES public.split_days (routine_id, day_name) ON UPDATE NO ACTION ON DELETE CASCADE
 );
 
 ALTER TABLE IF EXISTS public.exercise_progress
