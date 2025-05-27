@@ -1,20 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using TFC.Application.DTO.Serialize_Deserialize;
 
 namespace TFC.Transversal.Common
 {
     public static class ExerciseProgressUtils
     {
-        private const string Pattern = @"^(?<sets>\d+)x(?<reps>\d+)@(?<weight>[\d\.]+)kg$";
+        // El patrón acepta enteros para sets y reps, y un decimal (con punto) para el peso
+        private const string Pattern = @"^(?<sets>\d+)x(?<reps>\d+)@(?<weight>\d+(\.\d+)?)$";
 
         public static string Serialize(int sets, int reps, decimal weight)
         {
-            return $"{sets}x{reps}@{weight}kg";
+            return $"{sets}x{reps}@{weight}";
         }
 
         public static DeserializeDTO Deserialize(string progressString)
@@ -23,7 +20,8 @@ namespace TFC.Transversal.Common
             if (!match.Success)
                 throw new FormatException($"Formato de progreso inválido: {progressString}");
 
-            return new DeserializeDTO {
+            return new DeserializeDTO
+            {
                 Set = int.Parse(match.Groups["sets"].Value),
                 Reps = int.Parse(match.Groups["reps"].Value),
                 Weight = decimal.Parse(match.Groups["weight"].Value)

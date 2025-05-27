@@ -20,7 +20,7 @@ namespace TFC.Application.Main
         public async Task<AddExerciseAddExerciseProgressResponse> AddExerciseProgress(AddExerciseAddExerciseProgressRequest addExerciseRequest)
         {
             if (addExerciseRequest == null
-                || addExerciseRequest.ExercisesProgres.Count == 0)
+                || addExerciseRequest.ProgressList.Count == 0)
             {
                 Log.Instance.Trace($"Invalid request: el request esta vacio o tiene algun campo nulo o vacio");
                 return new AddExerciseAddExerciseProgressResponse

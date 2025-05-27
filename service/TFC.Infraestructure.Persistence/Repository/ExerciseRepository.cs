@@ -46,6 +46,18 @@ namespace TFC.Infraestructure.Persistence.Repository
                     return response;
                 }
 
+                switch (addExerciseRequest.DayName)
+                {
+                    case "Lunes": addExerciseRequest.DayName = "Monday"; break;
+                    case "Martes": addExerciseRequest.DayName = "Tuesday"; break;
+                    case "Miércoles": addExerciseRequest.DayName = "Wednesday"; break;
+                    case "Jueves": addExerciseRequest.DayName = "Thursday"; break;
+                    case "Viernes": addExerciseRequest.DayName = "Friday"; break;
+                    case "Sábado": addExerciseRequest.DayName = "Saturday"; break;
+                    case "Domingo": addExerciseRequest.DayName = "Sunday"; break;
+                    default: addExerciseRequest.DayName = "Day"; break;
+                }
+
                 SplitDay? splitDay = routine.SplitDays.FirstOrDefault(sd => sd.DayName.ToString() == addExerciseRequest.DayName);
                 if (splitDay == null)
                 {
@@ -54,17 +66,18 @@ namespace TFC.Infraestructure.Persistence.Repository
                     return response;
                 }
 
-                if (splitDay.Exercises.Count != addExerciseRequest.ExercisesProgres.Count)
+                if (splitDay.Exercises.Count != addExerciseRequest.ProgressList.Count)
                 {
                     response.IsSuccess = false;
-                    response.Message = $"La cantidad de ejercicios ({splitDay.Exercises.Count}) no coincide con los progresos enviados ({addExerciseRequest.ExercisesProgres.Count})";
+                    response.Message = $"La cantidad de ejercicios ({splitDay.Exercises.Count}) no coincide con los progresos enviados ({addExerciseRequest.ProgressList.Count})";
                     return response;
                 }
 
-                for (int i = 0; i < splitDay.Exercises.Count; i++)
+                List<Exercise> splitDayExercises = _context.Exercises.Where(e => e.DayName == splitDay.DayName && e.RoutineId == splitDay.RoutineId).ToList();
+                for (int i = 0; i < splitDayExercises.Count; i++)
                 {
                     Exercise exercise = splitDay.Exercises.ToList()[i];
-                    string progressString = addExerciseRequest.ExercisesProgres[i];
+                    string progressString = addExerciseRequest.ProgressList[i];
 
                     DeserializeDTO progress = ExerciseProgressUtils.Deserialize(progressString);
 

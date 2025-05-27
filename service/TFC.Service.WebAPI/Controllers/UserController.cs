@@ -84,7 +84,8 @@ namespace TFC.Service.WebApi.Controllers
                     Email = createUserRequst.Email,
                     Password = createUserRequst.Password,
                     ConfirmPassword = createUserRequst.ConfirmPassword,
-                    Role = Domain.Model.Enum.Role.User
+                    Role = 
+                    Role.User
                 };
 
                 CreateUserResponse response = await _userApplication.CreateUser(createGenericUserRequest);
