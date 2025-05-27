@@ -1,9 +1,9 @@
 ﻿using Kintech.RestCA.Transversal.Common;
 using TFC.Application.DTO.Entity;
 
-namespace TFC.Application.DTO.Exercise.AddExercise
+namespace TFC.Application.DTO.Exercise.AddExerciseProgress
 {
-    public class AddExerciseResponse : BaseResponse
+    public class AddExerciseAddExerciseProgressResponse : BaseResponse
     {
         public UserDTO? UserDTO { get; set; } = new UserDTO();
     }

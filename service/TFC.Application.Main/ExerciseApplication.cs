@@ -1,5 +1,6 @@
-﻿using TFC.Application.DTO.Exercise.AddExercise;
-using TFC.Application.DTO.Exercise.GetExercisesByDayName;
+﻿using TFC.Application.DTO.Exercise.DeleteExecise;
+using TFC.Application.DTO.Exercise.AddExerciseProgress;
+using TFC.Application.DTO.Exercise.GetExercisesByDayAndRoutineId;
 using TFC.Application.DTO.Exercise.UpdateExercise;
 using TFC.Application.Interface.Application;
 using TFC.Application.Interface.Persistence;
@@ -16,20 +17,20 @@ namespace TFC.Application.Main
             _exerciseRepository = exerciseRepository;
         }
 
-        public async Task<AddExerciseResponse> AddExercise(AddExerciseRequest addExerciseRequest)
+        public async Task<AddExerciseAddExerciseProgressResponse> AddExerciseProgress(AddExerciseAddExerciseProgressRequest addExerciseRequest)
         {
             if (addExerciseRequest == null
                 || addExerciseRequest.ExercisesProgres.Count == 0)
             {
                 Log.Instance.Trace($"Invalid request: el request esta vacio o tiene algun campo nulo o vacio");
-                return new AddExerciseResponse
+                return new AddExerciseAddExerciseProgressResponse
                 {
                     IsSuccess = false,
                     Message = "Invalid request: AddExerciseRequest is null or required fields are missing."
                 };
             }
 
-            return await _exerciseRepository.AddExercise(addExerciseRequest);
+            return await _exerciseRepository.AddExerciseProgress(addExerciseRequest);
         }
 
         public async Task<DeleteExerciseResponse> DeleteExercise(DeleteExerciseRequest deleteExerciseRequest)
@@ -51,21 +52,21 @@ namespace TFC.Application.Main
             return await _exerciseRepository.DeleteExercise(deleteExerciseRequest);
         }
 
-        public async Task<GetExercisesByDayNameResponse> GetExercisesByDayName(GetExercisesByDayNameRequest getExercisesByDayNameRequest)
+        public async Task<GetExercisesByDayAndRoutineIdResponse> GetExercisesByDayAndRoutineId(GetExercisesByDayAndRoutineIdRequest getExercisesByDayNameRequest)
         {
             if (getExercisesByDayNameRequest == null
                 || getExercisesByDayNameRequest.RoutineId == null
                 || getExercisesByDayNameRequest.DayName == null)
             {
                 Log.Instance.Trace($"Invalid request: el request esta vacio o tiene algun campo nulo o vacio");
-                return new GetExercisesByDayNameResponse
+                return new GetExercisesByDayAndRoutineIdResponse
                 {
                     IsSuccess = false,
                     Message = "Invalid request: GetExercisesByDayNameRequest is null or required fields are missing."
                 };
             }
 
-            return await _exerciseRepository.GetExercisesByDayName(getExercisesByDayNameRequest);
+            return await _exerciseRepository.GetExercisesByDayAndRoutineId(getExercisesByDayNameRequest);
         }
 
         public async Task<UpdateExerciseResponse> UpdateExercise(UpdateExerciseRequest updateExerciseRequest)

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using TFC.Application.DTO.Exercise.AddExercise;
-using TFC.Application.DTO.Exercise.GetExercisesByDayName;
+using TFC.Application.DTO.Exercise.AddExerciseProgress;
+using TFC.Application.DTO.Exercise.DeleteExecise;
+using TFC.Application.DTO.Exercise.GetExercisesByDayAndRoutineId;
 using TFC.Application.DTO.Exercise.UpdateExercise;
 using TFC.Application.Interface.Application;
 using TFC.Transversal.Logs;
@@ -18,12 +19,12 @@ namespace TFC.Service.WebApi.Controllers
             _exerciseApplication = exerciseApplication;
         }
 
-        [HttpPost("add-exercise")]
-        public async Task<ActionResult<AddExerciseResponse>> AddExercise([FromBody] AddExerciseRequest addExerciseRequest)
+        [HttpPost("add-exercise-progress")]
+        public async Task<ActionResult<AddExerciseAddExerciseProgressResponse>> AddExerciseProgress([FromBody] AddExerciseAddExerciseProgressRequest addExerciseRequest)
         {
             try
             {
-                AddExerciseResponse response = await _exerciseApplication.AddExercise(addExerciseRequest);
+                AddExerciseAddExerciseProgressResponse response = await _exerciseApplication.AddExerciseProgress(addExerciseRequest);
                 if (response.IsSuccess)
                 {
                     Log.Instance.Trace($"Ejercicio añadido correctamente al usuario con id: {response.UserDTO?.UserId}");
@@ -85,11 +86,11 @@ namespace TFC.Service.WebApi.Controllers
         }
 
         [HttpPost("get-exercises-by-day-and-routine-id")]
-        public async Task<ActionResult<GetExercisesByDayNameResponse>> GetExercisesByDayName([FromBody] GetExercisesByDayNameRequest getExercisesByDayNameRequest)
+        public async Task<ActionResult<GetExercisesByDayAndRoutineIdResponse>> GetExercisesByDayAndRoutineId([FromBody] GetExercisesByDayAndRoutineIdRequest getExercisesByDayNameRequest)
         {
             try
             {
-                GetExercisesByDayNameResponse response = await _exerciseApplication.GetExercisesByDayName(getExercisesByDayNameRequest);
+                GetExercisesByDayAndRoutineIdResponse response = await _exerciseApplication.GetExercisesByDayAndRoutineId(getExercisesByDayNameRequest);
                 if (response.IsSuccess)
                 {
                     Log.Instance.Trace($"Ejercicios obtenidos correctamente");

@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\TFC.Application.DTO\TFC.Application.DTO.csproj" />
     <ProjectReference Include="..\TFC.Domain.Model\TFC.Domain.Model.csproj" />
   </ItemGroup>
 

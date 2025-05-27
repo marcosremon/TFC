@@ -77,7 +77,7 @@ namespace TFC.Infraestructure.Persistence.Repository
                                         RoutineId = routine.RoutineId,
                                         DayName = sdRequest.DayName.Value,
                                     };
-                                    // Guardamos el ejercicio para obtener su ID después de SaveChanges
+
                                     _context.Exercises.Add(exercise);
                                     return exercise;
                                 }).ToList() ?? new List<Exercise>()
@@ -88,10 +88,9 @@ namespace TFC.Infraestructure.Persistence.Repository
 
                         await _context.SaveChangesAsync();
 
-                        // Insertar en ExerciseProgress para cada ejercicio creado
-                        foreach (var splitDay in routine.SplitDays)
+                        foreach (SplitDay splitDay in routine.SplitDays)
                         {
-                            foreach (var exercise in splitDay.Exercises)
+                            foreach (Exercise exercise in splitDay.Exercises)
                             {
                                 var progress = new ExerciseProgress
                                 {
@@ -256,8 +255,6 @@ namespace TFC.Infraestructure.Persistence.Repository
                     response.Message = "User not found";
                     return response;
                 }
-
-
 
                 List<RoutineDTO> routines = user.Routines.Select(r => new RoutineDTO
                 {

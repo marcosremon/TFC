@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using TFC.Domain.Model.Enum;
 
-namespace TFC.Application.DTO.Exercise.AddExercise
+namespace TFC.Application.DTO.Exercise.DeleteExecise
 {
     public class DeleteExerciseRequest
     {

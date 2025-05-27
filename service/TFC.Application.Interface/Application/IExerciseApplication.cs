@@ -1,14 +1,15 @@
-﻿using TFC.Application.DTO.Exercise.AddExercise;
-using TFC.Application.DTO.Exercise.GetExercisesByDayName;
+﻿using TFC.Application.DTO.Exercise.DeleteExecise;
+using TFC.Application.DTO.Exercise.AddExerciseProgress;
+using TFC.Application.DTO.Exercise.GetExercisesByDayAndRoutineId;
 using TFC.Application.DTO.Exercise.UpdateExercise;
 
 namespace TFC.Application.Interface.Application
 {
     public interface IExerciseApplication
     {
-        Task<AddExerciseResponse> AddExercise(AddExerciseRequest addExerciseRequest);
+        Task<AddExerciseAddExerciseProgressResponse> AddExerciseProgress(AddExerciseAddExerciseProgressRequest addExerciseRequest);
         Task<DeleteExerciseResponse> DeleteExercise(DeleteExerciseRequest deleteExerciseRequest);
-        Task<GetExercisesByDayNameResponse> GetExercisesByDayName(GetExercisesByDayNameRequest getExercisesByDayNameRequest);
+        Task<GetExercisesByDayAndRoutineIdResponse> GetExercisesByDayAndRoutineId(GetExercisesByDayAndRoutineIdRequest getExercisesByDayNameRequest);
         Task<UpdateExerciseResponse> UpdateExercise(UpdateExerciseRequest updateExerciseRequest);
     }
 }
