@@ -1,6 +1,7 @@
 ﻿using TFC.Application.DTO.Routine.CreateRoutine;
 using TFC.Application.DTO.Routine.DeleteRoutine;
 using TFC.Application.DTO.Routine.GetAllUserRoutines;
+using TFC.Application.DTO.Routine.GetRoutineById;
 using TFC.Application.DTO.Routine.GetRoutines;
 using TFC.Application.DTO.Routine.GetRoutineStats;
 using TFC.Application.Interface.Application;
@@ -63,6 +64,21 @@ namespace TFC.Application.Main
             }
 
             return await _routineRepository.GetAllUserRoutines(getAllUserRoutinesRequest);
+        }
+
+        public async Task<GetRoutineByIdResponse> GetRoutineById(GetRoutineByIdRequest getRoutineByIdRequest)
+        {
+            if (getRoutineByIdRequest == null || getRoutineByIdRequest.RoutineId == 0)
+            {
+                Log.Instance.Trace($"Invalid request: el request esta vacio o tiene algun campo nulo o vacio");
+                return new GetRoutineByIdResponse
+                {
+                    IsSuccess = false,
+                    Message = "Invalid request: GetRoutineByIdRequest is null or RoutineId is missing."
+                };
+            }
+
+            return await _routineRepository.GetRoutineById(getRoutineByIdRequest);
         }
 
         public async Task<GetRoutineStatsResponse> GetRoutineStats(GetRoutineStatsRequest getRoutineStatsRequest)

@@ -2,9 +2,11 @@
 using TFC.Application.DTO.Routine.CreateRoutine;
 using TFC.Application.DTO.Routine.DeleteRoutine;
 using TFC.Application.DTO.Routine.GetAllUserRoutines;
+using TFC.Application.DTO.Routine.GetRoutineById;
 using TFC.Application.DTO.Routine.GetRoutines;
 using TFC.Application.DTO.Routine.GetRoutineStats;
 using TFC.Application.Interface.Application;
+using TFC.Application.Main;
 using TFC.Transversal.Logs;
 
 namespace TFC.Service.WebApi.Controllers
@@ -127,6 +129,28 @@ namespace TFC.Service.WebApi.Controllers
             catch (Exception ex)
             {
                 Log.Instance.Error($"GetRoutineStats --> Error al obtener las estadisticas de las rutinas: {ex.Message}");
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("get-routine-by-id")]
+        public async Task<ActionResult<GetRoutineByIdResponse>> GetRoutineById([FromBody] GetRoutineByIdRequest getRoutineByIdRequest)
+        {
+            try
+            {
+                GetRoutineByIdResponse response = await _routineApplication.GetRoutineById(getRoutineByIdRequest);
+                if (response.IsSuccess)
+                {
+                    Log.Instance.Trace($"Rutina con id: {getRoutineByIdRequest.RoutineId} obtenida correctamente");
+                    return Ok(response);
+                }
+
+                Log.Instance.Trace($"Error al obtener la rutina: {response?.Message}");
+                return BadRequest(response?.Message);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance.Error($"GetRoutineById --> Error al obtener la rutina: {ex.Message}");
                 return BadRequest(ex.Message);
             }
         }

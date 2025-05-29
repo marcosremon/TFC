@@ -5,6 +5,7 @@ using TFC.Application.DTO.Entity;
 using TFC.Application.DTO.Routine.CreateRoutine;
 using TFC.Application.DTO.Routine.DeleteRoutine;
 using TFC.Application.DTO.Routine.GetAllUserRoutines;
+using TFC.Application.DTO.Routine.GetRoutineById;
 using TFC.Application.DTO.Routine.GetRoutines;
 using TFC.Application.DTO.Routine.GetRoutineStats;
 using TFC.Application.Interface.Persistence;
@@ -254,6 +255,53 @@ namespace TFC.Infraestructure.Persistence.Repository
             }
 
             return response;
+        }
+
+        public async Task<GetRoutineByIdResponse> GetRoutineById(GetRoutineByIdRequest getRoutineByIdRequest)
+        {
+            GetRoutineByIdResponse getRoutineByIdResponse = new GetRoutineByIdResponse();
+            try
+            {
+                Routine? routine = _context.Routines
+                    .Include(r => r.SplitDays)
+                    .ThenInclude(sd => sd.Exercises)
+                    .FirstOrDefault(r => r.RoutineId == getRoutineByIdRequest.RoutineId);
+                if (routine == null)
+                {
+                    getRoutineByIdResponse.IsSuccess = false;
+                    getRoutineByIdResponse.Message = "Routine not found";
+                    return getRoutineByIdResponse;
+                }
+
+                RoutineDTO routineDTO = new RoutineDTO
+                {
+                    RoutineId = routine.RoutineId,
+                    RoutineName = routine.RoutineName,
+                    RoutineDescription = routine.RoutineDescription,
+                    SplitDays = routine.SplitDays.Select(sd => new SplitDayDTO
+                    {
+                        DayName = sd.DayName,
+                        Exercises = sd.Exercises.Select(e => new ExerciseDTO
+                        {
+                            ExerciseName = e.ExerciseName,
+                            Sets = e.Sets,
+                            Reps = e.Reps,
+                            Weight = e.Weight
+                        }).ToList()
+                    }).ToList()
+                };
+
+                getRoutineByIdResponse.IsSuccess = true;
+                getRoutineByIdResponse.Message = "Routine retrieved successfully";
+                getRoutineByIdResponse.RoutineDTO = routineDTO;
+            }
+            catch (Exception ex)
+            {
+                getRoutineByIdResponse.IsSuccess = false;
+                getRoutineByIdResponse.Message = ex.Message;
+            }
+
+            return getRoutineByIdResponse;
         }
 
         public async Task<GetRoutineStatsResponse> GetRoutineStats(GetRoutineStatsRequest getRoutineStatsRequest)

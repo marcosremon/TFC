@@ -36,9 +36,8 @@ namespace TFC.Application.Main
         public async Task<UpdateSplitDayResponse> UpdateSplitDay(UpdateSplitDayRequest actualizarSplitDayRequest)
         {
             if (actualizarSplitDayRequest == null
-               || actualizarSplitDayRequest.DayName == null
-               || actualizarSplitDayRequest.UserId == null
-               || actualizarSplitDayRequest.RoutineId == null)
+               || actualizarSplitDayRequest.RoutineId == null
+               || string.IsNullOrEmpty(actualizarSplitDayRequest.UserEmail))
             {
                 Log.Instance.Trace($"Invalid request: el request esta vacio o tiene algun campo nulo o vacio");
                 return new UpdateSplitDayResponse

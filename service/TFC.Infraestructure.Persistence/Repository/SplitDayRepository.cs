@@ -75,7 +75,7 @@ namespace TFC.Infraestructure.Persistence.Repository
             UpdateSplitDayResponse response = new UpdateSplitDayResponse();
             try
             {
-                User? user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == updateSplitDayRequest.UserId);
+                User? user = await _context.Users.FirstOrDefaultAsync(u => u.Email == updateSplitDayRequest.UserEmail);
                 if (user == null)
                 {
                     response.IsSuccess = false;
@@ -98,21 +98,60 @@ namespace TFC.Infraestructure.Persistence.Repository
                     return response;
                 }
 
-                SplitDay? splitDay = await _context.SplitDays
-                    .Include(sd => sd.Exercises)
-                    .FirstOrDefaultAsync(sd => sd.DayName == updateSplitDayRequest.DayName && sd.RoutineId == routine.RoutineId);
-
-                splitDay.Exercises.Clear();
-                updateSplitDayRequest.Exercises.ToList().ForEach(e =>
+                if (updateSplitDayRequest.DeleteDays.Count == 0 && updateSplitDayRequest.AddDays.Count == 0)
                 {
-                    splitDay.Exercises.Add(new Exercise
+                    response.IsSuccess = false;
+                    response.Message = "No days to delete or add";
+                    return response;
+                }
+
+                if (updateSplitDayRequest.DeleteDays.Count > 0)
+                {
+                    updateSplitDayRequest.DeleteDays.ForEach(dayName =>
                     {
-                        ExerciseId = e.ExerciseId,
-                        ExerciseName = e.ExerciseName,
-                        Reps = e.Reps,
-                        Sets = e.Sets
+                        switch (dayName)
+                        {
+                            case "Lunes": dayName = "Monday"; break;
+                            case "Martes": dayName = "Tuesday"; break;
+                            case "Miércoles": dayName = "Wednesday"; break;
+                            case "Jueves": dayName = "Thursday"; break;
+                            case "Viernes": dayName = "Friday"; break;
+                            case "Sábado": dayName = "Saturday"; break;
+                            case "Domingo": dayName = "Sunday"; break;
+                            default: dayName = "Day"; break;
+                        }
+
+                        SplitDay? splitDayToDelete = _context.SplitDays.FirstOrDefault(sd => sd.DayName.ToString() == dayName && sd.RoutineId == routine.RoutineId);
+                        routine.SplitDays.Remove(splitDayToDelete);
                     });
-                });
+                }
+
+                if (updateSplitDayRequest.AddDays.Count > 0)
+                {
+                    updateSplitDayRequest.AddDays.ForEach(dayName =>
+                    {
+                        switch (dayName)
+                        {
+                            case "Lunes": dayName = "Monday"; break;
+                            case "Martes": dayName = "Tuesday"; break;
+                            case "Miércoles": dayName = "Wednesday"; break;
+                            case "Jueves": dayName = "Thursday"; break;
+                            case "Viernes": dayName = "Friday"; break;
+                            case "Sábado": dayName = "Saturday"; break;
+                            case "Domingo": dayName = "Sunday"; break;
+                            default: dayName = "Day"; break;
+                        }
+
+                        WeekDay weekDay = Enum.Parse<WeekDay>(dayName, true);
+                        SplitDay newSplitDay = new SplitDay
+                        {
+                            DayName = weekDay,
+                            RoutineId = routine.RoutineId,
+                            Exercises = new List<Exercise>()
+                        };
+                        routine.SplitDays.Add(newSplitDay);
+                    });
+                }
 
                 await _context.SaveChangesAsync();
 

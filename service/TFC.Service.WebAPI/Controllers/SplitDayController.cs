@@ -39,6 +39,8 @@ namespace TFC.Service.WebApi.Controllers
             }
         }
 
+
+        // no se usara
         [HttpPost("delete-split-day")]
         public async Task<ActionResult<DeleteSplitDayResponse>> DeleteSplitDay([FromBody] DeleteSplitDayRequest deleteSplitDayRequest)
         {

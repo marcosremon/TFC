@@ -4,9 +4,9 @@ namespace TFC.Application.DTO.SplitDay.UpdateSplitDay
 {
     public class UpdateSplitDayRequest
     {
-        public WeekDay? DayName { get; set; }
-        public long? RoutineId { get; set; }
-        public long? UserId { get; set; }
-        public ICollection<ExerciseDTO> Exercises { get; set; } = new List<ExerciseDTO>();
+        public int? RoutineId { get; set; }
+        public string UserEmail { get; set; } = string.Empty;
+        public List<string> AddDays { get; set; } = new List<string>();
+        public List<string> DeleteDays { get; set; } = new List<string>();
     }
 }
