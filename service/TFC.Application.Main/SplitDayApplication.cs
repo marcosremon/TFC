@@ -1,7 +1,4 @@
-﻿using TFC.Application.DTO.SplitDay.AnyadirSplitDay;
-using TFC.Application.DTO.SplitDay.DeleteSplitDay;
-using TFC.Application.DTO.SplitDay.GetAllUserSplits;
-using TFC.Application.DTO.SplitDay.GetRoutineSplits;
+﻿using TFC.Application.DTO.SplitDay.DeleteSplitDay;
 using TFC.Application.DTO.SplitDay.UpdateSplitDay;
 using TFC.Application.Interface.Application;
 using TFC.Application.Interface.Persistence;
@@ -16,24 +13,6 @@ namespace TFC.Application.Main
         public SplitDayApplication(ISplitDayRepository splitDayRepository)
         {
             _splitDayRepository = splitDayRepository;
-        }
-
-        public async Task<AddSplitDayResponse> CreateSplitDay(AddSplitDayRequest anyadirSplitDayRequest)
-        {
-            if (anyadirSplitDayRequest == null
-                || anyadirSplitDayRequest.DayName == null
-                || anyadirSplitDayRequest.UserId == null
-                || anyadirSplitDayRequest.RoutineId == null)
-            {
-                Log.Instance.Trace($"Invalid request: el request esta vacio o tiene algun campo nulo o vacio");
-                return new AddSplitDayResponse
-                {
-                    IsSuccess = false,
-                    Message = "Invalid request: AddSplitDayRequest is null or required fields are missing."
-                };
-            }
-
-            return await _splitDayRepository.CreateSplitDay(anyadirSplitDayRequest);
         }
 
         public async Task<DeleteSplitDayResponse> DeleteSplitDay(DeleteSplitDayRequest deleteSplitDayRequest)
@@ -52,36 +31,6 @@ namespace TFC.Application.Main
             }
 
             return await _splitDayRepository.DeleteSplitDay(deleteSplitDayRequest);
-        }
-
-        public async Task<GetAllUserSplitsResponse> GetAllUserSplits(GetAllUserSplitsRequest getAllUserSplitsRequest)
-        {
-            if (getAllUserSplitsRequest == null || getAllUserSplitsRequest.UserId == null)
-            {
-                Log.Instance.Trace($"Invalid request: el request esta vacio o tiene algun campo nulo o vacio");
-                return new GetAllUserSplitsResponse
-                {
-                    IsSuccess = false,
-                    Message = "Invalid request: GetAllUserSplitsRequest is null or UserId is missing."
-                };
-            }
-
-            return await _splitDayRepository.GetAllUserSplits(getAllUserSplitsRequest);
-        }
-
-        public async Task<GetRoutineSplitsResponse> GetRoutineSplits(GetRoutineSplitsRequest getRoutineSplitsRequest)
-        {
-            if (getRoutineSplitsRequest == null || getRoutineSplitsRequest.RoutineId == null)
-            {
-                Log.Instance.Trace($"Invalid request: el request esta vacio o tiene algun campo nulo o vacio");
-                return new GetRoutineSplitsResponse
-                {
-                    IsSuccess = false,
-                    Message = "Invalid request: GetRoutineSplitsRequest is null or RoutineId is missing."
-                };
-            }
-
-            return await _splitDayRepository.GetRoutineSplits(getRoutineSplitsRequest);
         }
 
         public async Task<UpdateSplitDayResponse> UpdateSplitDay(UpdateSplitDayRequest actualizarSplitDayRequest)

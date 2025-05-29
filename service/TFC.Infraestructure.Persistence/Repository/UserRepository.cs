@@ -273,6 +273,17 @@ namespace TFC.Infraestructure.Persistence.Repository
                 response.Message = "Usuario creado correctametne";
                 response.UserDTO = userDTO;
             }
+            catch (DbUpdateException ex)
+            {
+                // Log the full error details
+                Console.WriteLine(ex.InnerException?.Message);
+
+                // Handle specific constraint violations
+                if (ex.InnerException?.Message.Contains("violates not-null constraint") == true)
+                {
+                    // Handle null constraint violation
+                }
+            }
             catch (Exception ex)
             {
                 response.IsSuccess = false;

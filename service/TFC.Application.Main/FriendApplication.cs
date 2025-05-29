@@ -1,7 +1,6 @@
 ﻿using TFC.Application.DTO.Friend.AddNewUserFriend;
 using TFC.Application.DTO.Friend.DeleteFriend;
 using TFC.Application.DTO.Friend.GetAllUserFriens;
-using TFC.Application.DTO.Friend.GetFriendByFriendCode;
 using TFC.Application.Interface.Application;
 using TFC.Application.Interface.Persistence;
 using TFC.Transversal.Logs;
@@ -29,22 +28,6 @@ namespace TFC.Application.Main
             }
 
             return await _friendRepository.GetAllUserFriends(getAllUserFriendsRequest);
-        }
-
-        public async Task<GetFriendByFriendCodeResponse> GetFriendByFriendCode(GetFriendByFriendCodeRequest getFriendByFriendCodeRequest)
-        {
-            if (getFriendByFriendCodeRequest == null
-                || string.IsNullOrEmpty(getFriendByFriendCodeRequest.FriendCode))
-            {
-                Log.Instance.Trace($"Invalid request: el request esta vacio o tiene algun campo nulo o vacio");
-                return new GetFriendByFriendCodeResponse
-                {
-                    IsSuccess = false,
-                    Message = "Invalid request: friendCode is null or empty."
-                };
-            }
-
-            return await _friendRepository.GetFriendByFriendCode(getFriendByFriendCodeRequest);
         }
 
         public async Task<AddNewUserFriendResponse> AddNewUserFriend(AddNewUserFriendRequest addNewUserFriendRequest)

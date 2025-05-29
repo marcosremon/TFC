@@ -2,7 +2,6 @@
 using TFC.Application.DTO.Friend.AddNewUserFriend;
 using TFC.Application.DTO.Friend.DeleteFriend;
 using TFC.Application.DTO.Friend.GetAllUserFriens;
-using TFC.Application.DTO.Friend.GetFriendByFriendCode;
 using TFC.Application.Interface.Application;
 using TFC.Transversal.Logs;
 
@@ -61,28 +60,6 @@ namespace TFC.Service.WebApi.Controllers
             {
                 Log.Instance.Error($"AddNewUserFriend --> Error al añadir al amigo con id: {response.FriendId}");
                 return BadRequest(ex.Message);
-            }
-        }
-
-        [HttpPost("get-friend-by-friend-code")]
-        public async Task<ActionResult<GetFriendByFriendCodeResponse>> GetFriendByFriendCode([FromQuery] GetFriendByFriendCodeRequest getFriendByFriendCodeRequest)
-        {
-            try
-            {
-                GetFriendByFriendCodeResponse response = await _friendApplication.GetFriendByFriendCode(getFriendByFriendCodeRequest);
-                if (response.IsSuccess)
-                {
-                    Log.Instance.Trace($"Amigo encontrado con código: {getFriendByFriendCodeRequest.FriendCode}");
-                    return Ok(response);
-                }
-
-                Log.Instance.Trace($"No se encontró amigo con código: {getFriendByFriendCodeRequest.FriendCode}");
-                return NotFound(response);
-            }
-            catch (Exception ex)
-            {
-                Log.Instance.Error($"GetFriendByFriendCode --> Error al buscar amigo con código {getFriendByFriendCodeRequest.FriendCode}: {ex.Message}");
-                return BadRequest();
             }
         }
 

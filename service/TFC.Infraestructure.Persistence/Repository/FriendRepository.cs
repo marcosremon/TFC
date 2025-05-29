@@ -166,41 +166,5 @@ namespace TFC.Infraestructure.Persistence.Repository
 
             return response;
         }
-
-        public async Task<GetFriendByFriendCodeResponse> GetFriendByFriendCode(GetFriendByFriendCodeRequest getFriendByFriendCodeRequest)
-        {
-            GetFriendByFriendCodeResponse response = new GetFriendByFriendCodeResponse();
-            try
-            {
-                User? user = _context.Users.FirstOrDefault(u => u.FriendCode == getFriendByFriendCodeRequest.FriendCode);
-                if (user == null)
-                {
-                    response.IsSuccess = false;
-                    response.Message = "No se encontró a la persona con ese friend code";
-                    return response;
-                }
-
-                UserDTO userDTO = new UserDTO()
-                {
-                    Dni = user.Dni,
-                    Username = user.Username,
-                    Surname = user.Surname,
-                    FriendCode = user.FriendCode,
-                    Password = "********",
-                    Email = user.Email
-                };
-
-                response.IsSuccess = true;
-                response.Message = "Consulta correcta";
-                response.UserDTO = userDTO; 
-            }
-            catch (Exception ex)
-            {
-                response.IsSuccess = false;
-                response.Message = ex.Message;
-            }
-
-            return response;
-        }
     }
 }

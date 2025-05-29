@@ -8,7 +8,7 @@ namespace TFC.Domain.Model.Entity
     public class User
     {
         [Key]
-        //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long UserId { get; set; }
 
         [MaxLength(9)]

@@ -63,6 +63,7 @@ namespace TFC.Service.WebApi.Controllers
             }
         }
 
+        // de momento no
         [HttpDelete("delete-exercise")]
         public async Task<ActionResult<DeleteExerciseResponse>> DeleteExercise([FromBody] DeleteExerciseRequest deleteExerciseRequest)
         {

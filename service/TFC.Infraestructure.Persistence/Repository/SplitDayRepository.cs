@@ -1,10 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using TFC.Application.DTO.Entity;
-using TFC.Application.DTO.SplitDay.AnyadirSplitDay;
 using TFC.Application.DTO.SplitDay.DeleteSplitDay;
-using TFC.Application.DTO.SplitDay.GetAllUserSplits;
-using TFC.Application.DTO.SplitDay.GetRoutineSplits;
 using TFC.Application.DTO.SplitDay.UpdateSplitDay;
 using TFC.Application.Interface.Persistence;
 using TFC.Domain.Model.Entity;
@@ -21,97 +18,6 @@ namespace TFC.Infraestructure.Persistence.Repository
             _context = context;
         }
 
-        public async Task<AddSplitDayResponse> CreateSplitDay(AddSplitDayRequest addSplitDayRequest)
-        {
-            AddSplitDayResponse response = new AddSplitDayResponse();
-
-            try
-            {
-                User? user = await _context.Users
-                    .Include(u => u.Routines)
-                        .ThenInclude(r => r.SplitDays)
-                            .ThenInclude(sd => sd.Exercises)
-                    .FirstOrDefaultAsync(u => u.UserId == addSplitDayRequest.UserId);
-
-                if (user == null)
-                {
-                    response.IsSuccess = false;
-                    response.Message = "User not found.";
-                    return response;  
-                }
-
-                Routine? routine = user.Routines.FirstOrDefault(r => r.RoutineId == addSplitDayRequest.RoutineId);
-                if (routine == null)
-                {
-                    response.IsSuccess = false;
-                    response.Message = "Routine not found.";
-                    return response; 
-                }
-
-                bool splitDayExists = routine.SplitDays.Any(sd => sd.DayName == addSplitDayRequest.DayName);
-                if (splitDayExists)
-                {
-                    response.IsSuccess = false;
-                    response.Message = "SplitDay for this day already exists in the routine.";
-                    return response;
-                }
-
-                SplitDay splitDay = new SplitDay
-                {
-                    RoutineId = routine.RoutineId,
-                    DayName = addSplitDayRequest.DayName,
-
-                    Exercises = addSplitDayRequest.Exercises.Select(e => new Exercise
-                    {
-                        ExerciseName = e.ExerciseName,
-                        Reps = e.Reps,
-                        Sets = e.Sets,
-                        Weight = e.Weight, 
-                        RoutineId = routine.RoutineId,
-                        DayName = addSplitDayRequest.DayName
-                    }).ToList()
-                };
-
-                routine.SplitDays.Add(splitDay);
-                await _context.SaveChangesAsync();
-
-                UserDTO userDTO = new UserDTO
-                {
-                    UserId = user.UserId,
-                    Username = user.Username,
-                    FriendCode = user.FriendCode,
-                    Email = user.Email,
-                    Routines = user.Routines.Select(r => new RoutineDTO
-                    {
-                        RoutineId = r.RoutineId,
-                        RoutineName = r.RoutineName,
-                        SplitDays = r.SplitDays.Select(sd => new SplitDayDTO
-                        {
-                            DayName = sd.DayName,
-                            Exercises = sd.Exercises.Select(ex => new ExerciseDTO
-                            {
-                                ExerciseId = ex.ExerciseId,
-                                ExerciseName = ex.ExerciseName,
-                                Reps = ex.Reps,
-                                Sets = ex.Sets,
-                                Weight = ex.Weight
-                            }).ToList()
-                        }).ToList()
-                    }).ToList()
-                };
-
-                response.IsSuccess = true;
-                response.Message = "Split day created successfully.";
-                response.UserDTO = userDTO;
-            }
-            catch (Exception ex)
-            {
-                response.IsSuccess = false;
-                response.Message = ex.Message;
-            }
-
-            return response;
-        }
         public async Task<DeleteSplitDayResponse> DeleteSplitDay(DeleteSplitDayRequest deleteSplitDayRequest)
         {
             DeleteSplitDayResponse response = new DeleteSplitDayResponse();
@@ -159,88 +65,6 @@ namespace TFC.Infraestructure.Persistence.Repository
                     response.Message = ex.Message;
                     await dbContextTransaction.RollbackAsync();
                 }
-            }
-
-            return response;
-        }
-
-        public async Task<GetAllUserSplitsResponse> GetAllUserSplits(GetAllUserSplitsRequest getAllUserSplitsResponse)
-        {
-            GetAllUserSplitsResponse response = new GetAllUserSplitsResponse();
-            try
-            {
-                User? user = await _context.Users
-                    .Include(u => u.Routines)
-                    .ThenInclude(r => r.SplitDays)
-                    .ThenInclude(sd => sd.Exercises)
-                    .FirstOrDefaultAsync(u => u.UserId == getAllUserSplitsResponse.UserId);
-
-                if (user == null)
-                {
-                    response.IsSuccess = false;
-                    response.Message = "User not found.";
-                    return response;
-                }
-
-                List<SplitDayDTO> routinesDTO = user.Routines.SelectMany(r => r.SplitDays).Select(sd => new SplitDayDTO
-                {
-                    DayName = sd.DayName,
-                    Exercises = sd.Exercises.Select(e => new ExerciseDTO
-                    {
-                        ExerciseId = e.ExerciseId,
-                        ExerciseName = e.ExerciseName,
-                        Reps = e.Reps,
-                        Sets = e.Sets
-                    }).ToList()
-                }).ToList();
-
-                response.IsSuccess = true;
-                response.Message = "User routines retrieved successfully.";
-                response.SplitDays = routinesDTO;
-            }
-            catch (Exception ex)
-            {
-                response.IsSuccess = false;
-                response.Message = ex.Message;
-            }
-
-            return response;
-        }
-
-        public async Task<GetRoutineSplitsResponse> GetRoutineSplits(GetRoutineSplitsRequest getRoutineSplitsRequest)
-        {
-            GetRoutineSplitsResponse response = new GetRoutineSplitsResponse();
-            try
-            {
-                Routine? routine = await _context.Routines.FirstOrDefaultAsync(r => r.RoutineId == getRoutineSplitsRequest.RoutineId);
-                if (routine == null)
-                {
-                    response.IsSuccess = false;
-                    response.Message = "Routine not found.";
-                    return response;
-                }
-
-                if (!routine.SplitDays.Any())
-                {
-                    response.IsSuccess = false;
-                    response.Message = "No split days found for this routine.";
-                    return response;
-                }
-
-                List<DayInfoDTO> dayInfo = routine.SplitDays.Select(sd => new DayInfoDTO
-                {
-                    WeekDay = sd.DayName,
-                    DayExercisesDescription = sd.DayExercisesDescription
-                }).ToList();
-
-                response.IsSuccess = true;
-                response.Message = "Routine split days retrieved successfully.";
-                response.DayInfo = dayInfo;
-            }
-            catch (Exception ex)
-            {
-                response.IsSuccess = false;
-                response.Message = ex.Message;
             }
 
             return response;
