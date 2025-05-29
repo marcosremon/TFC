@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using TFC.Application.DTO.Exercise.AddExercise;
 using TFC.Application.DTO.Exercise.AddExerciseProgress;
+using TFC.Application.DTO.Exercise.DeleteExecise;
 using TFC.Application.DTO.Exercise.GetExercisesByDayAndRoutineId;
 using TFC.Application.DTO.Exercise.UpdateExercise;
 using TFC.Application.Interface.Application;
