@@ -41,7 +41,7 @@ namespace TFC.Service.WebApi.Controllers
             }
         }
 
-        [HttpPut("update-exercise")]
+        [HttpPost("update-exercise")]
         public async Task<ActionResult<UpdateExerciseResponse>> UpdateExercise([FromBody] UpdateExerciseRequest updateExerciseRequest)
         {
             try
@@ -63,8 +63,7 @@ namespace TFC.Service.WebApi.Controllers
             }
         }
 
-        // de momento no
-        [HttpDelete("delete-exercise")]
+        [HttpPost("delete-exercise")]
         public async Task<ActionResult<DeleteExerciseResponse>> DeleteExercise([FromBody] DeleteExerciseRequest deleteExerciseRequest)
         {
             try

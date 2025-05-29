@@ -1,12 +1,10 @@
-﻿using System;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using TFC.Application.DTO.Serialize_Deserialize;
 
 namespace TFC.Transversal.Common
 {
     public static class ExerciseProgressUtils
     {
-        // El patrón acepta enteros para sets y reps, y un decimal (con punto) para el peso
         private const string Pattern = @"^(?<sets>\d+)x(?<reps>\d+)@(?<weight>\d+(\.\d+)?)$";
 
         public static string Serialize(int sets, int reps, decimal weight)

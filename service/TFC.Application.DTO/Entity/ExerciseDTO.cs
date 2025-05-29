@@ -1,6 +1,4 @@
-﻿using TFC.Domain.Model.Enum;
-
-namespace TFC.Application.DTO.Entity
+﻿namespace TFC.Application.DTO.Entity
 {
     public class ExerciseDTO
     {

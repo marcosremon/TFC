@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 [Table("exercise_progress")]
@@ -29,7 +28,4 @@ public class ExerciseProgress
 
     [Column("performed_at")]
     public DateTime PerformedAt { get; set; }
-
-    // Relaciones (opcional)
-    // public Exercise Exercise { get; set; }
 }

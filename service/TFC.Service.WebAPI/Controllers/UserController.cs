@@ -27,7 +27,6 @@ namespace TFC.Service.WebApi.Controllers
             _userApplication = userApplication;
         }
 
-        // web
         [HttpGet("get-users")]
         [Authorize(Roles = nameof(Role.Admin))]
         public async Task<ActionResult<GetUsersResponse>> GetUsers()
@@ -260,6 +259,5 @@ namespace TFC.Service.WebApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
     }
 }

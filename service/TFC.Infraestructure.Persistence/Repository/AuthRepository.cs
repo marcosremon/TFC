@@ -1,11 +1,8 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using TFC.Application.DTO.Auth.Login;
 using TFC.Application.Interface.Persistence;
 using TFC.Domain.Model.Entity;
 using TFC.Infraestructure.Persistence.Context;
-using TFC.Service.WebApi;
 using TFC.Transversal.Logs;
 using TFC.Transversal.Security;
 

@@ -1,11 +1,11 @@
--- Crear secuencias necesarias (solo si no existen)
+-- Crear secuencias necesarias
 CREATE SEQUENCE IF NOT EXISTS exercises_exercise_id_seq;
 CREATE SEQUENCE IF NOT EXISTS routines_routine_id_seq;
 CREATE SEQUENCE IF NOT EXISTS user_friends_id_seq;
 CREATE SEQUENCE IF NOT EXISTS users_user_id_seq;
 CREATE SEQUENCE IF NOT EXISTS exercise_progress_id_seq;
 
--- Crear tabla users (sin cambios)
+-- Crear tabla users
 CREATE TABLE IF NOT EXISTS public.users (
     user_id bigint NOT NULL DEFAULT nextval('users_user_id_seq'::regclass),
     dni character varying(9) COLLATE pg_catalog."default",
@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS public.users (
     CONSTRAINT users_pkey PRIMARY KEY (user_id)
 );
 
--- Crear tabla routines (sin cambios)
+-- Crear tabla routines
 CREATE TABLE IF NOT EXISTS public.routines (
     routine_id bigint NOT NULL DEFAULT nextval('routines_routine_id_seq'::regclass),
     routine_name character varying(100) COLLATE pg_catalog."default",
@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS public.routines (
         REFERENCES public.users (user_id) ON UPDATE NO ACTION ON DELETE CASCADE
 );
 
--- Crear tabla split_days (MODIFICADO para hacer day_name nullable)
+-- Crear tabla split_days
 CREATE TABLE IF NOT EXISTS public.split_days (
     routine_id bigint NOT NULL,
     day_name character varying(20) COLLATE pg_catalog."default", -- Cambiado a nullable
@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS public.split_days (
         REFERENCES public.routines (routine_id) ON UPDATE NO ACTION ON DELETE CASCADE
 );
 
--- Crear tabla exercises (MODIFICADO para hacer day_name nullable)
+-- Crear tabla exercises
 CREATE TABLE IF NOT EXISTS public.exercises (
     exercise_id bigint NOT NULL DEFAULT nextval('exercises_exercise_id_seq'::regclass),
     exercise_name character varying(100) COLLATE pg_catalog."default",
@@ -54,7 +54,7 @@ CREATE TABLE IF NOT EXISTS public.exercises (
         REFERENCES public.split_days (routine_id, day_name) ON UPDATE NO ACTION ON DELETE CASCADE
 );
 
--- Crear tabla user_friends (MODIFICADO para usar bigint)
+-- Crear tabla user_friends
 CREATE TABLE IF NOT EXISTS public.user_friends (
     id bigint NOT NULL DEFAULT nextval('user_friends_id_seq'::regclass),
     user_id bigint NOT NULL,
@@ -66,7 +66,7 @@ CREATE TABLE IF NOT EXISTS public.user_friends (
         REFERENCES public.users (user_id) ON UPDATE NO ACTION ON DELETE CASCADE
 );
 
--- Crear tabla exercise_progress (MODIFICADO para usar bigint en progress_id)
+-- Crear tabla exercise_progress
 CREATE TABLE IF NOT EXISTS public.exercise_progress
 (
     progress_id bigint NOT NULL DEFAULT nextval('exercise_progress_id_seq'::regclass), -- Cambiado a bigint

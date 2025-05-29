@@ -3,7 +3,6 @@ using TFC.Application.DTO.Entity;
 using TFC.Application.DTO.Friend.AddNewUserFriend;
 using TFC.Application.DTO.Friend.DeleteFriend;
 using TFC.Application.DTO.Friend.GetAllUserFriens;
-using TFC.Application.DTO.Friend.GetFriendByFriendCode;
 using TFC.Application.Interface.Persistence;
 using TFC.Domain.Model.Entity;
 using TFC.Infraestructure.Persistence.Context;

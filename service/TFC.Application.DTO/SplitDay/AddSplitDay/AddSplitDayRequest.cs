@@ -1,5 +1,4 @@
 ﻿using TFC.Application.DTO.Entity;
-using TFC.Domain.Model.Enum;
 
 namespace TFC.Application.DTO.SplitDay.AnyadirSplitDay
 {

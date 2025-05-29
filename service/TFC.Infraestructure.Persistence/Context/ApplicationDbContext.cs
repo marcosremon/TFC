@@ -1,14 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TFC.Domain.Model.Entity;
-using TFC.Domain.Model.Enum;
 
 namespace TFC.Infraestructure.Persistence.Context
 {
     public class ApplicationDbContext : DbContext
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
-        {
-        }
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) {  }
 
         public DbSet<User> Users { get; set; }
         public DbSet<Routine> Routines { get; set; }
@@ -16,7 +13,6 @@ namespace TFC.Infraestructure.Persistence.Context
         public DbSet<Exercise> Exercises { get; set; }
         public DbSet<UserFriend> UserFriends { get; set; }
         public DbSet<ExerciseProgress> ExerciseProgress { get; set; }
-
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

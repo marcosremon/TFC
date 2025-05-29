@@ -3,7 +3,6 @@ using TFC.Application.DTO.Routine.CreateRoutine;
 using TFC.Application.DTO.Routine.DeleteRoutine;
 using TFC.Application.DTO.Routine.GetAllUserRoutines;
 using TFC.Application.DTO.Routine.GetRoutines;
-using TFC.Application.DTO.Routine.GetRoutinesByFriendCode;
 using TFC.Application.DTO.Routine.GetRoutineStats;
 using TFC.Application.Interface.Application;
 using TFC.Transversal.Logs;
@@ -43,7 +42,7 @@ namespace TFC.Service.WebApi.Controllers
             }
         }
 
-        [HttpPut("update-routine")]
+        [HttpPost("update-routine")]
         public async Task<ActionResult<UpdateRoutineResponse>> UpdateRoutine([FromBody] UpdateRoutineRequest updateRoutineRequest)
         {
             try
@@ -83,28 +82,6 @@ namespace TFC.Service.WebApi.Controllers
             catch (Exception ex)
             {
                 Log.Instance.Error($"DeleteRoutine --> Error al eliminar la rutina: {ex.Message}");
-                return BadRequest(ex.Message);
-            }
-        }
-
-        [HttpPost("get-routine-by-email")]
-        public async Task<ActionResult<GetRoutinesByFriendCodeResponse>> GetRoutinesByFriendCode([FromBody] GetRoutinesByFriendCodeRequest getRoutinesByFriendCodeRequest)
-        {
-            try
-            {
-                GetRoutinesByFriendCodeResponse response = await _routineApplication.GetRoutinesByEmail(getRoutinesByFriendCodeRequest);
-                if (response.IsSuccess)
-                {
-                    Log.Instance.Trace($"Rutinas del usuario cone email: {getRoutinesByFriendCodeRequest.UserEmail} obtenidas correctamente");
-                    return Ok(response);
-                }
-
-                Log.Instance.Trace($"Error al obtener las rutinas: {response?.Message}");
-                return BadRequest(response?.Message);
-            }
-            catch (Exception ex)
-            {
-                Log.Instance.Error($"GetRoutinesByEmail --> Error al obtener las rutinas: {ex.Message}");
                 return BadRequest(ex.Message);
             }
         }

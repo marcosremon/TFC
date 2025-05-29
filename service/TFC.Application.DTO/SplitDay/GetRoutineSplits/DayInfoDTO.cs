@@ -1,6 +1,4 @@
-﻿using TFC.Domain.Model.Enum;
-
-namespace TFC.Application.DTO.SplitDay.GetRoutineSplits
+﻿namespace TFC.Application.DTO.SplitDay.GetRoutineSplits
 {
     public class DayInfoDTO
     {

@@ -1,7 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using TFC.Domain.Model.Enum;
-
-namespace TFC.Application.DTO.Exercise.UpdateExercise
+﻿namespace TFC.Application.DTO.Exercise.UpdateExercise
 {
     public class UpdateExerciseRequest
     {

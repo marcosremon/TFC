@@ -1,6 +1,4 @@
-﻿using TFC.Domain.Model.Enum;
-
-namespace TFC.Application.DTO.SplitDay.DeleteSplitDay
+﻿namespace TFC.Application.DTO.SplitDay.DeleteSplitDay
 {
     public class DeleteSplitDayRequest
     {

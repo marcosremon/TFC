@@ -17,7 +17,7 @@ namespace TFC.Service.WebApi.Controllers
             _splitDayApplication = splitDayApplication;
         }
 
-        [HttpPut("update-split-day")]
+        [HttpPost("update-split-day")]
         public async Task<ActionResult<UpdateSplitDayResponse>> UpdateSplitDay([FromBody] UpdateSplitDayRequest actualizarSplitDayRequest)
         {
             try
@@ -39,7 +39,7 @@ namespace TFC.Service.WebApi.Controllers
             }
         }
 
-        [HttpDelete("delete-split-day")]
+        [HttpPost("delete-split-day")]
         public async Task<ActionResult<DeleteSplitDayResponse>> DeleteSplitDay([FromBody] DeleteSplitDayRequest deleteSplitDayRequest)
         {
             try
