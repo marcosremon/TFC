@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TFC.Application.Interface\TFC.Application.Interface.csproj" />
+    <ProjectReference Include="..\TFC.Transversal.Logs\TFC.Transversal.Logs.csproj" />
+  </ItemGroup>
+
+</Project>

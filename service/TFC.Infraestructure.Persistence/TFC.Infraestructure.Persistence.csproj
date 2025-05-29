@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.4" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.4" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.4" />
+    <PackageReference Include="Microsoft.SqlServer.Server" Version="1.0.0" />
+    <PackageReference Include="MongoDB.Driver" Version="3.3.0" />
+    <PackageReference Include="Npgsql" Version="9.0.3" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TFC.Application.DTO\TFC.Application.DTO.csproj" />
+    <ProjectReference Include="..\TFC.Application.Interface\TFC.Application.Interface.csproj" />
+    <ProjectReference Include="..\TFC.Application.Main\TFC.Application.Main.csproj" />
+    <ProjectReference Include="..\TFC.Domain.Model\TFC.Domain.Model.csproj" />
+    <ProjectReference Include="..\TFC.Transversal.Common\TFC.Transversal.Common.csproj" />
+    <ProjectReference Include="..\TFC.Transversal.Mail\TFC.Transversal.Mail.csproj" />
+    <ProjectReference Include="..\TFC.Transversal.Security\TFC.Transversal.Security.csproj" />
+  </ItemGroup>
+
+</Project>
