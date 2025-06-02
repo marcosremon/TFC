@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using TFC.Application.DTO.Exercise.AddExercise;
 using TFC.Application.DTO.Exercise.AddExerciseProgress;
 using TFC.Application.DTO.Exercise.DeleteExecise;
 using TFC.Application.DTO.Exercise.GetExercisesByDayAndRoutineId;
@@ -63,8 +64,6 @@ namespace TFC.Service.WebApi.Controllers
             }
         }
 
-
-        // no se usara
         [HttpPost("delete-exercise")]
         public async Task<ActionResult<DeleteExerciseResponse>> DeleteExercise([FromBody] DeleteExerciseRequest deleteExerciseRequest)
         {
@@ -74,7 +73,29 @@ namespace TFC.Service.WebApi.Controllers
                 if (response.IsSuccess)
                 {
                     Log.Instance.Trace($"Ejercicio eliminado correctamente para el usuario con id: {response.UserDTO?.UserId}");
-                    return NoContent();
+                    return Ok(response);
+                }
+
+                Log.Instance.Trace($"Error al eliminar el ejercicio: {response?.Message}");
+                return BadRequest(response.Message);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance.Error($"DeleteExercise --> Error al eliminar el ejercicio: {ex.Message}");
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("add-exercise")]
+        public async Task<ActionResult<AddExerciseResponse>> addExercise([FromBody] AddExerciseRequest addExerciseRequest)
+        {
+            try
+            {
+                AddExerciseResponse response = await _exerciseApplication.addExercise(addExerciseRequest);
+                if (response.IsSuccess)
+                {
+                    Log.Instance.Trace($"Ejercicio creado correctamente para el usuario con id: {response.UserDTO?.UserId}");
+                    return Ok(response);
                 }
 
                 Log.Instance.Trace($"Error al eliminar el ejercicio: {response?.Message}");

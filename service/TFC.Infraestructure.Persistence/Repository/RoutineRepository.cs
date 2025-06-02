@@ -29,114 +29,115 @@ namespace TFC.Infraestructure.Persistence.Repository
 
             using (ApplicationDbContext context = _context)
             {
-                using (var dbContextTransaction = context.Database.BeginTransaction())
+                IDbContextTransaction dbContextTransaction = context.Database.BeginTransaction();
+                try
                 {
-                    try
+                    User? user = await _context.Users
+                        .Include(u => u.Routines)
+                        .FirstOrDefaultAsync(u => u.Email == createRoutineRequest.UserEmail);
+
+                    if (user == null)
                     {
-                        User? user = await _context.Users
-                            .Include(u => u.Routines)
-                            .FirstOrDefaultAsync(u => u.Email == createRoutineRequest.UserEmail);
-
-                        if (user == null)
-                        {
-                            response.IsSuccess = false;
-                            response.Message = "User not found";
-                            return response;
-                        }
-
-                        Routine routine = new Routine
-                        {
-                            RoutineName = createRoutineRequest.RoutineName ?? "New Routine",
-                            RoutineDescription = createRoutineRequest.RoutineDescription,
-                            UserId = user.UserId,
-                            SplitDays = new List<SplitDay>()
-                        };
-
-                        if (string.IsNullOrEmpty(routine.RoutineDescription))
-                            routine.RoutineDescription = "Rutina sin descripcion";
-
-                        _context.Routines.Add(routine);
-                        await _context.SaveChangesAsync();
-
-                        routine.SplitDays = createRoutineRequest.SplitDays.Select(sdRequest =>
-                        {
-                            SplitDay splitDay = new SplitDay
-                            {
-                                DayName = sdRequest.DayName.Value,
-                                DayExercisesDescription = "Default description",
-                                RoutineId = routine.RoutineId,
-                                Exercises = sdRequest.Exercises?.Select(exRequest =>
-                                {
-                                    Exercise exercise = new Exercise
-                                    {
-                                        ExerciseName = exRequest.ExerciseName ?? "Unnamed Exercise",
-                                        Sets = exRequest.Sets ?? 0,
-                                        Reps = exRequest.Reps ?? 0,
-                                        Weight = exRequest.Weight ?? 0,
-                                        RoutineId = routine.RoutineId,
-                                        DayName = sdRequest.DayName.Value,
-                                    };
-
-                                    _context.Exercises.Add(exercise);
-                                    return exercise;
-                                }).ToList() ?? new List<Exercise>()
-                            };
-
-                            return splitDay;
-                        }).ToList();
-
-                        await _context.SaveChangesAsync();
-
-                        foreach (SplitDay splitDay in routine.SplitDays)
-                        {
-                            foreach (Exercise exercise in splitDay.Exercises)
-                            {
-                                var progress = new ExerciseProgress
-                                {
-                                    ExerciseId = exercise.ExerciseId,
-                                    RoutineId = routine.RoutineId,
-                                    DayName = splitDay.DayName.ToString(),
-                                    Sets = exercise.Sets,
-                                    Reps = exercise.Reps,
-                                    Weight = exercise.Weight,
-                                    PerformedAt = DateTime.UtcNow
-                                };
-                                _context.ExerciseProgress.Add(progress);
-                            }
-                        }
-
-                        await _context.SaveChangesAsync();
-                        await dbContextTransaction.CommitAsync();
-
-                        response.IsSuccess = true;
-                        response.Message = "Routine created successfully";
-                        response.RoutineDTO = new RoutineDTO
-                        {
-                            RoutineId = routine.RoutineId,
-                            RoutineName = routine.RoutineName,
-                            RoutineDescription = routine.RoutineDescription,
-                            SplitDays = routine.SplitDays.Select(sd => new SplitDayDTO
-                            {
-                                DayName = sd.DayName,
-                                Exercises = sd.Exercises.Select(e => new ExerciseDTO
-                                {
-                                    ExerciseName = e.ExerciseName,
-                                    Sets = e.Sets,
-                                    Reps = e.Reps,
-                                    Weight = e.Weight,
-                                    DayName = e.DayName
-                                }).ToList()
-                            }).ToList()
-                        };
-                    }
-                    catch (Exception ex)
-                    {
-                        await dbContextTransaction.RollbackAsync();
                         response.IsSuccess = false;
-                        response.Message = $"Error creating routine: {ex.Message}";
+                        response.Message = "User not found";
+                        return response;
                     }
+
+                    Routine routine = new Routine
+                    {
+                        RoutineName = createRoutineRequest.RoutineName ?? "New Routine",
+                        RoutineDescription = createRoutineRequest.RoutineDescription,
+                        UserId = user.UserId,
+                        SplitDays = new List<SplitDay>()
+                    };
+
+                    if (string.IsNullOrEmpty(routine.RoutineDescription))
+                        routine.RoutineDescription = "Rutina sin descripcion";
+
+                    _context.Routines.Add(routine);
+                    await _context.SaveChangesAsync();
+
+                    routine.SplitDays = createRoutineRequest.SplitDays.Select(sdRequest =>
+                    {
+                        SplitDay splitDay = new SplitDay
+                        {
+                            DayName = sdRequest.DayName.Value,
+                            DayExercisesDescription = "Default description",
+                            RoutineId = routine.RoutineId,
+                            Exercises = sdRequest.Exercises?.Select(exRequest =>
+                            {
+                                Exercise exercise = new Exercise
+                                {
+                                    ExerciseName = exRequest.ExerciseName ?? "Unnamed Exercise",
+                                    Sets = exRequest.Sets ?? 0,
+                                    Reps = exRequest.Reps ?? 0,
+                                    Weight = exRequest.Weight ?? 0,
+                                    RoutineId = routine.RoutineId,
+                                    DayName = sdRequest.DayName.Value,
+                                };
+
+                                _context.Exercises.Add(exercise);
+                                return exercise;
+                            }).ToList() ?? new List<Exercise>()
+                        };
+
+                        return splitDay;
+                    }).ToList();
+
+                    
+
+                    await _context.SaveChangesAsync();
+
+                    foreach (SplitDay splitDay in routine.SplitDays)
+                    {
+                        foreach (Exercise exercise in splitDay.Exercises)
+                        {
+                            ExerciseProgress progress = new ExerciseProgress
+                            {
+                                ExerciseId = exercise.ExerciseId,
+                                RoutineId = routine.RoutineId,
+                                DayName = splitDay.DayName.ToString(),
+                                Sets = exercise.Sets,
+                                Reps = exercise.Reps,
+                                Weight = exercise.Weight,
+                                PerformedAt = DateTime.UtcNow
+                            };
+                            _context.ExerciseProgress.Add(progress);
+                        }
+                    }
+
+                    await _context.SaveChangesAsync();
+                    await dbContextTransaction.CommitAsync();
+
+                    response.IsSuccess = true;
+                    response.Message = "Routine created successfully";
+                    response.RoutineDTO = new RoutineDTO
+                    {
+                        RoutineId = routine.RoutineId,
+                        RoutineName = routine.RoutineName,
+                        RoutineDescription = routine.RoutineDescription,
+                        SplitDays = routine.SplitDays.Select(sd => new SplitDayDTO
+                        {
+                            DayName = sd.DayName,
+                            Exercises = sd.Exercises.Select(e => new ExerciseDTO
+                            {
+                                ExerciseName = e.ExerciseName,
+                                Sets = e.Sets,
+                                Reps = e.Reps,
+                                Weight = e.Weight,
+                                DayName = e.DayName
+                            }).ToList()
+                        }).ToList()
+                    };
+                }
+                catch (Exception ex)
+                {
+                    await dbContextTransaction.RollbackAsync();
+                    response.IsSuccess = false;
+                    response.Message = $"Error creating routine: {ex.Message}";
                 }
             }
+
             return response;
         }
 

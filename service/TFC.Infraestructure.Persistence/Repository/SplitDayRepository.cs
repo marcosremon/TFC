@@ -121,8 +121,26 @@ namespace TFC.Infraestructure.Persistence.Repository
                             default: dayName = "Day"; break;
                         }
 
-                        SplitDay? splitDayToDelete = _context.SplitDays.FirstOrDefault(sd => sd.DayName.ToString() == dayName && sd.RoutineId == routine.RoutineId);
-                        routine.SplitDays.Remove(splitDayToDelete);
+                        // Buscar el SplitDay a eliminar
+                        SplitDay? splitDayToDelete = _context.SplitDays
+                            .Include(sd => sd.Exercises)
+                            .FirstOrDefault(sd => sd.DayName.ToString() == dayName && sd.RoutineId == routine.RoutineId);
+
+                        if (splitDayToDelete != null)
+                        {
+                            // Obtener los IDs de los ejercicios de ese día
+                            var exerciseIds = splitDayToDelete.Exercises.Select(e => e.ExerciseId).ToList();
+
+                            // Eliminar los ExerciseProgress asociados
+                            var progressToDelete = _context.ExerciseProgress.Where(ep => exerciseIds.Contains(ep.ExerciseId));
+                            _context.ExerciseProgress.RemoveRange(progressToDelete);
+
+                            // Eliminar los ejercicios asociados
+                            _context.Exercises.RemoveRange(splitDayToDelete.Exercises);
+
+                            // Eliminar el SplitDay
+                            _context.SplitDays.Remove(splitDayToDelete);
+                        }
                     });
                 }
 

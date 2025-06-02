@@ -1,4 +1,5 @@
-﻿using TFC.Application.DTO.Exercise.AddExerciseProgress;
+﻿using TFC.Application.DTO.Exercise.AddExercise;
+using TFC.Application.DTO.Exercise.AddExerciseProgress;
 using TFC.Application.DTO.Exercise.DeleteExecise;
 using TFC.Application.DTO.Exercise.GetExercisesByDayAndRoutineId;
 using TFC.Application.DTO.Exercise.UpdateExercise;
@@ -15,6 +16,25 @@ namespace TFC.Application.Main
         public ExerciseApplication(IExerciseRepository exerciseRepository)
         {
             _exerciseRepository = exerciseRepository;
+        }
+
+        public async Task<AddExerciseResponse> addExercise(AddExerciseRequest addExerciseRequest)
+        {
+            if (addExerciseRequest == null
+                || addExerciseRequest.RoutineId == null
+                || string.IsNullOrEmpty(addExerciseRequest.ExerciseName)
+                || string.IsNullOrEmpty(addExerciseRequest.DayName)
+                || string.IsNullOrEmpty(addExerciseRequest.UserEmail))
+            {
+                Log.Instance.Trace($"Invalid request: el request esta vacio o tiene algun campo nulo o vacio");
+                return new AddExerciseResponse
+                {
+                    IsSuccess = false,
+                    Message = "Invalid request: AddExerciseRequest is null or required fields are missing."
+                };
+            }
+
+            return await _exerciseRepository.addExercise(addExerciseRequest);
         }
 
         public async Task<AddExerciseAddExerciseProgressResponse> AddExerciseProgress(AddExerciseAddExerciseProgressRequest addExerciseRequest)
@@ -36,10 +56,10 @@ namespace TFC.Application.Main
         public async Task<DeleteExerciseResponse> DeleteExercise(DeleteExerciseRequest deleteExerciseRequest)
         {
             if (deleteExerciseRequest == null
-                || deleteExerciseRequest.UserId == null
                 || deleteExerciseRequest.RoutineId == null
                 || deleteExerciseRequest.DayName == null
-                || string.IsNullOrEmpty(deleteExerciseRequest.ExerciseName))
+                || deleteExerciseRequest.ExerciseId == null
+                || string.IsNullOrEmpty(deleteExerciseRequest.UserEmail))
             {
                 Log.Instance.Trace($"Invalid request: el request esta vacio o tiene algun campo nulo o vacio");
                 return new DeleteExerciseResponse

@@ -12,18 +12,25 @@ namespace TFC.Transversal.Common
             return $"{sets}x{reps}@{weight}";
         }
 
-        public static DeserializeDTO Deserialize(string progressString)
+        public static DeserializeDTO? Deserialize(string progressString)
         {
-            var match = Regex.Match(progressString, Pattern);
-            if (!match.Success)
-                throw new FormatException($"Formato de progreso inválido: {progressString}");
-
-            return new DeserializeDTO
+            try
             {
-                Set = int.Parse(match.Groups["sets"].Value),
-                Reps = int.Parse(match.Groups["reps"].Value),
-                Weight = decimal.Parse(match.Groups["weight"].Value)
-            };
+                var match = Regex.Match(progressString, Pattern);
+                if (!match.Success)
+                    throw new FormatException($"Formato de progreso inválido: {progressString}");
+
+                return new DeserializeDTO
+                {
+                    Set = int.Parse(match.Groups["sets"].Value),
+                    Reps = int.Parse(match.Groups["reps"].Value),
+                    Weight = decimal.Parse(match.Groups["weight"].Value)
+                };
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
         }
 
         public static bool TryDeserialize(string progressString, out int sets, out int reps, out decimal weight)

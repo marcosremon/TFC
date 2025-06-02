@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TFC.Application.DTO.Entity;
+using TFC.Application.DTO.Exercise.AddExercise;
 using TFC.Application.DTO.Exercise.AddExerciseProgress;
 using TFC.Application.DTO.Exercise.DeleteExecise;
 using TFC.Application.DTO.Exercise.GetExercisesByDayAndRoutineId;
@@ -19,6 +20,105 @@ namespace TFC.Infraestructure.Persistence.Repository
         public ExerciseRepository(ApplicationDbContext context)
         {
             _context = context;
+        }
+
+        public async Task<AddExerciseResponse> addExercise(AddExerciseRequest addExerciseRequest)
+        {
+            AddExerciseResponse response = new AddExerciseResponse();
+            try
+            {
+                User? user = await _context.Users
+                    .Include(u => u.Routines)
+                        .ThenInclude(r => r.SplitDays)
+                            .ThenInclude(sd => sd.Exercises)
+                    .FirstOrDefaultAsync(u => u.Email == addExerciseRequest.UserEmail);
+                if (user == null) 
+                {
+                    response.IsSuccess = false;
+                    response.Message = "User not found.";
+                    return response;
+                }
+
+                Routine? routine = user.Routines.FirstOrDefault(r => r.RoutineId == addExerciseRequest.RoutineId);
+                if (routine == null)
+                {
+                    response.IsSuccess = false;
+                    response.Message = "Routine not found or user doesn't have access.";
+                    return response;
+                }
+
+                switch (addExerciseRequest.DayName)
+                {
+                    case "Lunes": addExerciseRequest.DayName = "Monday"; break;
+                    case "Martes": addExerciseRequest.DayName = "Tuesday"; break;
+                    case "Miércoles": addExerciseRequest.DayName = "Wednesday"; break;
+                    case "Jueves": addExerciseRequest.DayName = "Thursday"; break;
+                    case "Viernes": addExerciseRequest.DayName = "Friday"; break;
+                    case "Sábado": addExerciseRequest.DayName = "Saturday"; break;
+                    case "Domingo": addExerciseRequest.DayName = "Sunday"; break;
+                    default: addExerciseRequest.DayName = "Day"; break;
+                }
+
+                SplitDay? splitDay = routine.SplitDays.FirstOrDefault(sd => sd.DayName.ToString() == addExerciseRequest.DayName);
+                if (splitDay == null)
+                {
+                    response.IsSuccess = false;
+                    response.Message = "Split day not found.";
+                    return response;
+                }
+
+                if (splitDay.Exercises.Any(e => e.ExerciseName == addExerciseRequest.ExerciseName))
+                {
+                    response.IsSuccess = false;
+                    response.Message = "Exercise already exists in this split day.";
+                    return response;
+                }
+
+                Exercise newExercise = new Exercise
+                {
+                    ExerciseName = addExerciseRequest.ExerciseName,
+                    Sets = addExerciseRequest.Sets,
+                    Reps = addExerciseRequest.Reps,
+                    Weight = addExerciseRequest.Weight,
+                    RoutineId = routine.RoutineId,
+                    DayName = splitDay.DayName
+                };
+
+                await _context.Exercises.AddAsync(newExercise);
+                await _context.SaveChangesAsync();
+
+                UserDTO userDTO = new UserDTO
+                {
+                    UserId = user.UserId,
+                    Routines = user.Routines.Select(r => new RoutineDTO
+                    {
+                        RoutineId = r.RoutineId,
+                        RoutineName = r.RoutineName,
+                        SplitDays = r.SplitDays.Select(sd => new SplitDayDTO
+                        {
+                            DayName = sd.DayName,
+                            Exercises = sd.Exercises.Select(e => new ExerciseDTO
+                            {
+                                ExerciseName = e.ExerciseName,
+                                Sets = e.Sets,
+                                Reps = e.Reps,
+                                Weight = e.Weight
+                            }).ToList()
+                        }).ToList()
+                    }).ToList()
+                };
+
+                response.IsSuccess = true;
+                response.Message = "Exercise added successfully.";
+                response.UserDTO = userDTO;
+            }
+            catch (Exception ex)
+            {
+                response.IsSuccess = false;
+                response.Message = $"Error: {ex.Message}";
+            }
+
+            return response;
         }
 
         public async Task<AddExerciseAddExerciseProgressResponse> AddExerciseProgress(AddExerciseAddExerciseProgressRequest addExerciseRequest)
@@ -84,9 +184,9 @@ namespace TFC.Infraestructure.Persistence.Repository
                     if (progress == null)
                     {
                         response.IsSuccess = false;
-                        response.Message = $"Error al deserializar el progreso del ejercicio: {exercise.ExerciseName}";
+                        response.Message = "error al deserializar: solo puedes introducir valores numericos";
                         return response;
-                    }
+                    }                 
 
                     ExerciseProgress exerciseProgress = new ExerciseProgress
                     {
@@ -146,7 +246,7 @@ namespace TFC.Infraestructure.Persistence.Repository
                         .Include(u => u.Routines)
                             .ThenInclude(r => r.SplitDays)
                                 .ThenInclude(sd => sd.Exercises)
-                        .FirstOrDefaultAsync(u => u.UserId == deleteExerciseRequest.UserId);
+                        .FirstOrDefaultAsync(u => u.Email == deleteExerciseRequest.UserEmail);
 
                 if (user == null)
                 {
@@ -163,7 +263,19 @@ namespace TFC.Infraestructure.Persistence.Repository
                     return response;
                 }
 
-                SplitDay? splitDay = routine.SplitDays.FirstOrDefault(sd => sd.DayName == deleteExerciseRequest.DayName);
+                switch (deleteExerciseRequest.DayName)
+                {
+                    case "Lunes": deleteExerciseRequest.DayName = "Monday"; break;
+                    case "Martes": deleteExerciseRequest.DayName = "Tuesday"; break;
+                    case "Miércoles": deleteExerciseRequest.DayName = "Wednesday"; break;
+                    case "Jueves": deleteExerciseRequest.DayName = "Thursday"; break;
+                    case "Viernes": deleteExerciseRequest.DayName = "Friday"; break;
+                    case "Sábado": deleteExerciseRequest.DayName = "Saturday"; break;
+                    case "Domingo": deleteExerciseRequest.DayName = "Sunday"; break;
+                    default: deleteExerciseRequest.DayName = "Day"; break;
+                }
+
+                SplitDay? splitDay = routine.SplitDays.FirstOrDefault(sd => sd.DayName.ToString() == deleteExerciseRequest.DayName);
                 if (splitDay == null)
                 {
                     response.IsSuccess = false;
@@ -171,13 +283,18 @@ namespace TFC.Infraestructure.Persistence.Repository
                     return response;
                 }
 
-                Exercise? exerciseToDelete = splitDay.Exercises.FirstOrDefault(e => e.ExerciseName.Equals(deleteExerciseRequest.ExerciseName));
-                if (splitDay.Exercises.Any(e => e.ExerciseName.Equals(exerciseToDelete.ExerciseName)))
+                Exercise? exerciseToDelete = splitDay.Exercises.FirstOrDefault(e => e.ExerciseId == deleteExerciseRequest.ExerciseId);
+                if (!splitDay.Exercises.Any(e => e.ExerciseId.Equals(exerciseToDelete.ExerciseId)))
                 {
                     response.IsSuccess = false;
                     response.Message = "Exercise not found in the split day.";
                     return response;
                 }
+
+                List<ExerciseProgress> progressToDelete = _context.ExerciseProgress
+                    .Where(ep => ep.ExerciseId == exerciseToDelete.ExerciseId).ToList();
+
+                _context.ExerciseProgress.RemoveRange(progressToDelete);
 
                 _context.Exercises.Remove(exerciseToDelete);
                 await _context.SaveChangesAsync();

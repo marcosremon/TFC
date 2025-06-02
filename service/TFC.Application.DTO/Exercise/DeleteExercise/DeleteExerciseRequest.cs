@@ -2,9 +2,9 @@
 {
     public class DeleteExerciseRequest
     {
-        public long? UserId { get; set; }
-        public long? RoutineId { get; set; }
-        public WeekDay? DayName { get; set; }
-        public string? ExerciseName { get; set; }
+        public string UserEmail { get; set; } = string.Empty;
+        public int? RoutineId { get; set; }
+        public string? DayName { get; set; }
+        public int ExerciseId { get; set; }
     }
 }
