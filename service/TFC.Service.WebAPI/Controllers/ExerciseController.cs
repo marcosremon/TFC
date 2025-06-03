@@ -33,7 +33,7 @@ namespace TFC.Service.WebApi.Controllers
                 }
 
                 Log.Instance.Trace($"Error al añadir el ejercicio: {response?.Message}");
-                return BadRequest(response?.Message);
+                return Ok(response);
             }
             catch (Exception ex)
             {

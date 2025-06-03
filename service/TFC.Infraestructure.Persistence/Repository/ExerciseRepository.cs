@@ -9,7 +9,7 @@ using TFC.Application.DTO.Serialize_Deserialize;
 using TFC.Application.Interface.Persistence;
 using TFC.Domain.Model.Entity;
 using TFC.Infraestructure.Persistence.Context;
-using TFC.Transversal.Common;
+using TFC.Transversal.GenericUtils;
 
 namespace TFC.Infraestructure.Persistence.Repository
 {
@@ -47,17 +47,7 @@ namespace TFC.Infraestructure.Persistence.Repository
                     return response;
                 }
 
-                switch (addExerciseRequest.DayName)
-                {
-                    case "Lunes": addExerciseRequest.DayName = "Monday"; break;
-                    case "Martes": addExerciseRequest.DayName = "Tuesday"; break;
-                    case "Miércoles": addExerciseRequest.DayName = "Wednesday"; break;
-                    case "Jueves": addExerciseRequest.DayName = "Thursday"; break;
-                    case "Viernes": addExerciseRequest.DayName = "Friday"; break;
-                    case "Sábado": addExerciseRequest.DayName = "Saturday"; break;
-                    case "Domingo": addExerciseRequest.DayName = "Sunday"; break;
-                    default: addExerciseRequest.DayName = "Day"; break;
-                }
+                addExerciseRequest.DayName = GenericUtils.ChangeDayLanguage(addExerciseRequest.DayName);
 
                 SplitDay? splitDay = routine.SplitDays.FirstOrDefault(sd => sd.DayName.ToString() == addExerciseRequest.DayName);
                 if (splitDay == null)
@@ -146,17 +136,7 @@ namespace TFC.Infraestructure.Persistence.Repository
                     return response;
                 }
 
-                switch (addExerciseRequest.DayName)
-                {
-                    case "Lunes": addExerciseRequest.DayName = "Monday"; break;
-                    case "Martes": addExerciseRequest.DayName = "Tuesday"; break;
-                    case "Miércoles": addExerciseRequest.DayName = "Wednesday"; break;
-                    case "Jueves": addExerciseRequest.DayName = "Thursday"; break;
-                    case "Viernes": addExerciseRequest.DayName = "Friday"; break;
-                    case "Sábado": addExerciseRequest.DayName = "Saturday"; break;
-                    case "Domingo": addExerciseRequest.DayName = "Sunday"; break;
-                    default: addExerciseRequest.DayName = "Day"; break;
-                }
+                addExerciseRequest.DayName = GenericUtils.ChangeDayLanguage(addExerciseRequest.DayName);
 
                 SplitDay? splitDay = routine.SplitDays.FirstOrDefault(sd => sd.DayName.ToString() == addExerciseRequest.DayName);
                 if (splitDay == null)
@@ -263,17 +243,7 @@ namespace TFC.Infraestructure.Persistence.Repository
                     return response;
                 }
 
-                switch (deleteExerciseRequest.DayName)
-                {
-                    case "Lunes": deleteExerciseRequest.DayName = "Monday"; break;
-                    case "Martes": deleteExerciseRequest.DayName = "Tuesday"; break;
-                    case "Miércoles": deleteExerciseRequest.DayName = "Wednesday"; break;
-                    case "Jueves": deleteExerciseRequest.DayName = "Thursday"; break;
-                    case "Viernes": deleteExerciseRequest.DayName = "Friday"; break;
-                    case "Sábado": deleteExerciseRequest.DayName = "Saturday"; break;
-                    case "Domingo": deleteExerciseRequest.DayName = "Sunday"; break;
-                    default: deleteExerciseRequest.DayName = "Day"; break;
-                }
+                deleteExerciseRequest.DayName = GenericUtils.ChangeDayLanguage(deleteExerciseRequest.DayName);
 
                 SplitDay? splitDay = routine.SplitDays.FirstOrDefault(sd => sd.DayName.ToString() == deleteExerciseRequest.DayName);
                 if (splitDay == null)
@@ -346,17 +316,7 @@ namespace TFC.Infraestructure.Persistence.Repository
                     return response;
                 }
 
-                switch (getExercisesByDayAndRoutineIdRequest.DayName)
-                {
-                    case "Lunes": getExercisesByDayAndRoutineIdRequest.DayName = "Monday"; break;
-                    case "Martes": getExercisesByDayAndRoutineIdRequest.DayName = "Tuesday"; break;
-                    case "Miércoles": getExercisesByDayAndRoutineIdRequest.DayName = "Wednesday"; break;
-                    case "Jueves": getExercisesByDayAndRoutineIdRequest.DayName = "Thursday"; break;
-                    case "Viernes": getExercisesByDayAndRoutineIdRequest.DayName = "Friday"; break;
-                    case "Sábado": getExercisesByDayAndRoutineIdRequest.DayName = "Saturday"; break;
-                    case "Domingo": getExercisesByDayAndRoutineIdRequest.DayName = "Sunday"; break;
-                    default: getExercisesByDayAndRoutineIdRequest.DayName = "Day"; break;
-                }
+                getExercisesByDayAndRoutineIdRequest.DayName = GenericUtils.ChangeDayLanguage(getExercisesByDayAndRoutineIdRequest.DayName);
 
                 SplitDay? splitDay = await _context.SplitDays
                     .FirstOrDefaultAsync(sd => sd.DayName.ToString() == getExercisesByDayAndRoutineIdRequest.DayName && sd.RoutineId == routine.RoutineId);
@@ -378,7 +338,7 @@ namespace TFC.Infraestructure.Persistence.Repository
 
                 foreach (Exercise exercise in exercises)
                 {
-                    var last3Progress = await _context.ExerciseProgress
+                    List<ExerciseProgress> last3Progress = await _context.ExerciseProgress
                         .Where(p => p.ExerciseId == exercise.ExerciseId
                                  && p.RoutineId == splitDay.RoutineId
                                  && p.DayName == dayNameString)
@@ -386,7 +346,7 @@ namespace TFC.Infraestructure.Persistence.Repository
                         .Take(3)
                         .ToListAsync();
 
-                    var pastProgress = last3Progress
+                    List<string> pastProgress = last3Progress
                         .Select(p => $"{p.Sets}x{p.Reps}@{p.Weight}kg")
                         .ToList();
 

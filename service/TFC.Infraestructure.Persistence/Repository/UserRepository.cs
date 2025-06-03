@@ -77,113 +77,6 @@ namespace TFC.Infraestructure.Persistence.Repository
             }
         }
 
-        public async Task<CreateGoogleUserResponse> CreateGoogleUser(CreateGenericUserRequest createGenericUserRequest)
-        {
-            CreateGoogleUserResponse response = new CreateGoogleUserResponse();
-            try
-            {
-                if (!MailUtils.IsEmailValid(createGenericUserRequest.Email))
-                {
-                    response.IsSuccess = false;
-                    response.Message = "El email no es valido";
-                    return response;
-                }
-
-                String friendCode = PasswordUtils.CreatePassword(8);
-                while (true)
-                {
-                    if (await _context.Users.FirstOrDefaultAsync(u => u.FriendCode == friendCode) == null)
-                    {
-                        break;
-                    }
-                    friendCode = PasswordUtils.CreatePassword(8);
-                }
-
-                User user = new User()
-                {
-                    Dni = createGenericUserRequest.Dni,
-                    Username = createGenericUserRequest.Username,
-                    Surname = createGenericUserRequest.Surname,
-                    FriendCode = friendCode,
-                    Password = PasswordUtils.PasswordEncoder(createGenericUserRequest.Password),
-                    Email = createGenericUserRequest.Email,
-                    Role = createGenericUserRequest.Role,
-                    InscriptionDate = DateTime.UtcNow
-                };
-
-                await _context.Users.AddAsync(user);
-                await _context.SaveChangesAsync();
-
-                UserDTO userDTO = new UserDTO()
-                {
-                    Dni = user.Dni,
-                    Username = user.Username,
-                    FriendCode = user.FriendCode,
-                    Surname = user.Surname,
-                    Password = "********",
-                    Email = user.Email,
-                    Role = user.Role
-                };
-
-                response.IsSuccess = true;
-                response.Message = "Usuario creado correctametne";
-                response.UserDTO = userDTO;
-            }
-            catch (Exception ex)
-            {
-                response.IsSuccess = false;
-                response.Message = ex.Message;
-            }
-
-            return response;
-        }
-
-        public async Task<CreateNewPasswordResponse> CreateNewPassword(CreateNewPasswordRequest createNewPasswordRequest)
-        {
-            CreateNewPasswordResponse response = new CreateNewPasswordResponse();
-            using (ApplicationDbContext context = _context)
-            {
-                IDbContextTransaction dbContextTransaction = context.Database.BeginTransaction();
-                try
-                {
-                    User? user = await _context.Users.FirstOrDefaultAsync(u => u.Email == createNewPasswordRequest.UserEmail);
-                    if (user == null)
-                    {
-                        response.IsSuccess = false;
-                        response.Message = "No se encontró el usuario con ese email";
-                        return response;
-                    }
-
-                    string newPassword = PasswordUtils.CreatePassword(8);
-                    byte[] passwordHash = PasswordUtils.PasswordEncoder(newPassword);
-
-                    user.Password = passwordHash;
-                    int affectedRows = await _context.SaveChangesAsync();
-
-                    if (affectedRows == 0)
-                    {
-                        response.IsSuccess = false;
-                        response.Message = "No se pudo cambiar la contraseña";
-                    }
-
-                    dbContextTransaction.Commit();
-
-                    MailUtils.SendEmail(user.Username, user.Email, newPassword);
-                    response.IsSuccess = true;
-                    response.Message = "Contraseña cambiada correctamente";
-                    response.UserId = user.UserId;
-                }
-                catch (Exception ex)
-                {
-                    response.IsSuccess = false;
-                    response.Message = ex.Message;
-                    dbContextTransaction.Rollback();
-                }
-
-                return response;
-            }
-        }
-
         public async Task<CreateUserResponse> CreateUser(CreateGenericUserRequest createGenericUserRequest)
         {
             CreateUserResponse response = new CreateUserResponse();
@@ -291,6 +184,115 @@ namespace TFC.Infraestructure.Persistence.Repository
             }
 
             return response;
+        }
+
+        public async Task<CreateGoogleUserResponse> CreateGoogleUser(CreateGenericUserRequest createGenericUserRequest)
+        {
+            CreateGoogleUserResponse response = new CreateGoogleUserResponse();
+            try
+            {
+                if (!MailUtils.IsEmailValid(createGenericUserRequest.Email!))
+                {
+                    response.IsSuccess = false;
+                    response.Message = "El email no es valido";
+                    return response;
+                }
+
+                string friendCode = PasswordUtils.CreatePassword(8);
+                while (true)
+                {
+                    if (await _context.Users.FirstOrDefaultAsync(u => u.FriendCode == friendCode) == null)
+                    {
+                        break;
+                    }
+                    friendCode = PasswordUtils.CreatePassword(8);
+                }
+
+                User user = new User()
+                {
+                    Dni = createGenericUserRequest.Dni,
+                    Username = createGenericUserRequest.Username ?? "no name",
+                    Surname = createGenericUserRequest.Surname,
+                    FriendCode = friendCode,
+                    Password = PasswordUtils.PasswordEncoder(createGenericUserRequest.Password!),
+                    Email = createGenericUserRequest.Email,
+                    Role = createGenericUserRequest.Role,
+                    InscriptionDate = DateTime.UtcNow
+                };
+
+                await _context.Users.AddAsync(user);
+                await _context.SaveChangesAsync();
+
+                MailUtils.SendEmailAfterCreatedAccountByGoogle(user.Username, user.Email!);
+
+                UserDTO userDTO = new UserDTO()
+                {
+                    Dni = user.Dni,
+                    Username = user.Username,
+                    FriendCode = user.FriendCode,
+                    Surname = user.Surname,
+                    Password = "********",
+                    Email = user.Email,
+                    Role = user.Role
+                };
+
+                response.IsSuccess = true;
+                response.Message = "Usuario creado correctametne";
+                response.UserDTO = userDTO;
+            }
+            catch (Exception ex)
+            {
+                response.IsSuccess = false;
+                response.Message = ex.Message;
+            }
+
+            return response;
+        }
+
+        public async Task<CreateNewPasswordResponse> CreateNewPassword(CreateNewPasswordRequest createNewPasswordRequest)
+        {
+            CreateNewPasswordResponse response = new CreateNewPasswordResponse();
+            using (ApplicationDbContext context = _context)
+            {
+                IDbContextTransaction dbContextTransaction = context.Database.BeginTransaction();
+                try
+                {
+                    User? user = await _context.Users.FirstOrDefaultAsync(u => u.Email == createNewPasswordRequest.UserEmail);
+                    if (user == null)
+                    {
+                        response.IsSuccess = false;
+                        response.Message = "No se encontró el usuario con ese email";
+                        return response;
+                    }
+
+                    string newPassword = PasswordUtils.CreatePassword(8);
+                    byte[] passwordHash = PasswordUtils.PasswordEncoder(newPassword);
+
+                    user.Password = passwordHash;
+                    int affectedRows = await _context.SaveChangesAsync();
+
+                    if (affectedRows == 0)
+                    {
+                        response.IsSuccess = false;
+                        response.Message = "No se pudo cambiar la contraseña";
+                    }
+
+                    dbContextTransaction.Commit();
+
+                    MailUtils.SendEmail(user.Username, user.Email, newPassword);
+                    response.IsSuccess = true;
+                    response.Message = "Contraseña cambiada correctamente";
+                    response.UserId = user.UserId;
+                }
+                catch (Exception ex)
+                {
+                    response.IsSuccess = false;
+                    response.Message = ex.Message;
+                    dbContextTransaction.Rollback();
+                }
+
+                return response;
+            }
         }
 
         public async Task<DeleteUserResponse> DeleteUser(DeleteUserRequest deleteUserRequest)

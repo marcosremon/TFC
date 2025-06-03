@@ -1,11 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using TFC.Application.DTO.Entity;
+using TFC.Application.DTO.Exercise.GetExercisesByDayAndRoutineId;
 using TFC.Application.DTO.SplitDay.DeleteSplitDay;
 using TFC.Application.DTO.SplitDay.UpdateSplitDay;
 using TFC.Application.Interface.Persistence;
 using TFC.Domain.Model.Entity;
 using TFC.Infraestructure.Persistence.Context;
+using TFC.Transversal.GenericUtils;
 
 namespace TFC.Infraestructure.Persistence.Repository
 {
@@ -109,17 +111,7 @@ namespace TFC.Infraestructure.Persistence.Repository
                 {
                     updateSplitDayRequest.DeleteDays.ForEach(dayName =>
                     {
-                        switch (dayName)
-                        {
-                            case "Lunes": dayName = "Monday"; break;
-                            case "Martes": dayName = "Tuesday"; break;
-                            case "Miércoles": dayName = "Wednesday"; break;
-                            case "Jueves": dayName = "Thursday"; break;
-                            case "Viernes": dayName = "Friday"; break;
-                            case "Sábado": dayName = "Saturday"; break;
-                            case "Domingo": dayName = "Sunday"; break;
-                            default: dayName = "Day"; break;
-                        }
+                        dayName = GenericUtils.ChangeDayLanguage(dayName);
 
                         // Buscar el SplitDay a eliminar
                         SplitDay? splitDayToDelete = _context.SplitDays
@@ -148,17 +140,7 @@ namespace TFC.Infraestructure.Persistence.Repository
                 {
                     updateSplitDayRequest.AddDays.ForEach(dayName =>
                     {
-                        switch (dayName)
-                        {
-                            case "Lunes": dayName = "Monday"; break;
-                            case "Martes": dayName = "Tuesday"; break;
-                            case "Miércoles": dayName = "Wednesday"; break;
-                            case "Jueves": dayName = "Thursday"; break;
-                            case "Viernes": dayName = "Friday"; break;
-                            case "Sábado": dayName = "Saturday"; break;
-                            case "Domingo": dayName = "Sunday"; break;
-                            default: dayName = "Day"; break;
-                        }
+                        dayName = GenericUtils.ChangeDayLanguage(dayName);
 
                         WeekDay weekDay = Enum.Parse<WeekDay>(dayName, true);
                         SplitDay newSplitDay = new SplitDay

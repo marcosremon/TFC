@@ -15,7 +15,7 @@ namespace TFC.Domain.Model.Entity
         public string? Dni { get; set; }
 
         [MaxLength(100)]
-        public string? Username { get; set; }
+        public string Username { get; set; } = string.Empty;
 
         [MaxLength(100)]
         public string? Surname { get; set; }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
 using TFC.Application.DTO.Entity;
 using TFC.Application.DTO.Routine.CreateRoutine;
@@ -26,7 +27,6 @@ namespace TFC.Infraestructure.Persistence.Repository
         public async Task<CreateRoutineResponse> CreateRoutine(CreateRoutineRequest createRoutineRequest)
         {
             CreateRoutineResponse response = new CreateRoutineResponse();
-
             using (ApplicationDbContext context = _context)
             {
                 IDbContextTransaction dbContextTransaction = context.Database.BeginTransaction();
@@ -68,7 +68,7 @@ namespace TFC.Infraestructure.Persistence.Repository
                             {
                                 Exercise exercise = new Exercise
                                 {
-                                    ExerciseName = exRequest.ExerciseName ?? "Unnamed Exercise",
+                                    ExerciseName = exRequest.ExerciseName,
                                     Sets = exRequest.Sets ?? 0,
                                     Reps = exRequest.Reps ?? 0,
                                     Weight = exRequest.Weight ?? 0,
@@ -83,15 +83,20 @@ namespace TFC.Infraestructure.Persistence.Repository
 
                         return splitDay;
                     }).ToList();
-
                     
-
                     await _context.SaveChangesAsync();
 
                     foreach (SplitDay splitDay in routine.SplitDays)
                     {
                         foreach (Exercise exercise in splitDay.Exercises)
                         {
+                            if (exercise.ExerciseName.IsNullOrEmpty())
+                            {
+                                response.IsSuccess = false;
+                                response.Message = "the exercise can not be null or empty";
+                                return response;
+                            }
+
                             ExerciseProgress progress = new ExerciseProgress
                             {
                                 ExerciseId = exercise.ExerciseId,

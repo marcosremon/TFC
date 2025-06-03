@@ -1,7 +1,7 @@
 ﻿using System.Text.RegularExpressions;
 using TFC.Application.DTO.Serialize_Deserialize;
 
-namespace TFC.Transversal.Common
+namespace TFC.Transversal.GenericUtils
 {
     public static class ExerciseProgressUtils
     {
