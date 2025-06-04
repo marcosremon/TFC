@@ -17,34 +17,33 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Configuracion Mails
+// Configuración CORS (¡Nuevo!)
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigin",
+        builder => builder
+            .WithOrigins("http://127.0.0.1:8000") // Reemplaza con tu URL frontend
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials());
+});
+
+// Configuración de Mails
 MailUtils.Initialize(builder.Configuration);
 
-
-// Configuración de SQL Server con Entity Framework Core
-//builder.Services.AddDbContext<ApplicationDbContext>(options =>
-//    options.UseSqlServer(
-//        builder.Configuration.GetConnectionString("SqlServerConnection"),
-//        sqlOptions => sqlOptions.EnableRetryOnFailure(0)));
-
-// Configuración de SQLite con Entity Framework Core
-//builder.Services.AddDbContext<ApplicationDbContext>(options =>
-//    options.UseSqlite(builder.Configuration.GetConnectionString("SqliteConnection")));
-
-// Configuración de PostgreSQL con Entity Framework Core
+// Configuración de PostgreSQL
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-        options.UseNpgsql(builder.Configuration.GetConnectionString("PostgreSQLConnection")));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("PostgreSQLConnection")));
 
-// Registrar aplicaciones services
+// Registrar servicios de infraestructura
 builder.Services.AddInfrastructureServices();
 
+// Configuración JWT
 var jwtSettings = builder.Configuration.GetSection("JWT");
 var key = Encoding.ASCII.GetBytes(jwtSettings["Key"]!);
 
-// Inicializar JwtUtils
 TFC.Service.WebApi.JwtUtils.Initialize(builder.Configuration);
 
-// Configurar autenticación
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -77,6 +76,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+// Habilitar CORS (¡Importante que esté antes de UseAuthentication/UseAuthorization!)
+app.UseCors("AllowSpecificOrigin");
+
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
