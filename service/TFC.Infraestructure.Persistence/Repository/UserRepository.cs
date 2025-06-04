@@ -112,7 +112,7 @@ namespace TFC.Infraestructure.Persistence.Repository
                     return response;
                 }
 
-                if (!PasswordUtils.IsPasswordValid(createGenericUserRequest.Password))
+                if (!PasswordUtils.IsPasswordValid(createGenericUserRequest.Password!))
                 {
                     response.IsSuccess = false;
                     response.Message = "La contraseña no es valida debe tener ocho o mas caracteres, mayusculas, minusculas y al menos un simbolo";
@@ -126,7 +126,7 @@ namespace TFC.Infraestructure.Persistence.Repository
                     return response;
                 }
 
-                String friendCode = PasswordUtils.CreatePassword(8);
+                string friendCode = PasswordUtils.CreatePassword(8);
                 while (true)
                 {
                     if (await _context.Users.FirstOrDefaultAsync(u => u.FriendCode == friendCode) == null)
