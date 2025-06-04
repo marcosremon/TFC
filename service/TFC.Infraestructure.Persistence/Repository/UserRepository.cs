@@ -407,14 +407,14 @@ namespace TFC.Infraestructure.Persistence.Repository
 
                 List<UserDTO> userDTOs = users.Select(user => new UserDTO()
                 {
-
                     Dni = user.Dni,
                     Username = user.Username,
                     Surname = user.Surname,
                     Password = "********",
                     FriendCode = user.FriendCode,
                     Email = user.Email,
-                    Role = user.Role,
+                    StringRole = user.Role == 0 ? "Admin" : "User",
+                    InscriptionDate = user.InscriptionDate,
                     Routines = user.Routines?.Select(r => new RoutineDTO 
                     {
                         RoutineId = r.RoutineId,

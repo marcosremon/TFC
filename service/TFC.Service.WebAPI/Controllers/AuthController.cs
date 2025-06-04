@@ -65,7 +65,7 @@ namespace TFC.Service.WebApi.Controllers
 
                 if (loginWebResponse.IsSuccess)
                 {
-                    JwtUtils.GenerateAdminJwtToken(loginRequest.UserEmail);
+                    loginWebResponse.BearerToken = JwtUtils.GenerateAdminJwtToken(loginRequest.UserEmail);
 
                     Log.Instance.Trace($"Login successful del usuario con email: {loginRequest.UserEmail}");
                     return Ok(loginWebResponse);

@@ -139,7 +139,7 @@ namespace TFC.Service.WebApi.Controllers
         }
 
         [HttpPost("create-admin")]
-        //[Authorize(Roles = nameof(Role.Admin))]
+        [Authorize(Roles = nameof(Role.Admin))]
         public async Task<ActionResult<CreateAdminResponse>> CreateAdmin([FromBody] CreateAdminRequest createAdminRequst)
         {
             try
