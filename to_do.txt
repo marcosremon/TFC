@@ -1,0 +1,5 @@
+- hacer servidor vpn y apache en la raspi vm
+- revisar las dificultades
+- reformatear el codigo flutter mejor ortografia aprendida
+- revisar el codigo de la api haber hay endpoints sin usar o puedo mejorar algo con entity framework core
+- cambiar ip en flutter de la app como de el server apache
