@@ -63,7 +63,7 @@ namespace TFC.Service.WebApi.Controllers
                     BearerToken = response.BearerToken,
                 };
 
-                if (loginWebResponse.IsSuccess)
+                if (loginWebResponse.IsSuccess && response.IsAdmin)
                 {
                     loginWebResponse.BearerToken = JwtUtils.GenerateAdminJwtToken(loginRequest.UserEmail);
 
