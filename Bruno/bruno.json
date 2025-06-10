@@ -1,9 +1,0 @@
-{
-  "version": "1",
-  "name": "TFC.Service.WebApi",
-  "type": "collection",
-  "ignore": [
-    "node_modules",
-    ".git"
-  ]
-}
