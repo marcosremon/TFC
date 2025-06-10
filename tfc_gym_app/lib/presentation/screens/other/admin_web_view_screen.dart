@@ -15,7 +15,7 @@ class AdminWebViewScreen {
     }
 
     try {
-      _server = await HttpServer.bind(InternetAddress.anyIPv4, 8080);
+      _server = await HttpServer.bind(InternetAddress.anyIPv4, 8080); // Puerto local
       _isServerRunning = true;
 
       _server?.listen((request) async {
@@ -38,7 +38,12 @@ class AdminWebViewScreen {
   }
 
   static Future<void> _launchBrowser() async {
-    final url = Uri.parse('http://${ApiConstants.ip}:8000/web');
+    // Modo local (emulador o dispositivo)
+    // final url = Uri.parse('http://${ApiConstants.ip}:8080/web');
+    // await launchUrl(url, mode: LaunchMode.externalApplication);
+
+    // Modo producción (servidor Apache)
+    final url = Uri.parse('http://${ApiConstants.ip}/index.html');
     await launchUrl(url, mode: LaunchMode.externalApplication);
   }
 }

@@ -19,7 +19,7 @@ class AuthProvider extends ChangeNotifier {
       var prefs = await SharedPreferences.getInstance();
       String? token = prefs.getString('token');
       _isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
-
+      
       if (_isLoggedIn && token != null && await _authRepository.isValidToken(IsValidTokenRequest(token: token))) {
         _isLoggedIn = true;
       } else {
