@@ -1,0 +1,18 @@
+meta {
+  name: post /api/exercise/get-exercises-by-day-and-routine-id
+  type: http
+  seq: 5
+}
+
+post {
+  url: http://192.168.1.25:5122/api/exercise/get-exercises-by-day-and-routine-id
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "routineId": "",
+    "dayName": ""
+  }
+}

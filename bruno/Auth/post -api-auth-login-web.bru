@@ -1,0 +1,18 @@
+meta {
+  name: post /api/auth/login-web
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://192.168.1.25:5122/api/auth/login-web
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "",
+    "password": ""
+  }
+}

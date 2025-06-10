@@ -1,0 +1,17 @@
+meta {
+  name: post /api/routine/get-all-user-routines
+  type: http
+  seq: 4
+}
+
+post {
+  url: http://192.168.1.25:5122/api/routine/get-all-user-routines
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "userEmail": ""
+  }
+}

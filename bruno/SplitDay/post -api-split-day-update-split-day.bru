@@ -1,0 +1,20 @@
+meta {
+  name: post /api/split-day/update-split-day
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://192.168.1.25:5122/api/split-day/update-split-day
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "routineId": "",
+    "userEmail": "",
+    "addDays": [],
+    "deleteDays": []
+  }
+}

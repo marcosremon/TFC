@@ -1,0 +1,20 @@
+meta {
+  name: post /api/exercise/add-exercise-progress
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://192.168.1.25:5122/api/exercise/add-exercise-progress
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "progressList": [],
+    "userEmail": "",
+    "routineId": "",
+    "dayName": ""
+  }
+}

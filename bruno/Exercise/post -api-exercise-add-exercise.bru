@@ -1,0 +1,23 @@
+meta {
+  name: post /api/exercise/add-exercise
+  type: http
+  seq: 4
+}
+
+post {
+  url: http://192.168.1.25:5122/api/exercise/add-exercise
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "routineId": "",
+    "exerciseName": "",
+    "dayName": "",
+    "userEmail": "",
+    "sets": "",
+    "reps": "",
+    "weight": ""
+  }
+}

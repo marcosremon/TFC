@@ -1,0 +1,18 @@
+meta {
+  name: post /api/friend/add-new-user-friend
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://192.168.1.25:5122/api/friend/add-new-user-friend
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "userEmail": "",
+    "friendCode": ""
+  }
+}
