@@ -10,38 +10,46 @@ var builder = WebApplication.CreateBuilder(args);
 
 Log.SetLogFileName(builder.Configuration["Options:LogFile"]);
 
-// Configuración mínima
+// ConfiguraciÃ³n mÃ­nima
 builder.Services.AddControllers();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Configuración CORS (¡Nuevo!)
+// ConfiguraciÃ³n CORS (Â¡Nuevo!)
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigin",
         builder => builder
-            .WithOrigins("http://192.168.18.144:8000", "http://localhost:8000") // Agrega esta URL
-            .AllowAnyMethod()
-            .AllowAnyHeader()
-            .AllowCredentials());
+        .WithOrigins(
+            "http://192.168.18.144:8000",
+            "http://localhost:8000",
+            "http://192.168.1.25",
+            "http://192.168.1.25:80",  // Add this
+            "http://192.168.1.25:5122",
+            "http://localhost:5122"    // Add this for local testing
+        )
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+        .AllowCredentials());
 });
 
-// Configuración de Mails
+// ConfiguraciÃ³n de Mails
 MailUtils.Initialize(builder.Configuration);
 
-// Configuración de PostgreSQL
+// ConfiguraciÃ³n de PostgreSQL
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("PostgreSQLConnection")));
 
 // Registrar servicios de infraestructura
 builder.Services.AddInfrastructureServices();
 
-// Configuración JWT
+// ConfiguraciÃ³n JWT
 var jwtSettings = builder.Configuration.GetSection("JWT");
-var key = Encoding.ASCII.GetBytes(jwtSettings["Key"]!);
-
+var keyString = jwtSettings["Key"] ?? throw new InvalidOperationException("JWT Key no estÃ¡ configurado");
+Console.WriteLine($"JWT Key: {keyString}"); // Debug
+var key = Encoding.ASCII.GetBytes(keyString);
 TFC.Service.WebApi.JwtUtils.Initialize(builder.Configuration);
 
 builder.Services.AddAuthentication(options =>
@@ -77,7 +85,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// Habilitar CORS (¡Importante que esté antes de UseAuthentication/UseAuthorization!)
+// Habilitar CORS (Â¡Importante que estÃ© antes de UseAuthentication/UseAuthorization!)
 app.UseCors("AllowSpecificOrigin");
 
 app.UseAuthentication();
