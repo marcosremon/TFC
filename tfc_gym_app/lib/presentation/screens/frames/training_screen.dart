@@ -17,22 +17,21 @@ class TrainingScreen extends StatefulWidget {
 class _TrainingScreenState extends State<TrainingScreen> {
   String? email;
 
- @override
-void initState() {
-  super.initState();
-  final controller = TrainingController(routineProvider: context.read<RoutineProvider>());
-  controller.loadEmailAndFetchStats();
-}
+  @override
+  void initState() {
+    super.initState();
+    final controller = TrainingController(
+      routineProvider: context.read<RoutineProvider>(),
+    );
+    controller.loadEmailAndFetchStats();
+  }
 
   @override
   Widget build(BuildContext context) {
     final stats = context.watch<RoutineProvider>().stats;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Entrenamientos'),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: const Text('Entrenamientos'), centerTitle: true),
       body: ListView(
         padding: const EdgeInsets.all(24),
         children: [
@@ -77,10 +76,11 @@ void initState() {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (_) => ChangeNotifierProvider(
-                    create: (_) => RoutineController(),
-                    child: const CreateRoutineScreen(),
-                  ),
+                  builder:
+                      (_) => ChangeNotifierProvider(
+                        create: (_) => RoutineController(),
+                        child: const CreateRoutineScreen(),
+                      ),
                 ),
               );
             },
@@ -89,7 +89,9 @@ void initState() {
             style: FilledButton.styleFrom(
               padding: const EdgeInsets.symmetric(vertical: 18),
               textStyle: const TextStyle(fontSize: 18),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
             ),
           ),
           const SizedBox(height: 40),
@@ -101,7 +103,11 @@ void initState() {
             ),
             child: Column(
               children: [
-                Icon(Icons.lightbulb_outline, size: 40, color: Theme.of(context).colorScheme.primary),
+                Icon(
+                  Icons.lightbulb_outline,
+                  size: 40,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
                 const SizedBox(height: 12),
                 const Text(
                   '¿Sabías que puedes personalizar tus rutinas y añadir tus propios ejercicios?',
@@ -118,16 +124,15 @@ void initState() {
           padding: const EdgeInsets.all(16.0),
           child: FilledButton.tonalIcon(
             onPressed: () {
-              showModalBottomSheet(
-                context: context,
-                builder: (_) => const HowToUseAppBottomSheet(),
-              );
+              HowToUseAppBottomSheet.show(context);
             },
             icon: const Icon(Icons.info_outline),
             label: const Text('¿Cómo usar la app?'),
             style: FilledButton.styleFrom(
               minimumSize: const Size.fromHeight(48),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
             ),
           ),
         ),
