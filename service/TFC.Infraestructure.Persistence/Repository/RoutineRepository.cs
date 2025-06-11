@@ -32,6 +32,13 @@ namespace TFC.Infraestructure.Persistence.Repository
                 IDbContextTransaction dbContextTransaction = context.Database.BeginTransaction();
                 try
                 {
+                    if (_context.Routines.Any(r => r.RoutineName == createRoutineRequest.RoutineName))
+                    {
+                        response.IsSuccess = false;
+                        response.Message = "Routine with the same name already exists";
+                        return response;
+                    }
+
                     User? user = await _context.Users
                         .Include(u => u.Routines)
                         .FirstOrDefaultAsync(u => u.Email == createRoutineRequest.UserEmail);
